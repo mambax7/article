@@ -51,7 +51,7 @@
         </div>
 
         <div class="article-section-container">
-            <{foreachq item=article from=$features}>
+            <{foreach item=article from=$features}>
             <div class="article-list">
 
                 <div class="article-header-image"><img src="<{$article.image.url|default:$default_image}>"
@@ -87,7 +87,7 @@
 
         <div class="article-section-container">
             <ol>
-                <{foreachq item=article from=$articles}>
+                <{foreach item=article from=$articles}>
                 <li>
                     <div class="article-title">
                         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}><{$article.id}>"><{$article.title}></a>
@@ -102,7 +102,7 @@
                     <{if count($article.categories)>0}>
                         <div class="article-list">
                             <span class="article-subject"><{php}>echo art_constant("MD_CATEGORIES");<{/php}>:</span>
-                            <{foreachq item=category key=catid from=$article.categories}>
+                            <{foreach item=category key=catid from=$article.categories}>
                             <span class="article-term">
                         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$category.id}>/"><{$category.title}></a>
                     </span>
@@ -130,7 +130,7 @@
         </div>
 
         <div class="article-section-container">
-            <{foreachq item=cat name=cat from=$categories}>
+            <{foreach item=cat name=cat from=$categories}>
             <span class="article-term">
             <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$cat.id}>"><{$cat.title}></a>
             (<acronym title='<{php}>echo art_constant("MD_SUBCATEGORIES");<{/php}>'><{$cat.categories}></acronym>|<acronym
@@ -151,7 +151,7 @@
         </div>
 
         <div class="article-section-container">
-            <{foreachq item=topic name=topic from=$topics}>
+            <{foreach item=topic name=topic from=$topics}>
             <span class="article-term">
             <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.topic.php<{$smarty.const.URL_DELIMITER}><{$topic.id}>"><{$topic.title}></a>
         </span>

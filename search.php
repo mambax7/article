@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 $xoopsOption['pagetype'] = 'search';
 include __DIR__ . '/header.php';
 //$xoopsModule->loadLanguage("main");
@@ -27,14 +31,14 @@ if (empty($xoopsConfigSearch['enable_search'])) {
 }
 
 $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
-$xoopsOption['template_main']                             = art_getTemplate('search', $xoopsModuleConfig['template']);
-$xoopsOption['xoops_module_header']                       = art_getModuleHeader($xoopsModuleConfig['template']);
+$xoopsOption['template_main']                             = art_getTemplate('search', $helper->getConfig('template'));
+$xoopsOption['xoops_module_header']                       = art_getModuleHeader($helper->getConfig('template'));
 include XOOPS_ROOT_PATH . '/header.php';
 include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 $module_info_search = $xoopsModule->getInfo('search');
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/' . $module_info_search['file'];
-$limit = $xoopsModuleConfig['articles_perpage'];
+$limit = $helper->getConfig('articles_perpage');
 
 $queries  = [];
 $andor    = isset($_POST['andor']) ? $_POST['andor'] : (isset($_GET['andor']) ? $_GET['andor'] : '');
@@ -68,7 +72,7 @@ if (!(empty($_POST['submit']) && empty($_GET['term']))) {
     $next_search['term'] = $term;
     $query               = trim($term);
 
-    if ('EXACT' != $andor) {
+    if ('EXACT' !== $andor) {
         $ignored_queries = []; // holds kewords that are shorter than allowed minmum length
         $temp_queries    = preg_split("/[\s,]+/", $query);
         foreach ($temp_queries as $q) {
@@ -99,7 +103,7 @@ if (!(empty($_POST['submit']) && empty($_GET['term']))) {
             redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/search.php', 1, art_constant('MD_ERROROCCURED'));
         }
         $uid = [];
-        while ($row = $xoopsDB->fetchArray($result)) {
+        while (false !== ($row = $xoopsDB->fetchArray($result))) {
             $uid[] = $row['uid'];
         }
     } else {
@@ -154,13 +158,13 @@ if (!(empty($_POST['submit']) && empty($_GET['term']))) {
             $next            = $start + $limit;
             $queries         = implode(',', $queries);
             $search_url_next = $search_url . "&start=$next";
-            $search_next     = '<a href="' . htmlspecialchars($search_url_next) . '">' . _SR_NEXT . '</a>';
+            $search_next     = '<a href="' . htmlspecialchars($search_url_next, ENT_QUOTES | ENT_HTML5) . '">' . _SR_NEXT . '</a>';
             $xoopsTpl->assign('search_next', $search_next);
         }
         if ($start > 0) {
             $prev            = $start - $limit;
             $search_url_prev = $search_url . "&start=$prev";
-            $search_prev     = '<a href="' . htmlspecialchars($search_url_prev) . '">' . _SR_PREVIOUS . '</a>';
+            $search_prev     = '<a href="' . htmlspecialchars($search_url_prev, ENT_QUOTES | ENT_HTML5) . '">' . _SR_PREVIOUS . '</a>';
             $xoopsTpl->assign('search_prev', $search_prev);
         }
     }
@@ -184,17 +188,17 @@ if (!(empty($_POST['submit']) && empty($_GET['term']))) {
 /* type */
 $type_select = '<select name="andor">';
 $type_select .= '<option value="OR"';
-if ('OR' == $andor) {
+if ('OR' === $andor) {
     $type_select .= ' selected="selected"';
 }
 $type_select .= '>' . _SR_ANY . '</option>';
 $type_select .= '<option value="AND"';
-if ('AND' == $andor) {
+if ('AND' === $andor) {
     $type_select .= ' selected="selected"';
 }
 $type_select .= '>' . _SR_ALL . '</option>';
 $type_select .= '<option value="EXACT"';
-if ('exact' == $andor) {
+if ('exact' === $andor) {
     $type_select .= ' selected="selected"';
 }
 $type_select .= '>' . _SR_EXACT . '</option>';
@@ -259,22 +263,22 @@ $searchin_select .= '>' . _ALL . '&nbsp;&nbsp;';
 /* sortby */
 $sortby_select = '<select name="sortby">';
 $sortby_select .= '<option value="a.art_id desc"';
-if ('a.art_id desc' == $sortby || empty($sortby)) {
+if ('a.art_id desc' === $sortby || empty($sortby)) {
     $sortby_select .= ' selected="selected"';
 }
 $sortby_select .= '>' . _NONE . '</option>';
 $sortby_select .= '<option value="a.art_time_publish desc"';
-if ('a.art_time_publish desc' == $sortby) {
+if ('a.art_time_publish desc' === $sortby) {
     $sortby_select .= ' selected="selected"';
 }
 $sortby_select .= '>' . art_constant('MD_TIME') . '</option>';
 $sortby_select .= '<option value="a.art_title"';
-if ('a.art_title' == $sortby) {
+if ('a.art_title' === $sortby) {
     $sortby_select .= ' selected="selected"';
 }
 $sortby_select .= '>' . art_constant('MD_TITLE') . '</option>';
 $sortby_select .= '<option value="ac.cat_id"';
-if ('ac.cat_id' == $sortby) {
+if ('ac.cat_id' === $sortby) {
     $sortby_select .= ' selected="selected"';
 }
 $sortby_select .= '>' . art_constant('MD_CATEGORY') . '</option>';

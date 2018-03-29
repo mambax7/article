@@ -16,7 +16,12 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+
 include __DIR__ . '/header.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 $category_id = empty($_GET['category']) ? 0 : (int)$_GET['category'];
 $start       = empty($_GET['start']) ? 0 : (int)$_GET['start'];
@@ -45,7 +50,7 @@ $topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
 $tags         = ['top_id', 'top_title', 'top_order', 'top_time', 'top_expire'];
 switch ($type) {
     case 'expired':
-        $criteria  = new CriteriaCompo(new Criteria('top_expire', time(), '<'));
+        $criteria  = new \CriteriaCompo(new \Criteria('top_expire', time(), '<'));
         $type_name = art_constant('MD_EXPIRED');
         break;
     case 'all':
@@ -56,16 +61,16 @@ switch ($type) {
     default:
         $type      = 'active';
         $type_name = art_constant('MD_ACTIVE');
-        $criteria  = new CriteriaCompo(new Criteria('top_expire', time(), '>'));
+        $criteria  = new \CriteriaCompo(new \Criteria('top_expire', time(), '>'));
         break;
 }
 
 $topics_count = $topicHandler->getCountByCategory($category_id, $criteria);
-$topics_obj   = $topicHandler->getByCategory($category_id, $xoopsModuleConfig['topics_max'], $start, $criteria, $tags);
+$topics_obj   = $topicHandler->getByCategory($category_id, $helper->getConfig('topics_max'), $start, $criteria, $tags);
 $pagenav      = '';
-if ($topics_count > $xoopsModuleConfig['articles_perpage']) {
+if ($topics_count > $helper->getConfig('articles_perpage')) {
     include XOOPS_ROOT_PATH . '/class/pagenav.php';
-    $nav     = new XoopsPageNav($topics_count, $xoopsModuleConfig['topics_max'], $start, 'start', 'category=' . $category_id . '&amp;from=' . $from . '&amp;type=' . $type);
+    $nav     = new \XoopsPageNav($topics_count, $helper->getConfig('topics_max'), $start, 'start', 'category=' . $category_id . '&amp;from=' . $from . '&amp;type=' . $type);
     $pagenav = $nav->renderNav(4);
 }
 
@@ -75,7 +80,7 @@ foreach ($topics_obj as $id => $topic) {
         'id'     => $id,
         'title'  => $topic->getVar('top_title'),
         'order'  => $topic->getVar('top_order'),
-        'time'   => $topic->getTime($xoopsModuleConfig['timeformat']),
+        'time'   => $topic->getTime($helper->getConfig('timeformat')),
         'expire' => $topic->getExpire()
     ];
 }

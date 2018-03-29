@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 if (!@require_once XOOPS_ROOT_PATH . '/Frameworks/transfer/transfer.php') {
     return null;
@@ -61,7 +61,7 @@ class ModuleTransferHandler extends TransferHandler
     {
         $ret = parent::do_transfer($item, $data);
 
-        if ('newbb' == $item && !empty($ret['data']['topic_id'])) {
+        if ('newbb' === $item && !empty($ret['data']['topic_id'])) {
             $articleHandler = xoops_getModuleHandler('article', $GLOBALS['xoopsModule']->getVar('dirname'));
             $article_obj    = $articleHandler->get($data['id']);
             $article_obj->setVar('art_forum', $ret['data']['topic_id']);

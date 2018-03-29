@@ -16,7 +16,13 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+
+use XoopsModules\Article;
+
 include __DIR__ . '/header.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 // trackback is done by a POST
 $art_id     = explode('/', $_SERVER['REQUEST_URI']);
@@ -27,7 +33,7 @@ $excerpt    = $_POST['excerpt'];
 $blog_name  = $_POST['blog_name'];
 $charset    = trim($_POST['charset']);
 
-if (2 == $xoopsModuleConfig['trackback_option']) {
+if (2 == $helper->getConfig('trackback_option')) {
     art_trackback_response(1, 'Trackback is closed');
 }
 if (!strlen($title . $url . $blog_name)) {
@@ -36,8 +42,8 @@ if (!strlen($title . $url . $blog_name)) {
 
 if (!empty($article_id) && !empty($url)) {
     $trackbackHandler = xoops_getModuleHandler('trackback', $GLOBALS['artdirname']);
-    $criteria         = new CriteriaCompo(new Criteria('art_id', $article_id));
-    $criteria->add(new Criteria('tb_url', $url));
+    $criteria         = new \CriteriaCompo(new \Criteria('art_id', $article_id));
+    $criteria->add(new \Criteria('tb_url', $url));
     if ($trackbackHandler->getCount($criteria) > 0) {
         art_trackback_response(1, 'We already have a ping from that URI for this article.');
     }
@@ -46,7 +52,7 @@ if (!empty($article_id) && !empty($url)) {
     $title     = XoopsLocal::convert_encoding($title, _CHARSET, $charset);
     $excerpt   = XoopsLocal::convert_encoding($excerpt, _CHARSET, $charset);
     $blog_name = XoopsLocal::convert_encoding($blog_name, _CHARSET, $charset);
-    $tb_status = (int)$xoopsModuleConfig['trackback_option'];
+    $tb_status = (int)$helper->getConfig('trackback_option');
 
     $trackback_obj = $trackbackHandler->create();
     $trackback_obj->setVar('art_id', $article_id);
@@ -60,8 +66,8 @@ if (!empty($article_id) && !empty($url)) {
 
     $result = $trackbackHandler->insert($trackback_obj);
 
-    $criteria = new CriteriaCompo(new Criteria('art_id', $article_id));
-    $criteria->add(new Criteria('tb_status', 0, '>'));
+    $criteria = new \CriteriaCompo(new \Criteria('art_id', $article_id));
+    $criteria->add(new \Criteria('tb_status', 0, '>'));
     $count          = $trackbackHandler->getCount($criteria);
     $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
     $article_obj    = $articleHandler->get($article_id);
@@ -72,7 +78,7 @@ if (!empty($article_id) && !empty($url)) {
 
     art_trackback_response(0);
 
-    if (!empty($xoopsModuleConfig['notification_enabled']) && $result) {
+    if (!empty($helper->getConfig('notification_enabled')) && $result) {
         $notificationHandler   = xoops_getHandler('notification');
         $tags                  = [];
         $tags['ARTICLE_TITLE'] = $article_obj->getVar('art_title');

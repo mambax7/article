@@ -16,7 +16,12 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+
 include __DIR__ . '/header.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 $category_id = empty($_GET['category']) ? 0 : (int)$_GET['category'];
 $topic_id    = empty($_GET['topic']) ? 0 : (int)$_GET['topic'];
@@ -52,7 +57,7 @@ if ((!empty($category_id) && !$categoryHandler->getPermission($category_obj, 'mo
 }
 
 $xoopsOption['xoops_pagetitle']     = $xoopsModule->getVar('name') . ' - ' . art_constant('MD_CPARTICLE');
-$template                           = empty($topic_obj) ? (empty($category_obj) ? $xoopsModuleConfig['template'] : $category_obj->getVar('cat_template')) : $topic_obj->getVar('top_template');
+$template                           = empty($topic_obj) ? (empty($category_obj) ? $helper->getConfig('template') : $category_obj->getVar('cat_template')) : $topic_obj->getVar('top_template');
 $xoopsOption['template_main']       = art_getTemplate('cparticle', $template);
 $xoopsOption['xoops_module_header'] = art_getModuleHeader($template);
 // Disable cache
@@ -65,32 +70,32 @@ $byCategory = true;
 switch ($type) {
     case 'submitted':
         $type_name = art_constant('MD_SUBMITTED');
-        $criteria  = new CriteriaCompo(new Criteria('art_time_publish', 0));
-        $criteria->add(new Criteria('art_time_submit', 0, '>'));
+        $criteria  = new \CriteriaCompo(new \Criteria('art_time_publish', 0));
+        $criteria->add(new \Criteria('art_time_submit', 0, '>'));
         $byCategory = false;
         break;
 
     case 'registered':
         $type_name = art_constant('MD_REGISTERED');
-        $criteria  = new CriteriaCompo(new Criteria('ac.ac_publish', 0));
+        $criteria  = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0));
         break;
 
     case 'featured':
         $type_name = art_constant('MD_FEATURED');
-        $criteria  = new CriteriaCompo(new Criteria('ac.ac_feature', 0, '>'));
+        $criteria  = new \CriteriaCompo(new \Criteria('ac.ac_feature', 0, '>'));
         break;
 
     case 'published':
         $type      = 'published';
         $type_name = art_constant('MD_PUBLISHED');
-        $criteria  = new CriteriaCompo(new Criteria('ac.ac_publish', 0, '>'));
-        $criteria->add(new Criteria('ac.ac_feature', 0));
+        $criteria  = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
+        $criteria->add(new \Criteria('ac.ac_feature', 0));
         break;
 
     case 'all':
     default:
         $type_name = _ALL;
-        $criteria  = new CriteriaCompo(new Criteria('1', 1));
+        $criteria  = new \CriteriaCompo(new \Criteria('1', 1));
         break;
 }
 
@@ -99,7 +104,7 @@ $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
 if (!empty($topic_id)) {
     $articles_count = $topicHandler->getArticleCount($topic_id);
     $tags           = ['a.art_summary', 'a.art_title', 'a.uid', 'at.at_time', 'a.cat_id'];
-    $articles_array = $articleHandler->getByTopic($topic_id, $xoopsModuleConfig['articles_perpage'], $start, null, $tags, false);
+    $articles_array = $articleHandler->getByTopic($topic_id, $helper->getConfig('articles_perpage'), $start, null, $tags, false);
 } elseif ($byCategory) {
     $articles_count = $categoryHandler->getArticleCount($categories_id, $criteria);
     $tags           = [
@@ -114,7 +119,7 @@ if (!empty($topic_id)) {
         'ac.ac_publish',
         'ac.ac_feature'
     ];
-    $articles_array = $categoryHandler->getArticles($categories_id, $xoopsModuleConfig['articles_perpage'], $start, $criteria, $tags, false);
+    $articles_array = $categoryHandler->getArticles($categories_id, $helper->getConfig('articles_perpage'), $start, $criteria, $tags, false);
 } else {
     $articles_count = $articleHandler->getCount($criteria);
     $tags           = [
@@ -127,7 +132,7 @@ if (!empty($topic_id)) {
         'uid'
     ];
     $criteria->setStart($start);
-    $criteria->setLimit($xoopsModuleConfig['articles_perpage']);
+    $criteria->setLimit($helper->getConfig('articles_perpage'));
     $articles_array = $articleHandler->getAll($criteria, $tags, false);
 }
 
@@ -180,9 +185,9 @@ if (count($articles_array) > 0) {
     }
 }
 
-if ($articles_count > $xoopsModuleConfig['articles_perpage']) {
+if ($articles_count > $helper->getConfig('articles_perpage')) {
     include XOOPS_ROOT_PATH . '/class/pagenav.php';
-    $nav     = new XoopsPageNav($articles_count, $xoopsModuleConfig['articles_perpage'], $start, 'start', 'category=' . $category_id . '&amp;topic=' . $topic_id . '&amp;type=' . $type . '&amp;from=' . $from);
+    $nav     = new \XoopsPageNav($articles_count, $helper->getConfig('articles_perpage'), $start, 'start', 'category=' . $category_id . '&amp;topic=' . $topic_id . '&amp;type=' . $type . '&amp;from=' . $from);
     $pagenav = $nav->renderNav(4);
 } else {
     $pagenav = '';
@@ -218,8 +223,8 @@ if (empty($topic_obj)) {
     }
     unset($subCategories_obj);
     if (!empty($category_id)) {
-        $criteria   = new CriteriaCompo(new Criteria('top_expire', time(), '>'));
-        $topics_obj = $topicHandler->getByCategory($category_id, $xoopsModuleConfig['topics_max'], 0, $criteria, ['top_title']);
+        $criteria   = new \CriteriaCompo(new \Criteria('top_expire', time(), '>'));
+        $topics_obj = $topicHandler->getByCategory($category_id, $helper->getConfig('topics_max'), 0, $criteria, ['top_title']);
         foreach ($topics_obj as $id => $topic) {
             $topics[] = [
                 'id'    => $id,

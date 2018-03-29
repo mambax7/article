@@ -37,7 +37,7 @@ $ids = array_keys($counts);
 if (count($ids) > 0) {
     echo '<br><span style="border: 1px solid #5E5D63; padding: 4px 8px;">' . art_constant('AM_CPTOPIC') . '</span>';
     $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-    $criteria        = new Criteria('cat_id', '(' . implode(',', $ids) . ')', 'IN');
+    $criteria        = new \Criteria('cat_id', '(' . implode(',', $ids) . ')', 'IN');
     $cat_titles      = $categoryHandler->getList($criteria);
     echo '<ul>';
     foreach ($cat_titles as $id => $cat) {

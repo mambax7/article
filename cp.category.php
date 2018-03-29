@@ -16,7 +16,12 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+
 include __DIR__ . '/header.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 $from = (!empty($_GET['from']) || !empty($_POST['from'])) ? 1 : 0;
 
@@ -27,7 +32,7 @@ if (!$isadmin) {
 }
 
 $xoopsOption['xoops_pagetitle']     = $xoopsModule->getVar('name') . ' - ' . art_constant('MD_CPCATEGORY');
-$template                           = $xoopsModuleConfig['template'];
+$template                           = $helper->getConfig('template');
 $xoopsOption['template_main']       = art_getTemplate('cpcategory', $template);
 $xoopsOption['xoops_module_header'] = art_getModuleHeader($template);
 // Disable cache

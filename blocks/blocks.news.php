@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/../include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
@@ -101,7 +101,7 @@ function [VAR_PREFIX]_block_news_show( $options )
     mod_loadFunctions("time", $GLOBALS["artdirname"]);
     $articles = array();
     $cids = array();
-    while ($row = $xoopsDB->fetchArray($result)) {
+    while (false !== ($row = $xoopsDB->fetchArray($result))) {
         $_art = array();
         $_art["title_full"]    = htmlspecialchars($row["art_title"]);
         $_art["title"]        = $row["art_title"];
@@ -114,9 +114,9 @@ function [VAR_PREFIX]_block_news_show( $options )
         $cids[$row["cat_id"]] = 1;
     }
 
-    $criteria = new CriteriaCompo( new Criteria("cat_id", "(" . implode(",", array_keys($cids)) . ")", "IN") );
-    $criteria_top = new CriteriaCompo( new Criteria("cat_id", "(" . implode(",", $allowed_cats) . ")", "IN") );
-    $criteria_top->add( new Criteria("cat_pid", 0) );
+    $criteria = new \CriteriaCompo( new \Criteria("cat_id", "(" . implode(",", array_keys($cids)) . ")", "IN") );
+    $criteria_top = new \CriteriaCompo( new \Criteria("cat_id", "(" . implode(",", $allowed_cats) . ")", "IN") );
+    $criteria_top->add( new \Criteria("cat_pid", 0) );
     $criteria->add( $criteria_top, "OR" );
     $criteria->setSort("cat_order");
     $categories_obj = $categoryHandler->getAll($criteria, array("cat_title", "cat_pid"));
@@ -141,7 +141,7 @@ function [VAR_PREFIX]_block_news_show( $options )
     else:
 
     $articles_id = array();
-    $criteria = new Criteria("cat_id", "(" . implode(",", $allowed_cats) . ")", "IN");
+    $criteria = new \Criteria("cat_id", "(" . implode(",", $allowed_cats) . ")", "IN");
     $criteria->setSort("cat_order");
     $categories_obj = $categoryHandler->getAll($criteria, array("cat_title", "cat_lastarticles"));
 
@@ -163,7 +163,7 @@ function [VAR_PREFIX]_block_news_show( $options )
     }
 
     $articles = array();
-    while ($row = $xoopsDB->fetchArray($result)) {
+    while (false !== ($row = $xoopsDB->fetchArray($result))) {
         $_art = array();
         $_art["title_full"]    = htmlspecialchars($row["art_title"]);
         if (!empty($options[2])) {

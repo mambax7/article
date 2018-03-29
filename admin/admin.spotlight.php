@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/xoopsformloader.php';
 
@@ -46,7 +50,7 @@ if (!empty($_POST['submit'])) {
     $sp_image_file = '';
     if (!empty($_FILES['userfile']['name'])) {
         require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/uploader.php';
-        $uploader = new art_uploader(XOOPS_ROOT_PATH . '/' . $xoopsModuleConfig['path_image']);
+        $uploader = new art_uploader(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image'));
         if ($uploader->fetchMedia($_POST['xoops_upload_file'][0])) {
             if (!$uploader->upload()) {
                 $error_upload = $uploader->getErrors();
@@ -85,7 +89,7 @@ if (!empty($_POST['submit'])) {
     }
 
     if ($res = $spotlightHandler->insert($spotlight_obj)) {
-        if ($art_id > 0 && !empty($xoopsModuleConfig['notification_enabled'])) {
+        if ($art_id > 0 && !empty($helper->getConfig('notification_enabled'))) {
             $notificationHandler    = xoops_getHandler('notification');
             $tags                   = [];
             $article_obj            = $articleHandler->get($spotlight_obj->getVar('art_id'));
@@ -108,7 +112,7 @@ $spotlight_obj = $spotlightHandler->get();
 echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . art_constant('AM_SPOTLIGHT') . '</legend>';
 echo "<div style='padding: 8px;'>";
 
-$form_sp = new XoopsThemeForm(art_constant('AM_SPOTLIGHT'), 'formsp', xoops_getenv('PHP_SELF'), 'post', true);
+$form_sp = new \XoopsThemeForm(art_constant('AM_SPOTLIGHT'), 'formsp', xoops_getenv('PHP_SELF'), 'post', true);
 $form_sp->setExtra('enctype="multipart/form-data"');
 
 // Current Spotlight
@@ -127,41 +131,41 @@ if (!$spotlight_obj->isNew()) {
     } else {
         $uname = XoopsUser::getUnameFromId($uid);
     }
-    $form_sp->addElement(new XoopsFormLabel(art_constant('AM_SPOTLIGHT_CURRENT'), '<a href="' . XOOPS_URL . '/userinfo.php?uid=' . $uid . '">' . $uname . '</a> - ' . $spotlight_obj->getTime() . ': ' . $message));
+    $form_sp->addElement(new \XoopsFormLabel(art_constant('AM_SPOTLIGHT_CURRENT'), '<a href="' . XOOPS_URL . '/userinfo.php?uid=' . $uid . '">' . $uname . '</a> - ' . $spotlight_obj->getTime() . ': ' . $message));
 }
 
 // Image
-if (!empty($xoopsModuleConfig['path_image'])) {
+if (!empty($helper->getConfig('path_image'))) {
     $sp_image = $spotlight_obj->getImage();
 
-    $image_option_tray = new XoopsFormElementTray(art_constant('AM_IMAGE_UPLOAD'), '<br>');
-    $image_option_tray->addElement(new XoopsFormFile('', 'userfile', ''));
+    $image_option_tray = new \XoopsFormElementTray(art_constant('AM_IMAGE_UPLOAD'), '<br>');
+    $image_option_tray->addElement(new \XoopsFormFile('', 'userfile', ''));
     $form_sp->addElement($image_option_tray);
-    $form_sp->addElement(new XoopsFormText(art_constant('AM_IMAGE_CAPTION'), 'sp_image_caption', 50, 255, @$sp_image['caption']));
+    $form_sp->addElement(new \XoopsFormText(art_constant('AM_IMAGE_CAPTION'), 'sp_image_caption', 50, 255, @$sp_image['caption']));
     unset($image_tray);
     unset($image_option_tray);
 
-    $image_option_tray = new XoopsFormElementTray(art_constant('AM_IMAGE_SELECT'), '<br>');
-    $image_array       = XoopsLists::getImgListAsArray(XOOPS_ROOT_PATH . '/' . $xoopsModuleConfig['path_image'] . '/');
+    $image_option_tray = new \XoopsFormElementTray(art_constant('AM_IMAGE_SELECT'), '<br>');
+    $image_array       = XoopsLists::getImgListAsArray(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image') . '/');
     array_unshift($image_array, _NONE);
-    $image_select = new XoopsFormSelect('', 'sp_image_file', @$sp_image['file']);
+    $image_select = new \XoopsFormSelect('', 'sp_image_file', @$sp_image['file']);
     $image_select->addOptionArray($image_array);
-    $image_select->setExtra("onchange=\"showImgSelected('img', 'sp_image_file', '/" . $xoopsModuleConfig['path_image'] . "/', '', '" . XOOPS_URL . "')\"");
-    $image_tray = new XoopsFormElementTray('', '&nbsp;<br>');
+    $image_select->setExtra("onchange=\"showImgSelected('img', 'sp_image_file', '/" . $helper->getConfig('path_image') . "/', '', '" . XOOPS_URL . "')\"");
+    $image_tray = new \XoopsFormElementTray('', '&nbsp;<br>');
     $image_tray->addElement($image_select);
     if (!empty($sp_image['url'])) {
         $label = '<div style="padding: 8px;"><img src="' . $sp_image['url'] . '" name="img" id="img" alt=""></div>' . (empty($sp_image['caption']) ? '' : '<br>' . $sp_image['caption']);
     } else {
         $label = '<div style="padding: 8px;"><img src="' . XOOPS_URL . '/images/blank.gif" name="img" id="img" alt=""></div>';
     }
-    $image_tray->addElement(new XoopsFormLabel(art_constant('AM_IMAGE_CURRENT'), $label));
+    $image_tray->addElement(new \XoopsFormLabel(art_constant('AM_IMAGE_CURRENT'), $label));
     $image_option_tray->addElement($image_tray);
     $form_sp->addElement($image_option_tray);
 }
 
 // Options
 $spot_options  = [0 => art_constant('AM_SPOTLIGHT_LASTARTICLE'), 1 => art_constant('AM_SPOTLIGHT_SPECIFIED')];
-$option_select = new XoopsFormSelect(art_constant('AM_SPOTLIGHT_OPTION'), 'option', $option);
+$option_select = new \XoopsFormSelect(art_constant('AM_SPOTLIGHT_OPTION'), 'option', $option);
 $option_select->addOptionArray($spot_options);
 $form_sp->addElement($option_select);
 
@@ -173,27 +177,27 @@ $cat_option[0]   = _ALL;
 foreach ($categories as $id => $cat) {
     $cat_option[$id] = $cat['prefix'] . $cat['cat_title'];
 }
-$cat_select = new XoopsFormSelect(art_constant('AM_SPOTLIGHT_CATEGORIES'), 'sp_categories', $spotlight_obj->getVar('sp_categories'), 5, true);
+$cat_select = new \XoopsFormSelect(art_constant('AM_SPOTLIGHT_CATEGORIES'), 'sp_categories', $spotlight_obj->getVar('sp_categories'), 5, true);
 $cat_select->addOptionArray($cat_option);
 $form_sp->addElement($cat_select);
 
 // Editor's Note
-$form_sp->addElement(new XoopsFormTextArea(art_constant('AM_SPOTLIGHT_NOTE'), 'sp_note', $spotlight_obj->getVar('sp_note')));
+$form_sp->addElement(new \XoopsFormTextArea(art_constant('AM_SPOTLIGHT_NOTE'), 'sp_note', $spotlight_obj->getVar('sp_note')));
 
-$criteria = new CriteriaCompo(new Criteria('art_time_publish', 0, '>'));
+$criteria = new \CriteriaCompo(new \Criteria('art_time_publish', 0, '>'));
 if (count($spotlight_obj->getVar('sp_categories')) > 0) {
-    $criteria->add(new Criteria('cat_id', '(' . implode(',', $spotlight_obj->getVar('sp_categories')) . ')', '>'), 'AND');
+    $criteria->add(new \Criteria('cat_id', '(' . implode(',', $spotlight_obj->getVar('sp_categories')) . ')', '>'), 'AND');
 }
 $articles_count = $articleHandler->getCount($criteria);
 if ($articles_count > 0) {
     $tags = ['art_title', 'cat_id'];
     $criteria->setStart($start);
-    $criteria->setLimit($xoopsModuleConfig['articles_perpage']);
+    $criteria->setLimit($helper->getConfig('articles_perpage'));
     $articles_obj = $articleHandler->getAll($criteria, $tags);
     foreach ($articles_obj as $id => $article) {
         $cat_id[] = $article->getVar('cat_id');
     }
-    $criteria   = new Criteria('cat_id', '(' . implode(',', $cat_id) . ')', 'IN');
+    $criteria   = new \Criteria('cat_id', '(' . implode(',', $cat_id) . ')', 'IN');
     $categories = $categoryHandler->getList($criteria);
 
     $heading       = ['ID', art_constant('AM_TITLE'), art_constant('AM_CATEGORY'), art_constant('AM_SPOTIT')];
@@ -221,9 +225,9 @@ if ($articles_count > 0) {
         $article_table .= '</td></tr>';
     }
     $article_table .= "\n</table><br>\n";
-    if ($articles_count > $xoopsModuleConfig['articles_perpage']) {
+    if ($articles_count > $helper->getConfig('articles_perpage')) {
         include XOOPS_ROOT_PATH . '/class/pagenav.php';
-        $nav           = new XoopsPageNav($articles_count, $xoopsModuleConfig['articles_perpage'], $start, 'start');
+        $nav           = new \XoopsPageNav($articles_count, $helper->getConfig('articles_perpage'), $start, 'start');
         $article_table .= $nav->renderNav(4);
     }
     $article_table .= "\n</tr></td>\n";
@@ -231,9 +235,9 @@ if ($articles_count > 0) {
     $form_sp->addElement($article_table);
 }
 
-$button_tray = new XoopsFormElementTray('', '');
-$button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
-$button_tray->addElement(new XoopsFormButton('', '', _CANCEL, 'button'));
+$button_tray = new \XoopsFormElementTray('', '');
+$button_tray->addElement(new \XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+$button_tray->addElement(new \XoopsFormButton('', '', _CANCEL, 'button'));
 $form_sp->addElement($button_tray);
 
 $form_sp->display();

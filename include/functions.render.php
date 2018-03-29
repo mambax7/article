@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_RENDER_LOADED', true);
@@ -172,7 +172,7 @@ function &art_template_lookup($index_by_page = false)
 
 function &art_htmlSpecialChars(&$text)
 {
-    $text = preg_replace(['/&amp;/i', '/&nbsp;/i'], ['&', '&amp;nbsp;'], htmlspecialchars($text));
+    $text = preg_replace(['/&amp;/i', '/&nbsp;/i'], ['&', '&amp;nbsp;'], htmlspecialchars($text, ENT_QUOTES | ENT_HTML5));
 
     return $text;
 }

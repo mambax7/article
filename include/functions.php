@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_LOADED', true);
@@ -120,7 +120,7 @@ if (!defined('ART_FUNCTIONS')):
     function art_createSubCategoryList()
     {
         $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-        $criteria        = new CriteriaCompo('1', 1);
+        $criteria        = new \CriteriaCompo('1', 1);
         $criteria->setSort('cat_pid ASC, cat_order');
         $criteria->setOrder('ASC');
         $categories_obj = $categoryHandler->getObjects($criteria);

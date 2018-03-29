@@ -33,8 +33,8 @@ function display_action_form($action = '')
         'apply'    => art_constant('AM_PERMISSION_TEMPLATE_APPLY'),
         'default'  => art_constant('AM_PERMISSION_SETBYGROUP')
     ];
-    $actionform     = new XoopsSimpleForm(art_constant('AM_PERMISSION_ACTION'), 'actionform', 'admin.permission.php', 'GET');
-    $action_select  = new XoopsFormSelect('', 'action', $action);
+    $actionform     = new \XoopsSimpleForm(art_constant('AM_PERMISSION_ACTION'), 'actionform', 'admin.permission.php', 'GET');
+    $action_select  = new \XoopsFormSelect('', 'action', $action);
     $action_select->setExtra('onchange="document.forms.actionform.submit()"');
     $action_select->addOptionArray($action_options);
     $actionform->addElement($action_select);
@@ -74,10 +74,10 @@ switch ($action) {
             $ret_ele    .= '</td></tr>';
             $elements[] = $ret_ele;
         }
-        $tray = new XoopsFormElementTray('');
-        $tray->addElement(new XoopsFormHidden('action', 'template_save'));
-        $tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
-        $tray->addElement(new XoopsFormButton('', 'reset', _CANCEL, 'reset'));
+        $tray = new \XoopsFormElementTray('');
+        $tray->addElement(new \XoopsFormHidden('action', 'template_save'));
+        $tray->addElement(new \XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+        $tray->addElement(new \XoopsFormButton('', 'reset', _CANCEL, 'reset'));
         $ret = '<h4>' . art_constant('AM_PERMISSION_TEMPLATE') . '</h4>' . art_constant('AM_PERMISSION_TEMPLATE_DESC') . '<br><br><br>';
         $ret .= "<form name='template' id='template' method='post'>\n<table width='100%' class='outer' cellspacing='1'>\n";
         $ret .= implode("\n", $elements);
@@ -114,14 +114,14 @@ switch ($action) {
             $cat_options[$id] = $cat['prefix'] . $cat['cat_title'];
         }
 
-        $fmform    = new XoopsThemeForm(art_constant('AM_PERMISSION_TEMPLATE_APPLY'), 'fmform', 'admin.permission.php', 'post', true);
-        $fm_select = new XoopsFormSelect(_SELECT, 'categories', null, 10, true);
+        $fmform    = new \XoopsThemeForm(art_constant('AM_PERMISSION_TEMPLATE_APPLY'), 'fmform', 'admin.permission.php', 'post', true);
+        $fm_select = new \XoopsFormSelect(_SELECT, 'categories', null, 10, true);
         $fm_select->addOptionArray($cat_options);
         $fmform->addElement($fm_select);
-        $tray = new XoopsFormElementTray('');
-        $tray->addElement(new XoopsFormHidden('action', 'apply_save'));
-        $tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
-        $tray->addElement(new XoopsFormButton('', 'reset', _CANCEL, 'reset'));
+        $tray = new \XoopsFormElementTray('');
+        $tray->addElement(new \XoopsFormHidden('action', 'apply_save'));
+        $tray->addElement(new \XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+        $tray->addElement(new \XoopsFormButton('', 'reset', _CANCEL, 'reset'));
         $fmform->addElement($tray);
         $fmform->display();
         break;
@@ -184,22 +184,22 @@ switch ($action) {
         }
 
         // Display option form
-        $opform    = new XoopsSimpleForm('', 'opform', 'admin.permission.php', 'get');
-        $op_select = new XoopsFormSelect('', 'op', $op);
+        $opform    = new \XoopsSimpleForm('', 'opform', 'admin.permission.php', 'get');
+        $op_select = new \XoopsFormSelect('', 'op', $op);
         $op_select->setExtra('onchange="document.forms.opform.submit()"');
         $op_select->addOptionArray($op_options);
         $opform->addElement($op_select);
         $opform->display();
 
         if ('global' === $op) {
-            $form_perm = new XoopsGroupPermForm(art_constant('AM_PERMISSION_GLOBAL'), $xoopsModule->getVar('mid'), $op, art_constant('AM_PERMISSION_GLOBAL_DESC'), 'admin/admin.permission.php', $fm_options[$op]['anonymous']);
+            $form_perm = new \XoopsGroupPermForm(art_constant('AM_PERMISSION_GLOBAL'), $xoopsModule->getVar('mid'), $op, art_constant('AM_PERMISSION_GLOBAL_DESC'), 'admin/admin.permission.php', $fm_options[$op]['anonymous']);
             foreach ($GLOBALS['perms_global'] as $name => $perm_info) {
                 $form_perm->addItem($perm_info['id'], $perm_info['title']);
             }
         } else {
             $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
             $categories      =& $categoryHandler->getSubCategories();
-            $form_perm       = new XoopsGroupPermForm($GLOBALS['perms_category'][$op]['title'], $xoopsModule->getVar('mid'), $op, $GLOBALS['perms_category'][$op]['desc'], 'admin/admin.permission.php', $fm_options[$op]['anonymous']);
+            $form_perm       = new \XoopsGroupPermForm($GLOBALS['perms_category'][$op]['title'], $xoopsModule->getVar('mid'), $op, $GLOBALS['perms_category'][$op]['desc'], 'admin/admin.permission.php', $fm_options[$op]['anonymous']);
             foreach ($categories as $cat_id => $cat) {
                 $form_perm->addItem($cat_id, $cat->getVar('cat_title'), $cat->getVar('cat_pid'));
             }
@@ -243,22 +243,22 @@ switch ($action) {
  }
 
  // Display option form
- $opform = new XoopsSimpleForm('', 'opform', 'admin.permission.php', "get");
- $op_select = new XoopsFormSelect("", 'op', $op);
+ $opform = new \XoopsSimpleForm('', 'opform', 'admin.permission.php', "get");
+ $op_select = new \XoopsFormSelect("", 'op', $op);
  $op_select->setExtra('onchange="document.forms.opform.submit()"');
  $op_select->addOptionArray($op_options);
  $opform->addElement($op_select);
  $opform->display();
 
  if ($op=="global") {
- $form_perm = new XoopsGroupPermForm(art_constant("AM_PERMISSION_GLOBAL"), $mid, $op, art_constant("AM_PERMISSION_GLOBAL_DESC"), 'admin/admin.permission.php', $fm_options[$op]["anonymous"]);
+ $form_perm = new \XoopsGroupPermForm(art_constant("AM_PERMISSION_GLOBAL"), $mid, $op, art_constant("AM_PERMISSION_GLOBAL_DESC"), 'admin/admin.permission.php', $fm_options[$op]["anonymous"]);
  foreach ($GLOBALS["perms_global"] as $name=>$perm_info) {
  $form_perm->addItem($perm_info["id"], $perm_info["title"]);
  }
  } else {
  $categoryHandler = xoops_getModuleHandler('category', $GLOBALS["artdirname"]);
  $categories =& $categoryHandler->getSubCategories();
- $form_perm = new XoopsGroupPermForm($GLOBALS["perms_category"][$op]['title'], $mid, $op, $GLOBALS["perms_category"][$op]['desc'], 'admin/admin.permission.php', $fm_options[$op]["anonymous"]);
+ $form_perm = new \XoopsGroupPermForm($GLOBALS["perms_category"][$op]['title'], $mid, $op, $GLOBALS["perms_category"][$op]['desc'], 'admin/admin.permission.php', $fm_options[$op]["anonymous"]);
  foreach ($categories as $cat_id => $cat) {
  $form_perm->addItem($cat_id, $cat->getVar('cat_title'), $cat->getVar('cat_pid'));
  }

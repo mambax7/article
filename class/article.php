@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 require_once __DIR__ . '/../include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
@@ -200,7 +200,7 @@ if (!class_exists('Article')) {
                 $pages       = $this->getPages();
                 $textHandler = xoops_getModuleHandler('text', $GLOBALS['artdirname']);
                 if (count($pages) > 1) {
-                    $texts   = array_filter($textHandler->getList(new Criteria('text_id', '(' . implode(',', $pages) . ')', 'IN')), 'trim'); // fixed by Steven Chu
+                    $texts   = array_filter($textHandler->getList(new \Criteria('text_id', '(' . implode(',', $pages) . ')', 'IN')), 'trim'); // fixed by Steven Chu
                     $summary = implode($dohtml ? '<br>' : '. ', $texts);
                 } else {
                     $text_obj = $textHandler->get($pages[0]);
@@ -258,9 +258,9 @@ if (!class_exists('Article')) {
             }
             $textHandler = xoops_getModuleHandler('text', $GLOBALS['artdirname']);
             if ($searchAll) {
-                $criteria_pages = new Criteria('art_id', $this->getVar('art_id'));
+                $criteria_pages = new \Criteria('art_id', $this->getVar('art_id'));
             } else {
-                $criteria_pages = new Criteria('text_id', '(' . implode(',', $pages_id) . ')', 'IN');
+                $criteria_pages = new \Criteria('text_id', '(' . implode(',', $pages_id) . ')', 'IN');
             }
             if (empty($withTitle)) {
                 $textHandler->identifierName = false;
@@ -306,7 +306,7 @@ if (!class_exists('Article')) {
                 return count($this->getVar('art_pages'));
             }
             $textHandler    = xoops_getModuleHandler('text', $GLOBALS['artdirname']);
-            $criteria_pages = new Criteria('art_id', $this->getVar('art_id'));
+            $criteria_pages = new \Criteria('art_id', $this->getVar('art_id'));
             $count          = $textHandler->getCount($criteria_pages);
             unset($criteria_pages);
 
@@ -485,7 +485,7 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
      *
      * @param object $db reference to the {@link XoopsDatabase} object
      **/
-    function __construct(XoopsDatabase $db)
+    function __construct(\XoopsDatabase $db)
     {
         parent::__construct($db, art_DB_prefix("article", true), "Article", "art_id", "art_title");
     }
@@ -622,7 +622,7 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
 
         $result = $this->db->query($sql, (int)($limit), (int)($start));
         $ret = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $article = $this->create(false);
             $article->assignVars($myrow);
             if ($asObject) {
@@ -684,7 +684,7 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
         if (empty($orderSet)) $sql .= " ORDER BY a.art_id DESC";
         $result = $this->db->query($sql, (int)($limit), (int)($start));
         $ret = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $article = $this->create(false);
             $article->assignVars($myrow);
             if ($asObject) {
@@ -730,7 +730,7 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
         if (empty($orderSet)) $sql .= " ORDER BY ac.ac_publish DESC";
         $result = $this->db->query($sql, $limit, $start);
         $ret = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $ret[] = $myrow["art_id"];
         }
         $ret = array_unique($ret);
@@ -749,7 +749,7 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
      */
     function updateCategories(&$article)
     {
-        $criteria = new CriteriaCompo(new Criteria("ac_publish", 0, ">"));
+        $criteria = new \CriteriaCompo(new \Criteria("ac_publish", 0, ">"));
         $ids_new = $this->getCategoryIds($article, $criteria);
         $ids_curr = $article->getVar("art_categories");
         if (strcmp(serialize($ids_new), serialize($ids_curr))) {
@@ -796,7 +796,7 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
             $sql .= " AND " . $criteria->render();
         }
         $result = $this->db->query($sql);
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $ret[] = $myrow["cat_id"];
         }
 
@@ -817,7 +817,7 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
         if (!$result = $this->db->query($sql)) {
             return $_cachedCats;
         }
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $_cachedCats[$myrow["cat_id"]] = $myrow["approved"];
         }
 
@@ -837,7 +837,7 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
         $topicHandler = xoops_getModuleHandler("topic", $GLOBALS["artdirname"]);
         if (isset($criteria) && is_subclass_of($criteria, "criteriaelement")) {
         } else {
-            $criteria = new CriteriaCompo(new Criteria("t.top_expire", time(), ">"));
+            $criteria = new \CriteriaCompo(new \Criteria("t.top_expire", time(), ">"));
         }
         if ($topics_obj = $topicHandler->getByArticle($art_id, $criteria)) {
             $ret = array_keys($topics_obj);
@@ -853,7 +853,7 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
      * @param  bool   $force   flag to force the query execution despite security settings
      * @return int    article ID
      */
-    function insert(XoopsObject $article, $force = true)
+    function insert(\XoopsObject $article, $force = true)
     {
         if (!$art_id = parent::insert($article, $force)) {
             return false;
@@ -925,7 +925,7 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
      * @param  bool   $force   flag to force the query execution despite security settings
      * @return bool   true on success
      */
-    function delete(XoopsObject $article, $force = true)
+    function delete(\XoopsObject $article, $force = true)
     {
         if (empty($force) && xoops_comment_count($GLOBALS["xoopsModule"]->getVar("mid"), $article->getVar("art_id"))) {
             return false;
@@ -934,14 +934,14 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
         // placeholder for files
         /*
         $fileHandler =  xoops_getModuleHandler("file", $GLOBALS["artdirname"]);
-        $fileHandler->deleteAll(new Criteria("art_id", $article->getVar("art_id")));
+        $fileHandler->deleteAll(new \Criteria("art_id", $article->getVar("art_id")));
         */
 
         $textHandler = xoops_getModuleHandler("text", $GLOBALS["artdirname"]);
-        $textHandler->deleteAll(new Criteria("art_id", $article->getVar("art_id")));
+        $textHandler->deleteAll(new \Criteria("art_id", $article->getVar("art_id")));
 
         $rateHandler = xoops_getModuleHandler("rate", $GLOBALS["artdirname"]);
-        $rateHandler->deleteAll(new Criteria("art_id", $article->getVar("art_id")));
+        $rateHandler->deleteAll(new \Criteria("art_id", $article->getVar("art_id")));
 
         $this->terminateCategory($article, $article->getCategories(), false);
         $this->terminateTopic($article);
@@ -1077,7 +1077,7 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
             return null;
         }
         $ret = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $status = ($myrow["feature"]) ? 2 : ( ($myrow["publish"]) ? 1 : (($myrow["register"]) ? 0 : null) );
             if (!empty($isSingle)) return $status;
             $ret[$myrow["art_id"]] = $status;
@@ -1479,7 +1479,7 @@ class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
         if ($type=="untracked") $sql .= "AND td_time = 0";
         $result = $this->db->query($sql);
         $res = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $res[$myrow["td_id"]] = $myrow;
         }
 

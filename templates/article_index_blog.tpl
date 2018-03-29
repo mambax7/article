@@ -61,7 +61,7 @@
         </div>
 
         <div class="article-section-container">
-            <{foreachq item=article from=$features}>
+            <{foreach item=article from=$features}>
             <div class="article-list">
                 <{includeq file="db:`$xoops_dirname`_item_blog.tpl"}>
             </div>
@@ -83,7 +83,7 @@
         </div>
 
         <div class="article-section-container">
-            <{foreachq item=article from=$articles}>
+            <{foreach item=article from=$articles}>
             <div class="article-list">
                 <{includeq file="db:`$xoops_dirname`_item_blog.tpl"}>
             </div>
@@ -107,7 +107,7 @@
         </div>
 
         <div class="article-section-container">
-            <{foreachq item=cat name=cat from=$categories}>
+            <{foreach item=cat name=cat from=$categories}>
             <span class="article-term">
             <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$cat.id}>"><{$cat.title}></a>
             (<acronym title='<{php}>echo art_constant("MD_SUBCATEGORIES");<{/php}>'><{$cat.categories}></acronym>|<acronym

@@ -5,7 +5,7 @@
 
 <div>
 
-    <{foreachq item=topic name=topic from=$topics}>
+    <{foreach item=topic name=topic from=$topics}>
     <div class="article-list-column topic-list" style="width: <{$col_width}>%; float: left; margin: 5px;">
         <div class="article-list">
             <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.topic.php<{$smarty.const.URL_DELIMITER}><{$topic.id}>"><{$topic.title}></a>

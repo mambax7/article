@@ -16,11 +16,11 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/vars.php';
 
-function xoops_module_update_art_v097(XoopsModule $module)
+function xoops_module_update_art_v097(\XoopsModule $module)
 {
     mod_loadFunctions('recon');
 

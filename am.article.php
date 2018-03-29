@@ -52,7 +52,7 @@ $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
 if (!empty($article_id)) {
     $criteria = null;
     if ('approve' !== $op && 'terminate' !== $op) {
-        $criteria = new Criteria('ac_publish', 0, '>');
+        $criteria = new \Criteria('ac_publish', 0, '>');
     }
     $article_cats = $articleHandler->getCategoryIds($article_id, $criteria);
     if (!is_array($article_cats) || !in_array($category_id, $article_cats)) {
@@ -135,9 +135,9 @@ if (!empty($topic_id) && 'terminate' === $op) {
             break;
         case 'registertopic':
             $valid_id = [];
-            $criteria = new Criteria('art_id', '(' . implode(',', $art_id) . ')', 'IN');
+            $criteria = new \Criteria('art_id', '(' . implode(',', $art_id) . ')', 'IN');
             $arts     =& $articleHandler->getAll($criteria, ['uid']);
-            $criteria = new CriteriaCompo(new Criteria('1', 1));
+            $criteria = new \CriteriaCompo(new \Criteria('1', 1));
             foreach (array_keys($arts) as $aid) {
                 $old_topic =& $articleHandler->getTopicIds($aid, $criteria);
                 if (in_array($top_id_post, $old_topic)) {
@@ -156,7 +156,7 @@ if ('rate' === $op) {
     if ($xoopsUserIsAdmin) {
         $art_id_valid = $art_id;
     } else {
-        $criteria     = new Criteria('art_id', '(' . implode(',', $art_id) . ')', 'IN');
+        $criteria     = new \Criteria('art_id', '(' . implode(',', $art_id) . ')', 'IN');
         $arts         = $articleHandler->getAll($criteria, ['cat_id'], false);
         $art_id_valid = [];
         foreach ($arts as $aid => $art) {
@@ -168,8 +168,8 @@ if ('rate' === $op) {
     if ($art_id_valid) {
         $rateHandler = xoops_getModuleHandler('rate', $GLOBALS['artdirname']);
         $rateHandler->deleteByArticle($art_id_valid);
-        $articleHandler->updateAll('art_rating', 0, new Criteria('art_id', '(' . implode(',', $art_id_valid) . ')', 'IN'), true);
-        $articleHandler->updateAll('art_rates', 0, new Criteria('art_id', '(' . implode(',', $art_id_valid) . ')', 'IN'), true);
+        $articleHandler->updateAll('art_rating', 0, new \Criteria('art_id', '(' . implode(',', $art_id_valid) . ')', 'IN'), true);
+        $articleHandler->updateAll('art_rates', 0, new \Criteria('art_id', '(' . implode(',', $art_id_valid) . ')', 'IN'), true);
     }
     $message = art_constant('MD_ACTIONDONE');
 }
@@ -186,7 +186,7 @@ if ('rate' === $op) {
  $articleHandler->publishCategory($art_id[$i], $cat_id[$i]);
  $update_category = true;
 
- if (!empty($xoopsModuleConfig['notification_enabled'])) {
+ if (!empty($helper->getConfig('notification_enabled'))) {
  $notificationHandler = xoops_getHandler('notification');
  $tags = array();
  $tags['ARTICLE_ACTION'] = art_constant("MD_NOT_ACTION_PUBLISHED");
@@ -206,7 +206,7 @@ if ('rate' === $op) {
  case "feature":
  $articleHandler->featureCategory($art_id[$i], $cat_id[$i]);
 
- if (!empty($xoopsModuleConfig['notification_enabled'])) {
+ if (!empty($helper->getConfig('notification_enabled'))) {
  $notificationHandler = xoops_getHandler('notification');
  $tags = array();
  $tags['ARTICLE_ACTION'] = art_constant("MD_NOT_ACTION_FEATURED");

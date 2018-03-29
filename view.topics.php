@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 
 if (art_parse_args($args_num, $args, $args_str)) {
@@ -43,10 +47,10 @@ require_once XOOPS_ROOT_PATH . '/header.php';
 include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 $topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
-$criteria     = new CriteriaCompo(new Criteria('top_expire', time(), '>'));
+$criteria     = new \CriteriaCompo(new \Criteria('top_expire', time(), '>'));
 $criteria->setSort('top_time');
 $criteria->setOrder('DESC');
-$topic_array =& $topicHandler->getByCategory($category_id, $xoopsModuleConfig['topics_max'], 0, $criteria);
+$topic_array =& $topicHandler->getByCategory($category_id, $helper->getConfig('topics_max'), 0, $criteria);
 $topics      = [];
 if (count($topic_array) > 0) {
     $counts =& $topicHandler->getArticleCounts(array_keys($topic_array));
@@ -61,9 +65,9 @@ if (count($topic_array) > 0) {
 }
 
 $count_topic = $topicHandler->getCountByCategory($category_id, $criteria);
-if ($count_topic > $xoopsModuleConfig['articles_perpage']) {
+if ($count_topic > $helper->getConfig('articles_perpage')) {
     include XOOPS_ROOT_PATH . '/class/pagenav.php';
-    $nav     = new XoopsPageNav($count_topic, $xoopsModuleConfig['topics_max'], $start, 'start', 'category=' . $category_id);
+    $nav     = new \XoopsPageNav($count_topic, $helper->getConfig('topics_max'), $start, 'start', 'category=' . $category_id);
     $pagenav = $nav->renderNav(5);
 } else {
     $pagenav = '';

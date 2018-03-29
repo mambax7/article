@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_USER_LOADED', true);
@@ -55,7 +55,7 @@ if (!defined('ART_FUNCTIONS_USER')):
     {
         global $xoopsUser, $xoopsModule;
 
-        if (is_numeric($user) && $user == -1) {
+        if (is_numeric($user) && -1 == $user) {
             $user = $xoopsUser;
         }
         if (!is_object($user) && (int)$user < 1) {
@@ -107,7 +107,7 @@ if (!defined('ART_FUNCTIONS_USER')):
             $category        = $categoryHandler->get($cat_id);
         }
 
-        if (is_numeric($user) && $user == -1) {
+        if (is_numeric($user) && -1 == $user) {
             $user = $xoopsUser;
         }
         if (!is_object($user) && (int)$user < 1) {

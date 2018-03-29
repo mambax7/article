@@ -48,7 +48,7 @@
                 <div class="article-section-container">
 
                     <ol>
-                        <{foreachq item=trackback from=$trackbacks}>
+                        <{foreach item=trackback from=$trackbacks}>
                         <li style="padding-top: 10px;">
                             <div class="article-list">
                                 <strong><a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}><{$trackback.art_id}>#tb<{$trackback.id}>"

@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/uploader.php';
 
@@ -74,7 +78,7 @@ include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/incl
 
 $art_image_file_upload = '';
 if ($canupload && empty($_POST['del']) && empty($_POST['delete']) && !empty($_FILES['userfile']['name'])) {
-    $uploader = new art_uploader(XOOPS_ROOT_PATH . '/' . $xoopsModuleConfig['path_image'], ['jpg', 'png', 'gif', 'jpeg']);
+    $uploader = new art_uploader(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image'), ['jpg', 'png', 'gif', 'jpeg']);
     if ($uploader->fetchMedia($_POST['xoops_upload_file'][0])) {
         if (!$uploader->upload()) {
             xoops_error($uploader->getErrors());
@@ -86,7 +90,7 @@ if ($canupload && empty($_POST['del']) && empty($_POST['delete']) && !empty($_FI
     }
 
     if (!empty($_POST['art_image_file_tmp'])) {
-        @unlink(XOOPS_ROOT_PATH . '/' . $xoopsModuleConfig['path_image'] . '/' . $_POST['art_image_file_tmp']);
+        @unlink(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image') . '/' . $_POST['art_image_file_tmp']);
         unset($_POST['art_image_file_tmp']);
     }
 }
@@ -179,16 +183,16 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
     // New uploaded
     if (!empty($art_image_file_upload)) {
         $art_image['file'] = $art_image_file_upload;
-        // Uploaded during preview
+    // Uploaded during preview
     } elseif (!empty($_POST['art_image_file_tmp'])) {
         $art_image['file'] = $_POST['art_image_file_tmp'];
-        // delete current image
+    // delete current image
     } elseif (!empty($_POST['image_del'])) {
         $art_image['file'] = '';
     }
     if (isset($art_image['file'])) {
         $old_img = $article_obj->getVar('art_image');
-        @unlink(XOOPS_ROOT_PATH . '/' . $xoopsModuleConfig['path_image'] . '/' . $old_img['file']);
+        @unlink(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image') . '/' . $old_img['file']);
         if (empty($art_image['file'])) {
             $art_image = [];
         } else {
@@ -246,7 +250,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
                 // New registered category, then register it
                 if (!isset($old_category[$id])) {
                     $cats_reg[$id] = 1;
-                    // Existing category, then publish to it
+                // Existing category, then publish to it
                 } elseif (empty($old_category[$id])) {
                     $cats_pub[] = $id;
                 }
@@ -278,7 +282,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
                 // If the user has publish/moderate right over the article, remove it from the category
                 if (($isAuthor && $categoryHandler->getPermission($id, 'publish')) || $isModerator) {
                     $cats_del[] = $id;
-                    // If the user has submission right over the article, withdraw it
+                // If the user has submission right over the article, withdraw it
                 } elseif ($isAuthor && $categoryHandler->getPermission($id, 'submit')) {
                     $cats_unpub[] = $id;
                 }
@@ -364,7 +368,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
     $text_id = $textHandler->insert($text_obj);
 
     $forum = 0;
-    if (!$article_obj->getVar('art_forum') && !empty($xoopsModuleConfig['forum'])
+    if (!$article_obj->getVar('art_forum') && !empty($helper->getConfig('forum'))
         && $article_obj->getVar('art_time_publish')
         && !empty($_POST['forum'])
         && $categoryHandler->getPermission($cat_id, 'moderate')) {
@@ -375,7 +379,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
         $data['author']   = (!$_author['author']) ? $_author['name'] : $_author['author'];
         $data['url']      = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . URL_DELIMITER . 'c' . $cat_id . '/' . $article_obj->getVar('art_id');
         $data['summary']  = $article_obj->getSummary(true);
-        $data['forum_id'] = $xoopsModuleConfig['forum'];
+        $data['forum_id'] = $helper->getConfig('forum');
 
         $transferHandler = xoops_getModuleHandler('transfer', $GLOBALS['artdirname']);
         $forum           = $transferHandler->do_transfer('newbb', $data);
@@ -420,7 +424,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
     // Trigger notifications
     // Notification
     // send notification for global [submit/new], each category [submit/new] and approval
-    if (!empty($xoopsModuleConfig['notification_enabled'])) {
+    if (!empty($helper->getConfig('notification_enabled'))) {
         $notificationHandler = xoops_getHandler('notification');
         // Moved to class article.php function registerCategory()
         /*
@@ -465,7 +469,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
         }
     }
 
-    if ($isPublished && !empty($xoopsModuleConfig['do_trackback']) && !empty($_POST['trackbacks'])) {
+    if ($isPublished && !empty($helper->getConfig('do_trackback')) && !empty($_POST['trackbacks'])) {
         $tbs          = array_map('trim', preg_split("/[\s,]+/", $_POST['trackbacks']));
         $tb_old       =& $articleHandler->getTracked($article_obj);
         $tb_recorded  = [];
@@ -504,9 +508,9 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
     $pattern_uri = urlencode("/modules/{$dirname}/view.article.php?article=" . $article_obj->getVar('art_id'));
     mod_clearSmartyCache("/^{$dirname}\^.*{$pattern_uri}.*{$dirname}_article\.html$/");
 
-    if ($isPublished && $article_isNew && !empty($xoopsModuleConfig['do_ping'])
-        && !empty($xoopsModuleConfig['pings'])) {
-        $pings = array_map('trim', preg_split("/[\s,\r\n]+/", $xoopsModuleConfig['pings']));
+    if ($isPublished && $article_isNew && !empty($helper->getConfig('do_ping'))
+        && !empty($helper->getConfig('pings'))) {
+        $pings = array_map('trim', preg_split("/[\s,\r\n]+/", $helper->getConfig('pings')));
         art_ping($pings, $article_obj->getVar('art_id'));
     }
 
@@ -553,8 +557,8 @@ if (!empty($_POST['preview'])) {
     $art_image_file_tmp = empty($art_image_file_upload) ? (empty($_POST['art_image_file_tmp']) ? '' : $_POST['art_image_file_tmp']) : $art_image_file_upload;
     $p_image['file']    = empty($art_image_file_tmp) ? (empty($art_image['url']) ? '' : $art_image['file']) : $art_image_file_tmp;
     if (!empty($p_image['file'])
-        && file_exists(XOOPS_ROOT_PATH . '/' . $xoopsModuleConfig['path_image'] . '/' . $p_image['file'])) {
-        $p_image['url']     = XOOPS_URL . '/' . $xoopsModuleConfig['path_image'] . '/' . $p_image['file'];
+        && file_exists(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image') . '/' . $p_image['file'])) {
+        $p_image['url']     = XOOPS_URL . '/' . $helper->getConfig('path_image') . '/' . $p_image['file'];
         $p_image['caption'] = @$myts->htmlSpecialChars($myts->stripSlashesGPC($_POST['art_image_caption']));
     } else {
         $p_image = null;
@@ -606,7 +610,7 @@ if (!empty($_POST['preview'])) {
     } else {
         $curr_page = $page;
     }
-    $nav                   = new XoopsPageNav($count_page, 1, $curr_page, 'page', 'category=' . $cat_id . '&amp;article=' . $art_id);
+    $nav                   = new \XoopsPageNav($count_page, 1, $curr_page, 'page', 'category=' . $cat_id . '&amp;article=' . $art_id);
     $article_data['pages'] = $nav->renderNav(5);
 
     // elinks
@@ -618,7 +622,7 @@ if (!empty($_POST['preview'])) {
     $xoopsTpl->assign('xoops_module_header', $module_header);
 
     require_once XOOPS_ROOT_PATH . '/class/template.php';
-    $tpl = new XoopsTpl();
+    $tpl = new \XoopsTpl();
     $tpl->assign('article', $article_data);
     $tpl->assign('dirname', $GLOBALS['artdirname']);
     $tpl->assign('modulename', $xoopsModule->getVar('name'));

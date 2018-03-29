@@ -19,13 +19,13 @@
     <{if $author.avatar}>
         <div class="image"><img src="<{$author.avatar}>" alt="Avatar"><br></div>
     <{/if}>
-    <{foreachq item=profile from=$author.profiles}>
+    <{foreach item=profile from=$author.profiles}>
     <div class="item"><span class="title"><{$profile.title}>:</span><span class="item"><{$profile.content}></span></div>
     <{/foreach}>
     <{if count($author.mods)>0}>
         <div class="item">
             <span class="title"><{php}>echo art_constant("MD_MODERATOR");<{/php}>:</span>
-            <{foreachq item=mod from=$author.mods}><span class="item"><a href="<{$mod.url}>"><{$mod.title}></a></span>
+            <{foreach item=mod from=$author.mods}><span class="item"><a href="<{$mod.url}>"><{$mod.title}></a></span>
             <{/foreach}>
         </div>
     <{/if}>
@@ -65,7 +65,7 @@
 <{if count($articles)>0}>
     <div id="article">
         <div class="title"><{php}>echo art_constant("MD_ARTICLES");<{/php}></div>
-        <{foreachq item=article from=$articles}>
+        <{foreach item=article from=$articles}>
         <div class="title"><a
                     href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}>c<{$article.category.id}>/<{$article.id}>"><{$article.title}></a>
             <{if $isauthor OR $isadmin}>
@@ -81,7 +81,7 @@
                 </span>
             <{/if}>
             <{if count($article.categories)>0}>
-                <{foreachq item=category key=catid from=$article.categories}>
+                <{foreach item=category key=catid from=$article.categories}>
                 <span class="item"><a
                             href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}>c<{$category.id}>/<{$article.id}>"><{$category.title}></a></span>
             <{/foreach}>

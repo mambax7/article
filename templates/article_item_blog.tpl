@@ -27,7 +27,7 @@
 
 <div class="article-meta">
     <{php}>echo art_constant("MD_CATEGORIES");<{/php}>:
-    <{foreachq item=category key=catid from=$article.categories}>
+    <{foreach item=category key=catid from=$article.categories}>
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$category.id}>/"><{$category.title}></a>
     <{/foreach}>
 </div>

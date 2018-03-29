@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 include __DIR__ . '/preloads/autoloader.php';
 
 include __DIR__ . '/include/vars.php';
@@ -51,7 +51,7 @@ $modversion['min_admin']           = '1.2';
 $modversion['min_db']              = ['mysql' => '5.5'];
 
 // Is performing module install/update?
-$isModuleAction = (!empty($_POST['fct']) && 'modulesadmin' == $_POST['fct']) ? true : false;
+$isModuleAction = (!empty($_POST['fct']) && 'modulesadmin' === $_POST['fct']) ? true : false;
 $isModuleAction = (!empty($_POST['module'])) ? true : $isModuleAction;
 
 // database tables

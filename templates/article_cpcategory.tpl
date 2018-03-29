@@ -14,7 +14,7 @@
 
             <div class="article-section-container">
 
-                <{foreachq key=id item=category from=$categories}>
+                <{foreach key=id item=category from=$categories}>
                 <div class="article-list" style="padding-top: 10px;">
                     <span><{$category.prefix}></span><span><strong><a
                                     href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php?category=<{$id}>"

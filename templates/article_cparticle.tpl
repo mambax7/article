@@ -4,7 +4,7 @@
     <{if count($tracks)>0}>
         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/cp.article.php?from=<{$from}>"><{$modulename}> <{php}>echo art_constant("MD_CPARTICLE");<{/php}></a>
         </a>
-        <{foreachq item=track from=$tracks}>
+        <{foreach item=track from=$tracks}>
         ::
         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/cp.article.php?category=<{$track.id}>&amp;from=<{$from}>"><{$track.title}></a>
     <{/foreach}>
@@ -75,7 +75,7 @@
                 <div class="article-section-container">
 
                     <ol>
-                        <{foreachq item=article from=$articles}>
+                        <{foreach item=article from=$articles}>
                         <li style="padding-top: 10px;">
                             <div class="article-list">
                                 <strong><a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}>c<{$article.category.id}>/<{$article.id}>"
@@ -198,7 +198,7 @@
                     <{if $category.id gt 0 AND count($topics)>0}>
                         <div id="div_topic" style="visibility:hidden; display:inline;">
                             <select name="top_id">
-                                <{foreachq item=top from=$topics}>
+                                <{foreach item=top from=$topics}>
                                 <option value="<{$top.id}>"><{$top.title}></option>
                                 <{/foreach}>
                             </select>
@@ -234,7 +234,7 @@
         </div>
 
         <div class="article-list">
-            <{foreachq item=cat from=$categories}>
+            <{foreach item=cat from=$categories}>
             <span class="article-button"><a
                         href="<{$xoops_url}>/modules/<{$xoops_dirname}>/cp.article.php?category=<{$cat.id}>&amp;from=<{$from}>"><{$cat.title}></a></span>
             <{/foreach}>
@@ -248,7 +248,7 @@
             <{php}>echo art_constant("MD_TOPIC");<{/php}>
         </div>
         <div class="article-list">
-            <{foreachq item=top from=$topics}>
+            <{foreach item=top from=$topics}>
             <span class="article-button><a href="<{$xoops_url}>/modules/<{$xoops_dirname}>
             /cp.article.php?topic=<{$top.id}>&amp;from=<{$from}>"><{$top.title}></a></span>
             <{/foreach}>

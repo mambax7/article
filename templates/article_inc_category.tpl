@@ -7,7 +7,7 @@
 
 <div>
 
-    <{foreachq item=category name=category from=$categories}>
+    <{foreach item=category name=category from=$categories}>
     <div class="article-list-column" style="width: <{$col_width}>%; float: left; padding: 5px;">
 
 
@@ -33,7 +33,7 @@
 
                 <div class="article-list">
                     <ul>
-                        <{foreachq item=article from=$category.articles}>
+                        <{foreach item=article from=$category.articles}>
                         <li>
                             <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}>c<{$category.id}>/<{$article.id}>"
                                title="<{$article.summary|strip_tags}>"><{$article.title}></a>
@@ -68,7 +68,7 @@
                     </div>
 
                     <ul>
-                        <{foreachq item=article from=$category.articles}>
+                        <{foreach item=article from=$category.articles}>
                         <li>
                             <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}>c<{$category.id}>/<{$article.id}>"
                                title="<{$article.summary|strip_tags}>"><{$article.title}></a>

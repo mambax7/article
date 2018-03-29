@@ -21,7 +21,7 @@
 The functions loaded on initializtion
 */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 if (!defined('ART_FUNCTIONS_INI')):
     define('ART_FUNCTIONS_INI', 1);
@@ -73,7 +73,7 @@ if (!defined('ART_FUNCTIONS_INI')):
             $module        = $moduleHandler->getByDirname($GLOBALS['artdirname']);
 
             $configHandler = xoops_getHandler('config');
-            $criteria      = new CriteriaCompo(new Criteria('conf_modid', $module->getVar('mid')));
+            $criteria      = new \CriteriaCompo(new \Criteria('conf_modid', $module->getVar('mid')));
             $configs       = $configHandler->getConfigs($criteria);
             foreach (array_keys($configs) as $i) {
                 $moduleConfig[$GLOBALS['artdirname']][$configs[$i]->getVar('conf_name')] = $configs[$i]->getConfValueForOutput();

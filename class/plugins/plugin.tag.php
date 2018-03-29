@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 /**
  * Get item fileds:
@@ -33,7 +33,7 @@
  * @return boolean
  *
  */
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/vars.php';
 
@@ -58,7 +58,7 @@ function [DIRNAME]_tag_iteminfo(&$items)
         }
     }
     $itemHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
-    $items_obj = $itemHandler->getObjects(new Criteria("art_id", "(" . implode(", ", $items_id) . ")", "IN"), true);
+    $items_obj = $itemHandler->getObjects(new \Criteria("art_id", "(" . implode(", ", $items_id) . ")", "IN"), true);
     art_define_url_delimiter();
 
     foreach (array_keys($items) as $cat_id) {

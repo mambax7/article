@@ -16,24 +16,29 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+use XoopsModules\Article;
+
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 require_once XOOPS_ROOT_PATH . '/class/xoopstree.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/xoopsformloader.php';
 
 // Form
-$form_art = new XoopsThemeForm(art_constant('MD_CATEGORY') . ' ' . $category_obj->getVar('cat_title'), 'formcategory', XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/action.category.php');
+$form_art = new \XoopsThemeForm(art_constant('MD_CATEGORY') . ' ' . $category_obj->getVar('cat_title'), 'formcategory', XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/action.category.php');
 $form_art->setExtra('enctype="multipart/form-data"');
 
 // Title
-$input = new XoopsFormText(art_constant('MD_TITLE'), 'cat_title', 50, 255, $category_obj->getVar('cat_title'));
+$input = new \XoopsFormText(art_constant('MD_TITLE'), 'cat_title', 50, 255, $category_obj->getVar('cat_title'));
 if (!art_isAdministrator()) {
     $input->setExtra('type="disabled"');
 }
 $form_art->addElement($input, true);
 
 // Description
-$form_art->addElement(new XoopsFormTextArea(art_constant('MD_DESCRIPTION'), 'cat_description', $category_obj->getVar('cat_description', 'E')));
+$form_art->addElement(new \XoopsFormTextArea(art_constant('MD_DESCRIPTION'), 'cat_description', $category_obj->getVar('cat_description', 'E')));
 
 // Parent category
 if (art_isAdministrator()) {
@@ -43,15 +48,15 @@ if (art_isAdministrator()) {
     foreach ($categories as $id => $cat) {
         $cat_options[$id] = $cat['prefix'] . $cat['cat_title'];
     }
-    $cat_select = new XoopsFormSelect(art_constant('MD_PARENT_CATEGORY'), 'cat_pid', $category_obj->getVar('cat_pid'));
+    $cat_select = new \XoopsFormSelect(art_constant('MD_PARENT_CATEGORY'), 'cat_pid', $category_obj->getVar('cat_pid'));
     $cat_select->addOptionArray($cat_options);
     $form_art->addElement($cat_select);
 } else {
-    $form_art->addElement(new XoopsFormHidden('cat_pid', $category_obj->getVar('cat_pid')));
+    $form_art->addElement(new \XoopsFormHidden('cat_pid', $category_obj->getVar('cat_pid')));
 }
 
 // Order
-$order_input = new XoopsFormText(art_constant('MD_ORDER'), 'cat_order', 20, 20, $category_obj->getVar('cat_order'));
+$order_input = new \XoopsFormText(art_constant('MD_ORDER'), 'cat_order', 20, 20, $category_obj->getVar('cat_order'));
 if (!art_isAdministrator()) {
     $order_input->setExtra('type="disabled"');
 }
@@ -60,8 +65,8 @@ $form_art->addElement($order_input);
 // Template set
 $templates = art_getTemplateList('category');
 if (count($templates) > 0) {
-    //$template_option_tray = new XoopsFormElementTray(art_constant("MD_TEMPLATE_SELECT"), "<br>");
-    $template_select = new XoopsFormSelect(art_constant('MD_TEMPLATE_SELECT'), 'cat_template', $category_obj->getVar('cat_template'));
+    //$template_option_tray = new \XoopsFormElementTray(art_constant("MD_TEMPLATE_SELECT"), "<br>");
+    $template_select = new \XoopsFormSelect(art_constant('MD_TEMPLATE_SELECT'), 'cat_template', $category_obj->getVar('cat_template'));
     $template_select->addOptionArray($templates);
     //$template_option_tray->addElement($template_select);
     //$form_art->addElement($template_option_tray);
@@ -69,27 +74,27 @@ if (count($templates) > 0) {
 }
 
 // Image
-if (!empty($xoopsModuleConfig['path_image'])) {
+if (!empty($helper->getConfig('path_image'))) {
     $cat_image         = $category_obj->getVar('cat_image');
-    $image_option_tray = new XoopsFormElementTray(art_constant('MD_IMAGE_UPLOAD'), '<br>');
-    $image_option_tray->addElement(new XoopsFormFile('', 'userfile', ''));
+    $image_option_tray = new \XoopsFormElementTray(art_constant('MD_IMAGE_UPLOAD'), '<br>');
+    $image_option_tray->addElement(new \XoopsFormFile('', 'userfile', ''));
     $form_art->addElement($image_option_tray);
     unset($image_tray);
     unset($image_option_tray);
 
-    $image_option_tray = new XoopsFormElementTray(art_constant('MD_IMAGE_SELECT'), '<br>');
-    $path_image        = $xoopsModuleConfig['path_image'];
+    $image_option_tray = new \XoopsFormElementTray(art_constant('MD_IMAGE_SELECT'), '<br>');
+    $path_image        = $helper->getConfig('path_image');
     $image_array       = XoopsLists::getImgListAsArray(XOOPS_ROOT_PATH . '/' . $path_image . '/');
     array_unshift($image_array, _NONE);
-    $image_select = new XoopsFormSelect('', 'cat_image', $cat_image);
+    $image_select = new \XoopsFormSelect('', 'cat_image', $cat_image);
     $image_select->addOptionArray($image_array);
     $image_select->setExtra("onchange=\"showImgSelected('img', 'cat_image', '/" . $path_image . "/', '', '" . XOOPS_URL . "')\"");
-    $image_tray = new XoopsFormElementTray('', '&nbsp;');
+    $image_tray = new \XoopsFormElementTray('', '&nbsp;');
     $image_tray->addElement($image_select);
     if (!empty($cat_image) && file_exists(XOOPS_ROOT_PATH . '/' . $path_image . '/' . $cat_image)) {
-        $image_tray->addElement(new XoopsFormLabel('', '<div style="padding: 8px;"><img src="' . XOOPS_URL . '/' . $path_image . '/' . $cat_image . '" name="img" id="img" alt=""></div>'));
+        $image_tray->addElement(new \XoopsFormLabel('', '<div style="padding: 8px;"><img src="' . XOOPS_URL . '/' . $path_image . '/' . $cat_image . '" name="img" id="img" alt=""></div>'));
     } else {
-        $image_tray->addElement(new XoopsFormLabel('', '<div style="padding: 8px;"><img src="' . XOOPS_URL . '/images/blank.gif" name="img" id="img" alt=""></div>'));
+        $image_tray->addElement(new \XoopsFormLabel('', '<div style="padding: 8px;"><img src="' . XOOPS_URL . '/images/blank.gif" name="img" id="img" alt=""></div>'));
     }
     $image_option_tray->addElement($image_tray);
     $form_art->addElement($image_option_tray);
@@ -97,10 +102,10 @@ if (!empty($xoopsModuleConfig['path_image'])) {
 
 // The moderator
 if (art_isAdministrator()) {
-    $form_art->addElement(new XoopsFormSelectUser(art_constant('MD_MODERATOR'), 'cat_moderator', false, $category_obj->getVar('cat_moderator'), 5, true));
+    $form_art->addElement(new \XoopsFormSelectUser(art_constant('MD_MODERATOR'), 'cat_moderator', false, $category_obj->getVar('cat_moderator'), 5, true));
 } else {
     if ($moderators = $category_obj->getVar('cat_moderator')) {
-        $moderator_checkbox = new XoopsFormCheckBox(art_constant('MD_MODERATOR'), 'cat_moderator', array_keys($moderators));
+        $moderator_checkbox = new \XoopsFormCheckBox(art_constant('MD_MODERATOR'), 'cat_moderator', array_keys($moderators));
         $moderator_checkbox->addOptionArray(art_getUnameFromId($moderators));
         $moderator_checkbox->setExtra('"disabled"');
         $form_art->addElement($moderator_checkbox);
@@ -111,19 +116,19 @@ if (art_isAdministrator()) {
 $limit_article = 100;
 if ($category_obj->getVar('cat_id')) {
     $articleHandler   = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
-    $criteria_article = new Criteria('cat_id', $category_obj->getVar('cat_id'));
+    $criteria_article = new \Criteria('cat_id', $category_obj->getVar('cat_id'));
     $article_count    = $articleHandler->getCount($criteria_article);
     if ($article_count > 0) {
         $article_list[0] = _NONE;
 
         if ($article_count > $limit_article) {
-            $article_list        = $article_list + $articleHandler->getList(new Criteria('art_id', $category_obj->getVar('cat_entry')));
-            $article_option_tray = new XoopsFormElementTray(art_constant('MD_ENTRY_SELECT'));
+            $article_list        = $article_list + $articleHandler->getList(new \Criteria('art_id', $category_obj->getVar('cat_entry')));
+            $article_option_tray = new \XoopsFormElementTray(art_constant('MD_ENTRY_SELECT'));
             $name                = 'cat_entry';
-            $article_select      = new XoopsFormSelect('', $name, $category_obj->getVar('cat_entry'));
+            $article_select      = new \XoopsFormSelect('', $name, $category_obj->getVar('cat_entry'));
             $article_select->addOptionArray($article_list);
             $article_option_tray->addElement($article_select);
-            $article_more = new XoopsFormLabel(
+            $article_more = new \XoopsFormLabel(
                 '',
                 "<a href='###' onclick='return openWithSelfMain(\""
                                                    . XOOPS_URL
@@ -176,8 +181,8 @@ if ($category_obj->getVar('cat_id')) {
             //$criteria_article->setLimit($limit_article);
             $criteria_article->setSort('art_id');
             $criteria_article->setOrder('DESC');
-            $article_list   = $article_list + $articleHandler->getList(new Criteria('cat_id', $category_obj->getVar('cat_id')));
-            $article_select = new XoopsFormSelect(art_constant('MD_ENTRY_SELECT'), 'cat_entry', $category_obj->getVar('cat_entry'));
+            $article_list   = $article_list + $articleHandler->getList(new \Criteria('cat_id', $category_obj->getVar('cat_id')));
+            $article_select = new \XoopsFormSelect(art_constant('MD_ENTRY_SELECT'), 'cat_entry', $category_obj->getVar('cat_entry'));
             $article_select->addOptionArray($article_list);
             $form_art->addElement($article_select);
         }
@@ -185,15 +190,15 @@ if ($category_obj->getVar('cat_id')) {
 }
 
 // Sponsor links
-$form_art->addElement(new XoopsFormTextArea(art_constant('MD_SPONSOR'), 'cat_sponsor', $category_obj->getVar('cat_sponsor', 'E')));
-//$form_art->addElement(new XoopsFormLabel(art_constant("MD_SPONSOR_DESC"), art_constant("MD_SPONSOR_DESC_TEXT")));
+$form_art->addElement(new \XoopsFormTextArea(art_constant('MD_SPONSOR'), 'cat_sponsor', $category_obj->getVar('cat_sponsor', 'E')));
+//$form_art->addElement(new \XoopsFormLabel(art_constant("MD_SPONSOR_DESC"), art_constant("MD_SPONSOR_DESC_TEXT")));
 
-$form_art->addElement(new XoopsFormHidden('cat_id', $category_obj->getVar('cat_id')));
-$form_art->addElement(new XoopsFormHidden('from', $from));
+$form_art->addElement(new \XoopsFormHidden('cat_id', $category_obj->getVar('cat_id')));
+$form_art->addElement(new \XoopsFormHidden('from', $from));
 
-$button_tray = new XoopsFormElementTray('', '');
-$button_tray->addElement(new XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
-$cancel_button = new XoopsFormButton('', 'cancel', _CANCEL, 'button');
+$button_tray = new \XoopsFormElementTray('', '');
+$button_tray->addElement(new \XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+$cancel_button = new \XoopsFormButton('', 'cancel', _CANCEL, 'button');
 if (!empty($from)) {
     $extra = 'admin/admin.category.php';
 } elseif ($category_obj->getVar('cat_id')) {

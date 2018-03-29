@@ -2,7 +2,7 @@
 
 <div class="article-breadcrumbs">
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/"><{$modulename}></a>
-    <{foreachq item=track from=$tracks}>
+    <{foreach item=track from=$tracks}>
     >
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$track.id}>"><{$track.title}></a>
     <{/foreach}>
@@ -24,7 +24,7 @@
 <{if count($articles)>0}>
     <div id="article">
         <div class="title"><{php}>echo art_constant("MD_ARTICLES");<{/php}></div>
-        <{foreachq item=article from=$articles}>
+        <{foreach item=article from=$articles}>
         <div class="item">
             <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}>c<{$topic.cat_id}>/<{$article.id}>"><{$article.title}></a>
         </div>
@@ -49,7 +49,7 @@
 <{if count($sponsors)>0}>
     <div id="sponsor">
         <div class="title"><{php}>echo art_constant("MD_SPONSOR");<{/php}></div>
-        <{foreachq item=sponsor from=$sponsors}>
+        <{foreach item=sponsor from=$sponsors}>
         <div class="item"><a href="<{$sponsor.url}>" target="_blank"><{$sponsor.title}></a></div>
         <{/foreach}>
     </div>

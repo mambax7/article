@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 
 if (art_parse_args($args_num, $args, $args_str)) {
@@ -54,8 +58,8 @@ if (!empty($xoopsUser)) {
     $xoopsOption['cache_group'] = implode(',', $xoopsUser->groups());
 }
 $xoopsOption['xoops_pagetitle']     = $xoopsModule->getVar('name') . ' - ' . art_constant('MD_ACHIVE');
-$xoopsOption['template_main']       = art_getTemplate('archive', $xoopsModuleConfig['template']);
-$xoopsOption['xoops_module_header'] = art_getModuleHeader($xoopsModuleConfig['template']);
+$xoopsOption['template_main']       = art_getTemplate('archive', $helper->getConfig('template'));
+$xoopsOption['xoops_module_header'] = art_getModuleHeader($helper->getConfig('template'));
 require_once XOOPS_ROOT_PATH . '/header.php';
 include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
@@ -77,11 +81,11 @@ if ($xoopsUser) {
 }
 
 $field_article_time = empty($category_id) ? 'a.art_time_publish' : 'ac.ac_publish';
-$criteria           = new CriteriaCompo(new Criteria("YEAR(FROM_UNIXTIME({$field_article_time} - {$timeoffset}))", $year));
+$criteria           = new \CriteriaCompo(new \Criteria("YEAR(FROM_UNIXTIME({$field_article_time} - {$timeoffset}))", $year));
 if ($month) {
-    $criteria->add(new Criteria("MONTH(FROM_UNIXTIME({$field_article_time} - {$timeoffset}))", $month));
+    $criteria->add(new \Criteria("MONTH(FROM_UNIXTIME({$field_article_time} - {$timeoffset}))", $month));
     if ($day) {
-        $criteria->add(new Criteria("DAY(FROM_UNIXTIME({$field_article_time} - {$timeoffset}))", $day));
+        $criteria->add(new \Criteria("DAY(FROM_UNIXTIME({$field_article_time} - {$timeoffset}))", $day));
     }
 }
 $articles_count = $articleHandler->getCountByCategory($categories, $criteria);
@@ -89,7 +93,7 @@ $articles_count = $articleHandler->getCountByCategory($categories, $criteria);
 $criteria->setSort($field_article_time);
 $criteria->setOrder('DESC');
 
-$articles_obj = $articleHandler->getByCategory($categories, $xoopsModuleConfig['articles_perpage'], $start, $criteria, [
+$articles_obj = $articleHandler->getByCategory($categories, $helper->getConfig('articles_perpage'), $start, $criteria, [
     'a.uid',
     'a.writer_id',
     'a.art_title',
@@ -133,7 +137,7 @@ foreach (array_keys($articles_obj) as $id) {
         'title'    => $article->getVar('art_title'),
         'author'   => @$users[$article->getVar('uid')],
         'writer'   => @$writers[$article->getVar('writer_id')],
-        'time'     => $article->getTime($xoopsModuleConfig['timeformat']),
+        'time'     => $article->getTime($helper->getConfig('timeformat')),
         'counter'  => $article->getVar('art_counter'),
         'category' => $_category,
         'summary'  => $article->getSummary(true)
@@ -153,7 +157,7 @@ foreach (array_keys($articles_obj) as $id) {
     unset($_article);
 }
 
-if ($articles_count > $xoopsModuleConfig['articles_perpage']) {
+if ($articles_count > $helper->getConfig('articles_perpage')) {
     require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
     $pagequery = [];
     if (!empty($year)) {
@@ -169,7 +173,7 @@ if ($articles_count > $xoopsModuleConfig['articles_perpage']) {
         $pagequery[] = "category={$category_id}";
     }
 
-    $nav     = new XoopsPageNav($articles_count, $xoopsModuleConfig['articles_perpage'], $start, 'start', implode('&amp;', $pagequery));
+    $nav     = new \XoopsPageNav($articles_count, $helper->getConfig('articles_perpage'), $start, 'start', implode('&amp;', $pagequery));
     $pagenav = $nav->renderNav(4);
 } else {
     $pagenav = '';
@@ -183,11 +187,11 @@ if (empty($start)) {
     // Get category list
     $categories_array = $categoryHandler->getTree($category_id);
     unset($categories_array[$category_id]);
-    $criteria_time = new CriteriaCompo(new Criteria("YEAR(FROM_UNIXTIME(ac.ac_publish - {$timeoffset}))", $year));
+    $criteria_time = new \CriteriaCompo(new \Criteria("YEAR(FROM_UNIXTIME(ac.ac_publish - {$timeoffset}))", $year));
     if ($month) {
-        $criteria_time->add(new Criteria("MONTH(FROM_UNIXTIME(ac.ac_publish - {$timeoffset}))", $month));
+        $criteria_time->add(new \Criteria("MONTH(FROM_UNIXTIME(ac.ac_publish - {$timeoffset}))", $month));
         if ($day) {
-            $criteria_time->add(new Criteria("DAY(FROM_UNIXTIME(ac.ac_publish - {$timeoffset}))", $day));
+            $criteria_time->add(new \Criteria("DAY(FROM_UNIXTIME(ac.ac_publish - {$timeoffset}))", $day));
         }
     }
     $cats_counts = $categoryHandler->getArticleCounts(array_keys($categories_array), $criteria_time);
@@ -229,7 +233,7 @@ if (empty($start)) {
                   . '    GROUP BY mon';
         $result = $xoopsDB->query($sql);
         $months = [];
-        while ($myrow = $xoopsDB->fetchArray($result)) {
+        while (false !== ($myrow = $xoopsDB->fetchArray($result))) {
             $months[] = [
                 'title' => art_constant('MD_MONTH_' . (int)$myrow['mon']) . ' (' . (int)$myrow['count'] . ')',
                 'url'   => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.archive.php' . URL_DELIMITER . $year . '/' . $myrow['mon'],
@@ -262,7 +266,7 @@ if (empty($start)) {
                   . '    GROUP BY day';
         $result = $xoopsDB->query($sql);
         $days   = [];
-        while ($myrow = $xoopsDB->fetchArray($result)) {
+        while (false !== ($myrow = $xoopsDB->fetchArray($result))) {
             $days[$myrow['day']]['count'] = $myrow['count'];
         }
         for ($i = 1; $i <= 31; ++$i) {

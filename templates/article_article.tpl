@@ -3,7 +3,7 @@
 
 <div class="article-breadcrumbs head">
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/"><{$modulename}></a>
-    <{foreachq item=track from=$tracks}>
+    <{foreach item=track from=$tracks}>
     ::
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$track.id}>"><{$track.title}></a>
     <{/foreach}>
@@ -81,7 +81,7 @@
                     <{else}>
                         <div>
                             <span class="article-label"><{$tagbar.title}>:</span>
-                            <{foreachq item=keyword from=$tagbar.tags}>
+                            <{foreach item=keyword from=$tagbar.tags}>
                             <span class="article-content"><{$keyword}></span>
                             <{/foreach}>
                         </div>
@@ -108,7 +108,7 @@
 
             <div class="article-section-container">
                 <ol>
-                    <{foreachq item=heading from=$article.headings}>
+                    <{foreach item=heading from=$article.headings}>
                     <li><{$heading}></li>
                     <{/foreach}>
                 </ol>
@@ -137,7 +137,7 @@
 
             <div class="article-section-container">
                 <ol>
-                    <{foreachq item=note from=$article.notes}>
+                    <{foreach item=note from=$article.notes}>
                     <li><{$note}></li>
                     <{/foreach}>
                 </ol>
@@ -154,7 +154,7 @@
 
             <div class="article-section-container">
                 <ol>
-                    <{foreachq item=subtitle from=$article.subtitles}>
+                    <{foreach item=subtitle from=$article.subtitles}>
                     <li><a href="<{$subtitle.url}>"><{$subtitle.title}></a></li>
                     <{/foreach}>
                 </ol>
@@ -205,7 +205,7 @@
 
         <div class="article-section-container">
             <ul>
-                <{foreachq item=link from=$links}>
+                <{foreach item=link from=$links}>
                 <li><a href="<{$link.url}>" target="_blank"><{$link.title}></a></li>
                 <{/foreach}>
             </ul>
@@ -224,7 +224,7 @@
         </div>
 
         <div class="article-section-container">
-            <{foreachq item=cat name=cat from=$categories}>
+            <{foreach item=cat name=cat from=$categories}>
             <span class="article-term">
             <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$cat.id}>"><{$cat.title}></a>
         </span>
@@ -245,7 +245,7 @@
         </div>
 
         <div class="article-section-container">
-            <{foreachq item=topic name=topic from=$topics}>
+            <{foreach item=topic name=topic from=$topics}>
             <span class="article-term">
             <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.topic.php<{$smarty.const.URL_DELIMITER}>/<{$topic.id}>"><{$topic.title}></a>
         </span>
@@ -321,7 +321,7 @@
                target="_blank"
                title="<{$transfer.desc}>"><{$transfer.title}></a>
         <{/if}>
-        <{foreachq item=opt key=op from=$transfer.list}>
+        <{foreach item=opt key=op from=$transfer.list}>
         <img src="<{$xoops_url}>/assets/images/pointer.gif" alt="">
         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/transfer.php<{$smarty.const.URL_DELIMITER}>c<{$article.category}>/<{$article.id}>/<{$op}>"
            target="<{$op}>"

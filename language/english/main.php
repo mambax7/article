@@ -4,10 +4,10 @@
 // _CHARSET : ISO-8859-1
 // Translator: D.J., http://xoopsforge.com, https://xoops.org.cn
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 $current_path = __FILE__;
-if (DIRECTORY_SEPARATOR != '/') {
+if (DIRECTORY_SEPARATOR !== '/') {
     $current_path = str_replace(strpos($current_path, "\\\\", 2) ? "\\\\" : DIRECTORY_SEPARATOR, '/', $current_path);
 }
 $url_arr = explode('/', strstr($current_path, '/modules/'));

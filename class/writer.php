@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 require_once __DIR__ . '/../include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
@@ -46,7 +46,7 @@ if (!class_exists('Writer')) {
 art_parse_class('
 class [CLASS_PREFIX]WriterHandler extends  XoopsPersistableObjectHandler
 {
-    function __construct(XoopsDatabase $db)
+    function __construct(\XoopsDatabase $db)
     {
         parent::__construct();$db, art_DB_prefix("writer", true), "Writer", "writer_id", "writer_name");
     }

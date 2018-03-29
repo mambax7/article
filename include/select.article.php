@@ -28,7 +28,7 @@ if (empty($category_id) || !$categoryHandler->getPermission($category_obj, 'mode
     redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php', 2, _NOPERM);
 }
 
-require_once __DIR__ . '/../class/xoopsformloader.php';
+// require_once __DIR__ . '/../class/xoopsformloader.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
 require_once XOOPS_ROOT_PATH . '/header.php';
@@ -69,39 +69,39 @@ echo $js_additem = '
     </script>
 ';
 
-$form_article = new XoopsThemeForm(art_constant('MD_ARTICLE_SELECT'), 'selectarticle', xoops_getenv('PHP_SELF'), 'GET', true);
+$form_article = new \XoopsThemeForm(art_constant('MD_ARTICLE_SELECT'), 'selectarticle', xoops_getenv('PHP_SELF'), 'GET', true);
 
 $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
-$criteria       = new CriteriaCompo(new Criteria('cat_id', $category_id));
+$criteria       = new \CriteriaCompo(new \Criteria('cat_id', $category_id));
 $article_count  = $articleHandler->getCount($criteria);
 $criteria->setSort('art_id');
 $criteria->setLimit($limit);
 $criteria->setStart($start);
 
-$select_form = new XoopsFormSelect('', $name_current);
+$select_form = new \XoopsFormSelect('', $name_current);
 $select_form->addOptionArray($articleHandler->getList($criteria));
 
-$select_tray = new XoopsFormElementTray('', '<br>');
+$select_tray = new \XoopsFormElementTray('', '<br>');
 $select_tray->addElement($select_form);
-$nav = new XoopsPageNav($article_count, $limit, $start, 'start', 'target=' . $_REQUEST['target'] . '&amp;category=' . $category_id);
-//$user_select_nav = new XoopsFormLabel(sprintf(_MA_SEARCH_COUNT, $usercount), $nav->renderNav(4));
+$nav = new \XoopsPageNav($article_count, $limit, $start, 'start', 'target=' . $_REQUEST['target'] . '&amp;category=' . $category_id);
+//$user_select_nav = new \XoopsFormLabel(sprintf(_MA_SEARCH_COUNT, $usercount), $nav->renderNav(4));
 $select_tray->addElement($nav->renderNav(4));
 
-$add_button = new XoopsFormButton('', '', _ADD, 'button');
+$add_button = new \XoopsFormButton('', '', _ADD, 'button');
 $add_button->setExtra('onclick="addItem();"');
 
-$close_button = new XoopsFormButton('', '', _CLOSE, 'button');
+$close_button = new \XoopsFormButton('', '', _CLOSE, 'button');
 $close_button->setExtra('onclick="window.close()"');
 
-$button_tray = new XoopsFormElementTray('');
+$button_tray = new \XoopsFormElementTray('');
 $button_tray->addElement($add_button);
-$button_tray->addElement(new XoopsFormButton('', '', _CANCEL, 'reset'));
+$button_tray->addElement(new \XoopsFormButton('', '', _CANCEL, 'reset'));
 $button_tray->addElement($close_button);
 
 $form_article->addElement($select_tray);
 
-$form_article->addElement(new XoopsFormHidden('target', $_REQUEST['target']));
-$form_article->addElement(new XoopsFormHidden('category', $_REQUEST['category']));
+$form_article->addElement(new \XoopsFormHidden('target', $_REQUEST['target']));
+$form_article->addElement(new \XoopsFormHidden('category', $_REQUEST['category']));
 $form_article->addElement($button_tray);
 $form_article->display();
 

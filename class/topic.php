@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 require_once __DIR__ . '/../include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
@@ -103,7 +103,7 @@ class [CLASS_PREFIX]TopicHandler extends XoopsPersistableObjectHandler
      *
      * @param object $db reference to the {@link XoopsDatabase} object
      **/
-    function __construct(XoopsDatabase $db)
+    function __construct(\XoopsDatabase $db)
     {
         parent::__construct($db, art_DB_prefix("topic", true), "Xtopic", "top_id", "top_title");
     }
@@ -149,7 +149,7 @@ class [CLASS_PREFIX]TopicHandler extends XoopsPersistableObjectHandler
         if (!$result = $this->db->query($sql, $limit, $start)) {
             return $ret;
         }
-        while ($row = $this->db->fetchArray($result)) {
+        while (false !== ($row = $this->db->fetchArray($result))) {
             $topic = $this->create(false);
             $topic->assignVars($row);
             $_cachedTop[$topic->getVar("top_id")] = $topic;
@@ -174,16 +174,16 @@ class [CLASS_PREFIX]TopicHandler extends XoopsPersistableObjectHandler
     {
         if (isset($criteria) && is_subclass_of($criteria, "criteriaelement")) {
         } else {
-            $criteria = new CriteriaCompo();
+            $criteria = new \CriteriaCompo();
         }
         $criteria->setLimit($limit);
         $criteria->setStart($start);
 
         if (is_array($cat_id) && count($cat_id) > 0) {
             $cat_id = array_map("intval",$cat_id);
-            $criteria->add(new criteria("cat_id", "(" . implode(",", $cat_id) . ")", "IN"));
+            $criteria->add(new \Criteria("cat_id", "(" . implode(",", $cat_id) . ")", "IN"));
         } elseif ((int)($cat_id)) {
-            $criteria->add(new criteria("cat_id", (int)($cat_id)));
+            $criteria->add(new \Criteria("cat_id", (int)($cat_id)));
         }
         $ret = $this->getAll($criteria, $tags, $asObject);
 
@@ -233,7 +233,7 @@ class [CLASS_PREFIX]TopicHandler extends XoopsPersistableObjectHandler
         }
         $result = $this->db->query($sql);
         $ret = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $ret[$myrow["cat_id"]] = $myrow["count"];
         }
 
@@ -310,7 +310,7 @@ class [CLASS_PREFIX]TopicHandler extends XoopsPersistableObjectHandler
         $sql .= " GROUP BY top_id";
         $result = $this->db->query($sql);
         $ret = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $ret[$myrow["top_id"]] = $myrow["count"];
         }
 

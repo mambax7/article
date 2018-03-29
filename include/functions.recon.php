@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_RECON_LOADED', true);
@@ -82,7 +82,7 @@ if (!defined('ART_FUNCTIONS_RECON')):
             //xoops_error($GLOBALS['xoopsDB']->error());
         }
         $mid = empty($mid) ? $GLOBALS['xoopsModule']->getVar('mid') : $mid;
-        while ($myrow = $GLOBALS['xoopsDB']->fetchArray($result)) {
+        while (false !== ($myrow = $GLOBALS['xoopsDB']->fetchArray($result))) {
             if (empty($myrow['art_keywords'])) {
                 continue;
             }

@@ -48,7 +48,7 @@
                     <{assign var="ful_width" value=95}>  <{* Set the full width for multiple columns *}>
                     <{assign var="col_width" value=$ful_width/$num_column}>  <{* calculate column width *}>
 
-                    <{foreachq item=month name=month from=$months}>
+                    <{foreach item=month name=month from=$months}>
                     <div class="article-list-column" style="width: <{$col_width}>%; float: left; margin: 5px;">
                         <div style="vertical-align: top;">
                             <a href="<{$month.url}>"><{$month.title}></a>
@@ -81,12 +81,12 @@
                     <{assign var="ful_width" value=95}>  <{* Set the full width for multiple columns *}>
                     <{assign var="col_width" value=$ful_width/$num_column}>  <{* calculate column width *}>
 
-                    <{foreachq item=cat name=cat from=$categories}>
+                    <{foreach item=cat name=cat from=$categories}>
                     <div class="article-list-column" style="width: <{$col_width}>%; float: left; margin: 5px;">
                         <div style="vertical-align: top;">
                             <a href="<{$cat.category.url}>"><{$cat.category.title}></a>
                         </div>
-                        <{foreachq item=_cat from=$cat.sub}>
+                        <{foreach item=_cat from=$cat.sub}>
                         <div style="vertical-align: top;">
                             <a href="<{$_cat.url}>"><{$_cat.title}></a>
                         </div>
@@ -132,7 +132,7 @@
 
         <div class="article-section-container">
             <ol start=<{math equation="( pg / 10 ) * 10 + 1 " pg=$smarty.request.start|default:0}>>
-                <{foreachq item=article from=$articles}>
+                <{foreach item=article from=$articles}>
                 <li>
                     <div class="article-title">
                         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}><{$article.id}>"><{$article.title}></a>
@@ -158,7 +158,7 @@
                     <{if count($article.categories)>0}>
                         <div class="article-list">
                             <span class="article-subject"><{php}>echo art_constant("MD_CATEGORIES");<{/php}>:</span>
-                            <{foreachq item=cat key=catid from=$article.categories}>
+                            <{foreach item=cat key=catid from=$article.categories}>
                             <span class="article-term">
                         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$cat.id}>/"><{$cat.title}></a>
                     </span>

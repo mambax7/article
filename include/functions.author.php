@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_AUTHOR_LOADED', true);
@@ -65,7 +65,7 @@ if (!defined('ART_FUNCTIONS_AUTHOR')):
                 return $users;
             }
             mod_loadFunctions('url', $GLOBALS['artdirname']);
-            while ($row = $GLOBALS['xoopsDB']->fetchArray($result)) {
+            while (false !== ($row = $GLOBALS['xoopsDB']->fetchArray($result))) {
                 $uid         = $row['writer_id'];
                 $users[$uid] = $myts->htmlSpecialChars($row['writer_name']);
                 if ($linked) {

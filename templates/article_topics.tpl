@@ -2,7 +2,7 @@
 
 <div class="article-breadcrumbs">
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/"><{$modulename}></a>
-    <{foreachq item=track from=$tracks}>
+    <{foreach item=track from=$tracks}>
     ::
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$track.id}>"><{$track.title}></a>
     <{/foreach}>
@@ -17,7 +17,7 @@
 
 <{if count($topics)>0}>
     <div id="topic">
-        <{foreachq item=topic from=$topics}>
+        <{foreach item=topic from=$topics}>
         <div class="item">
             <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.topic.php<{$smarty.const.URL_DELIMITER}><{$topic.id}>"><{$topic.title}></a>
             (<{$topic.articles}>)

@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 
 $isadmin = art_isAdministrator();
@@ -52,14 +56,14 @@ switch ($op) {
             $hiddens['from']     = $from;
             $action              = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/am.category.php';
             $msg                 = _DELETE . ': ' . $category_obj->getVar('cat_title');
-            $msg                 .= '<br>' . (empty($xoopsModuleConfig['category_delete_forced']) ? art_constant('MD_MOVE_CATEGORYANDARTICLE') : art_constant('MD_DELETE_CATEGORYANDARTICLE')) . '<br>' . art_constant('MD_CONFIG_CATEGORYANDARTICLE');
+            $msg                 .= '<br>' . (empty($helper->getConfig('category_delete_forced')) ? art_constant('MD_MOVE_CATEGORYANDARTICLE') : art_constant('MD_DELETE_CATEGORYANDARTICLE')) . '<br>' . art_constant('MD_CONFIG_CATEGORYANDARTICLE');
             require_once XOOPS_ROOT_PATH . '/header.php';
             xoops_confirm($hiddens, $action, $msg);
             require_once XOOPS_ROOT_PATH . '/footer.php';
             exit();
         }
 
-        $categoryHandler->delete($category_obj, true, @$xoopsModuleConfig['category_delete_forced']);
+        $categoryHandler->delete($category_obj, true, @$helper->getConfig('category_delete_forced'));
         break;
     case 'order':
         for ($i = 0, $iMax = count($cat_id); $i < $iMax; ++$i) {

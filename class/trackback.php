@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 require_once __DIR__ . '/../include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
@@ -56,7 +56,7 @@ if (!class_exists('Trackback')) {
 art_parse_class('
 class [CLASS_PREFIX]TrackbackHandler extends XoopsPersistableObjectHandler
 {
-    function __construct(XoopsDatabase $db)
+    function __construct(\XoopsDatabase $db)
     {
         parent::__construct($db, art_DB_prefix("trackback", true), "Trackback", "tb_id", "tb_url");
     }
@@ -69,7 +69,7 @@ class [CLASS_PREFIX]TrackbackHandler extends XoopsPersistableObjectHandler
         }
         $result = $this->db->query($sql);
         $ret = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $trackback = $this->create(false);
             $trackback->assignVars($myrow);
             $ret[$myrow["tb_id"]] = $trackback;

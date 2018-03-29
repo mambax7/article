@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 
 /**
@@ -30,8 +34,8 @@ if (!empty($_POST['not_submit']) && preg_match("/\/notification_update\.php/i", 
 if ($REQUEST_URI_parsed = art_parse_args($args_num, $args, $args_str)) {
     $args['category'] = !empty($args['category']) ? $args['category'] : @$args_num[0];
     $args['type']     = @$args_str[0];
-    $args['list']     = ('list' == $args['type']) ? 1 : 0;
-    $args['featured'] = ('featured' == $args['type']) ? 1 : 0;
+    $args['list']     = ('list' === $args['type']) ? 1 : 0;
+    $args['featured'] = ('featured' === $args['type']) ? 1 : 0;
 }
 
 $category_id = (int)(empty($_GET['category']) ? @$args['category'] : $_GET['category']);
@@ -97,7 +101,7 @@ $subcategories        = [];
 $articles_featured_id = [];
 if (empty($list) && empty($featured)) {
     $categories      =& $categoryHandler->getChildCategories($category_id);
-    $criteria        = new CriteriaCompo(new Criteria('ac.ac_publish', 0, '>'));
+    $criteria        = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
     $counts_article  =& $categoryHandler->getArticleCounts(array_keys($categories), $criteria);
     $counts_category =& $categoryHandler->getCategoryCounts(array_keys($categories), 'access');
     foreach ($categories as $id => $cat) {
@@ -109,28 +113,28 @@ if (empty($list) && empty($featured)) {
         ];
     }
     unset($criteria);
-    $criteria = new CriteriaCompo(new Criteria('ac.ac_feature', 0, '>'));
+    $criteria = new \CriteriaCompo(new \Criteria('ac.ac_feature', 0, '>'));
     $criteria->setSort('ac.ac_feature');
     $criteria->setOrder('DESC');
-    $articles_featured_id = $articleHandler->getIdsByCategory($category_obj, $xoopsModuleConfig['featured_category'], 0, $criteria);
+    $articles_featured_id = $articleHandler->getIdsByCategory($category_obj, $helper->getConfig('featured_category'), 0, $criteria);
 }
 
 if (empty($featured)) {
-    $criteria           = new CriteriaCompo(new Criteria('ac.ac_publish', 0, '>'));
+    $criteria           = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
     $field_article_time = 'ac.ac_publish';
 } else {
-    $criteria           = new CriteriaCompo(new Criteria('ac.ac_feature', 0, '>'));
+    $criteria           = new \CriteriaCompo(new \Criteria('ac.ac_feature', 0, '>'));
     $field_article_time = 'ac.ac_feature';
 }
 $articles_perpage = (empty($start)
-                     && empty($list)) ? $xoopsModuleConfig['articles_category'] : $xoopsModuleConfig['articles_perpage'];
+                     && empty($list)) ? $helper->getConfig('articles_category') : $helper->getConfig('articles_perpage');
 $criteria->setSort($field_article_time);
 $criteria->setOrder('DESC');
 $articles_id =& $articleHandler->getIdsByCategory($category_obj, $articles_perpage, $start, $criteria);
 $art_ids     = array_merge($articles_featured_id, $articles_id);
 $art_ids     = array_unique($art_ids);
 if (count($art_ids) > 0) {
-    $criteria     = new Criteria('art_id', '(' . implode(',', $art_ids) . ')', 'IN');
+    $criteria     = new \Criteria('art_id', '(' . implode(',', $art_ids) . ')', 'IN');
     $tags         = [
         'uid',
         'writer_id',
@@ -184,13 +188,13 @@ foreach ($articles_id as $id) {
         'title'      => $articles_obj[$id]->getVar('art_title'),
         'author'     => @$users[$articles_obj[$id]->getVar('uid')],
         'writer'     => @$writers[$articles_obj[$id]->getVar('writer_id')],
-        'time'       => $articles_obj[$id]->getTime($xoopsModuleConfig['timeformat']),
+        'time'       => $articles_obj[$id]->getTime($helper->getConfig('timeformat')),
         'image'      => $articles_obj[$id]->getImage(),
         'counter'    => $articles_obj[$id]->getVar('art_counter'),
         'comments'   => $articles_obj[$id]->getVar('art_comments'),
         'trackbacks' => $articles_obj[$id]->getVar('art_trackbacks')
     ];
-    if (!empty($xoopsModuleConfig['display_summary'])) {
+    if (!empty($helper->getConfig('display_summary'))) {
         $_article['summary'] = $articles_obj[$id]->getSummary(true);
     }
     $articles[$id] = $_article;
@@ -201,7 +205,7 @@ $features = [];
 if (empty($list) && count($articles_featured_id) > 0) {
     foreach ($articles_featured_id as $id) {
         $_article = $articles[$id];
-        if (empty($xoopsModuleConfig['display_summary']) && empty($_article['summary'])) {
+        if (empty($helper->getConfig('display_summary')) && empty($_article['summary'])) {
             $_article['summary'] = $articles_obj[$id]->getSummary(true);
         }
         $features[] = $_article;
@@ -213,9 +217,9 @@ $count_featured = 0;
 $topics         = [];
 if (empty($list) && empty($featured)) {
     $topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
-    $criteria     = new CriteriaCompo(new Criteria('top_expire', time(), '>'));
+    $criteria     = new \CriteriaCompo(new \Criteria('top_expire', time(), '>'));
     $tags         = ['top_title'];
-    $topic_array  =& $topicHandler->getByCategory($category_obj->getVar('cat_id'), $xoopsModuleConfig['topics_max'], 0, $criteria, $tags);
+    $topic_array  =& $topicHandler->getByCategory($category_obj->getVar('cat_id'), $helper->getConfig('topics_max'), 0, $criteria, $tags);
     if (count($topic_array) > 0) {
         $counts =& $topicHandler->getArticleCounts(array_keys($topic_array));
         foreach ($topic_array as $id => $topic) {
@@ -226,23 +230,23 @@ if (empty($list) && empty($featured)) {
             ];
         }
     }
-    $criteria       = new CriteriaCompo(new Criteria('ac.ac_feature', 0, '>'));
+    $criteria       = new \CriteriaCompo(new \Criteria('ac.ac_feature', 0, '>'));
     $count_featured = $categoryHandler->getArticleCount($category_obj, $criteria);
 }
 
 if (empty($featured)) {
-    $criteria = new CriteriaCompo(new Criteria('ac.ac_publish', 0, '>'));
+    $criteria = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
 } else {
-    $criteria = new CriteriaCompo(new Criteria('ac.ac_feature', 0, '>'));
+    $criteria = new \CriteriaCompo(new \Criteria('ac.ac_feature', 0, '>'));
 }
 $count_article    = $categoryHandler->getArticleCount($category_obj, $criteria);
-$articles_perpage = $xoopsModuleConfig['articles_perpage'];
+$articles_perpage = $helper->getConfig('articles_perpage');
 $pagenav          = '';
 if (!empty($list) && ($count_article > $articles_perpage)) {
     include XOOPS_ROOT_PATH . '/class/pagenav.php';
-    $nav     = new XoopsPageNav($count_article, $articles_perpage, $start, 'start', 'category=' . $category_obj->getVar('cat_id') . (empty($list) ? '' : '&amp;list=1') . (empty($featured) ? '' : '&amp;featured=1'));
+    $nav     = new \XoopsPageNav($count_article, $articles_perpage, $start, 'start', 'category=' . $category_obj->getVar('cat_id') . (empty($list) ? '' : '&amp;list=1') . (empty($featured) ? '' : '&amp;featured=1'));
     $pagenav = $nav->renderNav(4);
-} elseif (empty($list) && ($count_article > $xoopsModuleConfig['articles_category'])) {
+} elseif (empty($list) && ($count_article > $helper->getConfig('articles_category'))) {
     $pagenav = '<a href="' . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.category.php' . URL_DELIMITER . $category_obj->getVar('cat_id') . '/list' . (!empty($featured) ? '/featured' : '') . '">' . _MORE . '</a>';
 }
 

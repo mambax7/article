@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_URL_LOADED', true);
@@ -129,14 +129,14 @@ if (!defined('ART_FUNCTIONS_URL')):
         if (empty($imagePath)) {
             $moduleConfig = art_load_config();
             $path_image   = $helper->getConfig('path_image');
-            $imageFile    = XOOPS_ROOT_PATH . '/' . $path_image . '/' . htmlspecialchars($imageName);
-            $imageUrl     = XOOPS_URL . '/' . $path_image . '/' . htmlspecialchars($imageName);
+            $imageFile    = XOOPS_ROOT_PATH . '/' . $path_image . '/' . htmlspecialchars($imageName, ENT_QUOTES | ENT_HTML5);
+            $imageUrl     = XOOPS_URL . '/' . $path_image . '/' . htmlspecialchars($imageName, ENT_QUOTES | ENT_HTML5);
         } else {
             if (!preg_match('/^' . preg_quote(XOOPS_ROOT_PATH, '/') . '/', $imagePath)) {
                 $imagePath = XOOPS_ROOT_PATH . '/' . $imagePath;
             }
-            $imageFile = htmlspecialchars($imagePATH . '/' . $imageName);
-            $imageUrl  = htmlspecialchars(XOOPS_URL . '/' . preg_replace('/^' . preg_quote(XOOPS_ROOT_PATH, '/') . '/', '', $imagePath) . '/' . $imageName);
+            $imageFile = htmlspecialchars($imagePATH . '/' . $imageName, ENT_QUOTES | ENT_HTML5);
+            $imageUrl  = htmlspecialchars(XOOPS_URL . '/' . preg_replace('/^' . preg_quote(XOOPS_ROOT_PATH, '/') . '/', '', $imagePath) . '/' . $imageName, ENT_QUOTES | ENT_HTML5);
         }
         $imageSizeString = '';
         if (!$imageSize = @getimagesize($imageFile)) {
@@ -171,9 +171,9 @@ if (!defined('ART_FUNCTIONS_URL')):
             $moduleDirName = basename(dirname(__DIR__));
             $helper  = Xmf\Module\Helper::getHelper($moduleDirName);
             $path_image    = $helper->getConfig('path_file');
-            $imageUrl      = XOOPS_URL . '/' . $path_image . '/' . htmlspecialchars($imageName);
+            $imageUrl      = XOOPS_URL . '/' . $path_image . '/' . htmlspecialchars($imageName, ENT_QUOTES | ENT_HTML5);
         } else {
-            $imageUrl = htmlspecialchars(XOOPS_URL . '/' . preg_replace('/^' . preg_quote(XOOPS_ROOT_PATH, '/') . '/', '', $imagePath) . '/' . $imageName);
+            $imageUrl = htmlspecialchars(XOOPS_URL . '/' . preg_replace('/^' . preg_quote(XOOPS_ROOT_PATH, '/') . '/', '', $imagePath) . '/' . $imageName, ENT_QUOTES | ENT_HTML5);
         }
 
         return $imageUrl;
@@ -198,9 +198,9 @@ if (!defined('ART_FUNCTIONS_URL')):
         if (empty($imagePath)) {
             $moduleConfig = art_load_config();
             $path_image   = $helper->getConfig('path_image');
-            $imageUrl     = XOOPS_URL . '/' . $path_image . '/' . htmlspecialchars($imageName);
+            $imageUrl     = XOOPS_URL . '/' . $path_image . '/' . htmlspecialchars($imageName, ENT_QUOTES | ENT_HTML5);
         } else {
-            $imageUrl = htmlspecialchars(XOOPS_URL . '/' . preg_replace('/^' . preg_quote(XOOPS_ROOT_PATH, '/') . '/', '', $imagePath) . '/' . $imageName);
+            $imageUrl = htmlspecialchars(XOOPS_URL . '/' . preg_replace('/^' . preg_quote(XOOPS_ROOT_PATH, '/') . '/', '', $imagePath) . '/' . $imageName, ENT_QUOTES | ENT_HTML5);
         }
 
         return $imageUrl;

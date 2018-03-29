@@ -16,7 +16,12 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+
 include __DIR__ . '/header.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/xoopsformloader.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
@@ -55,7 +60,7 @@ if (!empty($_POST['submit_writer'])) {
             $error_upload  = '';
             $writer_avatar = '';
             require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/uploader.php';
-            $uploader = new art_uploader(XOOPS_ROOT_PATH . '/' . $xoopsModuleConfig['path_image']);
+            $uploader = new art_uploader(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image'));
             if ($uploader->fetchMedia($_POST['xoops_upload_file'][0])) {
                 if (!$uploader->upload()) {
                     $error_upload = $uploader->getErrors();
@@ -105,62 +110,62 @@ echo $js_adduser = '
 ';
 
 if (!empty($_REQUEST['search'])) {
-    $form_user = new XoopsThemeForm(_MA_SEARCH_SELECTUSER, 'selectusers', xoops_getenv('PHP_SELF'), 'post', true);
+    $form_user = new \XoopsThemeForm(_MA_SEARCH_SELECTUSER, 'selectusers', xoops_getenv('PHP_SELF'), 'post', true);
 
-    $criteria = new CriteriaCompo();
+    $criteria = new \CriteriaCompo();
     $text     = empty($_REQUEST['query']) ? '%' : $myts->addSlashes(trim($_REQUEST['query']));
-    $criteria->add(new Criteria('writer_name', $text, 'LIKE'));
+    $criteria->add(new \Criteria('writer_name', $text, 'LIKE'));
     $criteria->setLimit($limit);
     $criteria->setStart($start);
-    $select_form = new XoopsFormSelect('', $name_current, [], 1);
+    $select_form = new \XoopsFormSelect('', $name_current, [], 1);
     $select_form->addOption('', _SELECT);
     $select_form->addOptionArray($writerHandler->getList($criteria));
 
-    $user_select_tray = new XoopsFormElementTray(_MA_SEARCH_USERLIST, '<br>');
+    $user_select_tray = new \XoopsFormElementTray(_MA_SEARCH_USERLIST, '<br>');
     $user_select_tray->addElement($select_form);
 
     $usercount       = $writerHandler->getCount($criteria);
     $nav_extra       = 'query=' . $_REQUEST['query'] . '&amp;search=1';
-    $nav             = new XoopsPageNav($usercount, $limit, $start, 'start', $nav_extra);
-    $user_select_nav = new XoopsFormLabel(sprintf(_MA_SEARCH_COUNT, $usercount), $nav->renderNav(4));
+    $nav             = new \XoopsPageNav($usercount, $limit, $start, 'start', $nav_extra);
+    $user_select_nav = new \XoopsFormLabel(sprintf(_MA_SEARCH_COUNT, $usercount), $nav->renderNav(4));
     $user_select_tray->addElement($user_select_nav);
 
-    $add_button = new XoopsFormButton('', '', _ADD, 'button');
+    $add_button = new \XoopsFormButton('', '', _ADD, 'button');
     $add_button->setExtra('onclick="javascript: addusers();"');
 
-    $edit_button = new XoopsFormButton('', 'edit', _EDIT, 'button');
+    $edit_button = new \XoopsFormButton('', 'edit', _EDIT, 'button');
     $edit_button->setExtra('onclick="this.submit();"');
 
-    $close_button = new XoopsFormButton('', '', _CLOSE, 'button');
+    $close_button = new \XoopsFormButton('', '', _CLOSE, 'button');
     $close_button->setExtra('onclick="window.close()"');
 
-    $button_tray = new XoopsFormElementTray('');
+    $button_tray = new \XoopsFormElementTray('');
     $button_tray->addElement($add_button);
-    $button_tray->addElement(new XoopsFormButton('', 'edit', _EDIT, 'submit'));
-    $button_tray->addElement(new XoopsFormButton('', '', _CANCEL, 'reset'));
+    $button_tray->addElement(new \XoopsFormButton('', 'edit', _EDIT, 'submit'));
+    $button_tray->addElement(new \XoopsFormButton('', '', _CANCEL, 'reset'));
     $button_tray->addElement($close_button);
 
     $form_user->addElement($user_select_tray);
 
-    //$form_user->addElement(new XoopsFormHidden('target', $_REQUEST["target"]));
+    //$form_user->addElement(new \XoopsFormHidden('target', $_REQUEST["target"]));
     $form_user->addElement($button_tray);
     $form_user->display();
 }
 
-$form_sel = new XoopsThemeForm(_MA_LOOKUP_USER, 'searchuser', xoops_getenv('PHP_SELF'), 'post', true);
+$form_sel = new \XoopsThemeForm(_MA_LOOKUP_USER, 'searchuser', xoops_getenv('PHP_SELF'), 'post', true);
 
-$searchtext = new XoopsFormText(_MA_SEARCH_TEXT, 'query', 60, 255, @$_REQUEST['query']);
+$searchtext = new \XoopsFormText(_MA_SEARCH_TEXT, 'query', 60, 255, @$_REQUEST['query']);
 $searchtext->setDescription(_MA_SEARCH_TEXT_DESC);
 $form_sel->addElement($searchtext);
 
-$close_button = new XoopsFormButton('', '', _CLOSE, 'button');
+$close_button = new \XoopsFormButton('', '', _CLOSE, 'button');
 $close_button->setExtra('onclick="window.close()"');
 
-$button_tray = new XoopsFormElementTray('');
-$button_tray->addElement(new XoopsFormButton('', 'search', _SEARCH, 'submit'));
+$button_tray = new \XoopsFormElementTray('');
+$button_tray->addElement(new \XoopsFormButton('', 'search', _SEARCH, 'submit'));
 $button_tray->addElement($close_button);
 
-//$form_sel->addElement(new XoopsFormHidden('target', $_REQUEST["target"]));
+//$form_sel->addElement(new \XoopsFormHidden('target', $_REQUEST["target"]));
 $form_sel->addElement($button_tray);
 $form_sel->display();
 

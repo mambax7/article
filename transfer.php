@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 
 if (art_parse_args($args_num, $args, $args_str)) {
@@ -144,7 +148,7 @@ if (empty($op)) {
                 $data['entry'] = $article_obj->getVar('art_forum');
             } else {
                 $data['content']  = $article_obj->getSummary(true);
-                $data['forum_id'] = $xoopsModuleConfig['forum'];
+                $data['forum_id'] = $helper->getConfig('forum');
             }
             break;
 

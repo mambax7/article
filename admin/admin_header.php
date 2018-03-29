@@ -17,12 +17,14 @@
  * @author       XOOPS Development Team
  */
 
+use XoopsModules\Article;
+
 require_once __DIR__ . '/../../../include/cp_header.php';
 require_once $GLOBALS['xoops']->path('www/class/xoopsformloader.php');
 
 $moduleDirName = basename(dirname(__DIR__));
 /** @var \Xmf\Module\Helper\ $helper */
-$helper = \Xmf\Module\Helper::getHelper($moduleDirName);
+$helper = Article\Helper::getInstance();
 $adminObject = \Xmf\Module\Admin::getInstance();
 
 $pathIcon16    = \Xmf\Module\Admin::iconUrl('', 16);
@@ -38,5 +40,5 @@ $myts = \MyTextSanitizer::getInstance();
 
 if (!isset($GLOBALS['xoopsTpl']) || !($GLOBALS['xoopsTpl'] instanceof XoopsTpl)) {
     require_once $GLOBALS['xoops']->path('class/template.php');
-    $xoopsTpl = new XoopsTpl();
+    $xoopsTpl = new \XoopsTpl();
 }

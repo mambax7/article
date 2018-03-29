@@ -3,7 +3,7 @@
 <!-- page breadcrumbs -->
 <div class="article-breadcrumbs head">
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/"><{$modulename}></a>
-    <{foreachq item=track from=$tracks}>
+    <{foreach item=track from=$tracks}>
     ::
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$track.id}>"><{$track.title}></a>
     <{/foreach}>
@@ -51,7 +51,7 @@
                 <{assign var="ful_width" value=95}>  <{* Set the full width for multiple columns *}>
                 <{assign var="col_width" value=$ful_width/$num_column}>  <{* calculate column width *}>
 
-                <{foreachq item=cat1 name=cat1 from=$categories.child}>
+                <{foreach item=cat1 name=cat1 from=$categories.child}>
                 <div class="article-list-column" style="width: <{$col_width}>%; float: left; margin: 5px;">
                     <div class="article-title">
                         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.directory.php<{$smarty.const.URL_DELIMITER}><{$cat1.cat_id}>"><{$cat1.cat_title}></a>
@@ -64,7 +64,7 @@
 
                     <div class="category-container article-title">
                         <ul>
-                            <{foreachq item=cat2 from=$cat1.child}>
+                            <{foreach item=cat2 from=$cat1.child}>
                             <li>
                                 <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.directory.php<{$smarty.const.URL_DELIMITER}><{$cat2.cat_id}>"><{$cat2.cat_title}></a>
                                 <{if $cat2.count}> (

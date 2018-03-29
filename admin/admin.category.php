@@ -34,7 +34,7 @@ if (count($ids) > 0) {
     echo '<fieldset><legend style="font-weight: bold; color: #900;">' . art_constant('AM_SUBMITTED') . '</legend>';
     echo '<div style="padding: 8px;">';
     $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-    $criteria        = new Criteria('cat_id', '(' . implode(',', $ids) . ')', 'IN');
+    $criteria        = new \Criteria('cat_id', '(' . implode(',', $ids) . ')', 'IN');
     $cat_titles      = $categoryHandler->getList($criteria);
     foreach ($cat_titles as $id => $title) {
         echo '<br clear="all"><a href="' . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/cp.article.php?category=' . $id . '&amp;type=submitted&amp;from=1">' . $title . '(<font color="red">' . $counts[$id] . '</font>)</a>';

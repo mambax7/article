@@ -1,4 +1,4 @@
-<{foreachq item=article from=$block.articles}>
+<{foreach item=article from=$block.articles}>
 <div style="margin:10px 0; clear: both;">
     <div>
         <span><a href="<{$xoops_url}>/modules/<{$block.dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}><{$article.art_id}>/c<{$article.cat_id}>"><strong><{$article.art_title}></strong></a></span>

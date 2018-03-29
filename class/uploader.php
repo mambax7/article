@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 require_once XOOPS_ROOT_PATH . '/class/uploader.php';
 
@@ -49,7 +49,7 @@ if (!class_exists('art_uploader')) {
             $maxHeight = 0
         ) {
             if (!is_array($allowedMimeTypes)) {
-                if (false === $allowedMimeTypes || '*' == $allowedMimeTypes) {
+                if (false === $allowedMimeTypes || '*' === $allowedMimeTypes) {
                     $allowedMimeTypes = false;
                 } else {
                     $allowedMimeTypes = explode('|', strtolower($allowedMimeTypes));

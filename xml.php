@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 ob_start();
 include __DIR__ . '/header.php';
 error_reporting(0);
@@ -37,7 +41,7 @@ $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
 $articleHandler  = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
 $article_obj     = $articleHandler->get($article_id);
 if ($article_id > 0) {
-    $criteria       = new CriteriaCompo(new Criteria('ac.ac_publish', 0, '>'));
+    $criteria       = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
     $categories_obj = $categoryHandler->getByArticle($article_id, $criteria);
     if (0 == count($categories_obj) || !in_array($category_id, array_keys($categories_obj))) {
         $category_id = 0;
@@ -58,10 +62,10 @@ if ($isAuthor || ($isAdmin && null !== $articleHandler->getCategoryStatus($categ
     art_trackback_response(1, art_constant('MD_NOACCESS'));
 }
 
-if ('RDF' == $type) {
+if ('RDF' === $type) {
     $type = 'RSS1.0';
 }
-if ('RSS' == $type) {
+if ('RSS' === $type) {
     $type = 'RSS0.91';
 }
 
@@ -81,11 +85,11 @@ if ($article_id > 0) {
         art_trackback_response(1, art_constant('MD_NOACCESS'));
     }
 }
-$xml_charset = empty($xoopsModuleConfig['do_rssutf8']) ? _CHARSET : 'UTF-8';
+$xml_charset = empty($helper->getConfig('do_rssutf8')) ? _CHARSET : 'UTF-8';
 
 require_once XOOPS_ROOT_PATH . '/class/template.php';
 
-$tpl                 = new XoopsTpl();
+$tpl                 = new \XoopsTpl();
 $tpl->caching        = 2;
 $tpl->cache_lifetime = 3600;
 load_functions('cache');
@@ -156,8 +160,8 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
             $pagetitle = art_constant('MD_CATEGORY');
             $rssdesc   = sprintf(art_constant('MD_XMLDESC_CATEGORY'), $category_obj->getVar('cat_title'));
 
-            $criteria     = new CriteriaCompo(new Criteria('ac.ac_publish', 0, '>'));
-            $articles_obj = $articleHandler->getByCategory($category_id, $xoopsModuleConfig['articles_perpage'], 0, $criteria, [
+            $criteria     = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
+            $articles_obj = $articleHandler->getByCategory($category_id, $helper->getConfig('articles_perpage'), 0, $criteria, [
                 'a.art_title',
                 'a.art_time_publish',
                 'a.art_keywords',
@@ -198,9 +202,9 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
                 $items = [];
                 break;
             }
-            $criteria = new CriteriaCompo(new Criteria('a.uid', $uid));
-            $criteria->add(new Criteria('ac.ac_publish', 0, '>'));
-            $articles_obj = $articleHandler->getByCategory($categories_id, $xoopsModuleConfig['articles_perpage'], 0, $criteria, [
+            $criteria = new \CriteriaCompo(new \Criteria('a.uid', $uid));
+            $criteria->add(new \Criteria('ac.ac_publish', 0, '>'));
+            $articles_obj = $articleHandler->getByCategory($categories_id, $helper->getConfig('articles_perpage'), 0, $criteria, [
                 'a.art_title',
                 'a.cat_id',
                 'a.art_time_publish',
@@ -236,9 +240,9 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
                 $items = [];
                 break;
             }
-            $criteria = new CriteriaCompo(new Criteria('cat_id', '(' . implode(',', $categories_id) . ')', 'IN'));
-            $criteria->add(new Criteria('art_time_publish', 0, '>'));
-            $criteria->setLimit($xoopsModuleConfig['articles_perpage']);
+            $criteria = new \CriteriaCompo(new \Criteria('cat_id', '(' . implode(',', $categories_id) . ')', 'IN'));
+            $criteria->add(new \Criteria('art_time_publish', 0, '>'));
+            $criteria->setLimit($helper->getConfig('articles_perpage'));
             $articles_obj = $articleHandler->getAll($criteria, [
                 'art_title',
                 'uid',
@@ -279,7 +283,7 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
             break;
     }
 
-    $xml_charset = empty($xoopsModuleConfig['do_rssutf8']) ? _CHARSET : 'UTF-8';
+    $xml_charset = empty($helper->getConfig('do_rssutf8')) ? _CHARSET : 'UTF-8';
 
     $xmlHandler = xoops_getModuleHandler('xml', $GLOBALS['artdirname']);
     $xml        = $xmlHandler->create($type);

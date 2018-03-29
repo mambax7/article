@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 // Limitation: Only work with javascript enabled
 
@@ -43,22 +43,22 @@ class XoopsFormSelectWriter extends XoopsFormElementTray
     {
         parent::__construct($caption, ' | ', $name);
 
-        $select_form = new XoopsFormSelect('', $name, $value, $size = 1, $multiple = false);
+        $select_form = new \XoopsFormSelect('', $name, $value, $size = 1, $multiple = false);
         if (!empty($value)) {
             if (!is_array($value)) {
                 $value = [$value];
             }
-            $criteria = new CriteriaCompo(new Criteria('writer_id', '(' . implode(', ', $value) . ')', 'IN'));
+            $criteria = new \CriteriaCompo(new \Criteria('writer_id', '(' . implode(', ', $value) . ')', 'IN'));
             $criteria->setSort('writer_name');
             $criteria->setOrder('ASC');
             $writerHandler = xoops_getModuleHandler('writer', $GLOBALS['artdirname']);
             $select_form->addOptionArray($writerHandler->getList($criteria));
         }
 
-        $action_tray = new XoopsFormElementTray('', ' | ');
-        //$action_tray->addElement(new XoopsFormLabel('', "<a href='".XOOPS_URL."/modules/".$GLOBALS["artdirname"]."/edit.writer.php?search=1&amp;target=".$name."' target='writereditor'>"._SEARCH."</a>"));
-        $action_tray->addElement(new XoopsFormLabel('', "<a href='###' onclick='return openWithSelfMain(\"" . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . "/edit.writer.php?search=1\", \"writereditor\", 800, 500, null);' >" . _SEARCH . '</a>'));
-        $action_tray->addElement(new XoopsFormLabel('', "<a href='###' onclick='var sel = xoopsGetElementById(\"" . $name . "\");for (var i = sel.options.length-1; i >= 0; i--) {if (sel.options[i].selected) {sel.options[i] = null;}}'>" . art_constant('MD_REMOVE') . '</a>' . '<script type="text/javascript">
+        $action_tray = new \XoopsFormElementTray('', ' | ');
+        //$action_tray->addElement(new \XoopsFormLabel('', "<a href='".XOOPS_URL."/modules/".$GLOBALS["artdirname"]."/edit.writer.php?search=1&amp;target=".$name."' target='writereditor'>"._SEARCH."</a>"));
+        $action_tray->addElement(new \XoopsFormLabel('', "<a href='###' onclick='return openWithSelfMain(\"" . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . "/edit.writer.php?search=1\", \"writereditor\", 800, 500, null);' >" . _SEARCH . '</a>'));
+        $action_tray->addElement(new \XoopsFormLabel('', "<a href='###' onclick='var sel = xoopsGetElementById(\"" . $name . "\");for (var i = sel.options.length-1; i >= 0; i--) {if (sel.options[i].selected) {sel.options[i] = null;}}'>" . art_constant('MD_REMOVE') . '</a>' . '<script type="text/javascript">
             function addusers(opts)
             {
                 var num = opts.substring(0, opts.indexOf(":"));

@@ -3,7 +3,7 @@
 <!-- page breadcrumbs -->
 <div class="article-breadcrumbs head">
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/"><{$modulename}></a>
-    <{foreachq item=track from=$tracks}>
+    <{foreach item=track from=$tracks}>
     ::
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$track.id}>"><{$track.title}></a>
     <{if $featured}>
@@ -53,7 +53,7 @@
         <{if count($category.moderators)>0}>
             <br>
             <{php}>echo art_constant("MD_MODERATOR");<{/php}>:
-            <{foreachq item=moderator key=muid from=$category.moderators}>
+            <{foreach item=moderator key=muid from=$category.moderators}>
             <span><{$moderator}></span>
         <{/foreach}>
         <{/if}>
@@ -76,7 +76,7 @@
     </div>
 
     <div class="article-section-container">
-        <{foreachq item=article from=$features}>
+        <{foreach item=article from=$features}>
         <div class="article-list">
             <div class="article-header-image"><img src="<{$article.image.url|default:$default_image}>"
                                                    alt="<{$article.title}>"><br><{$article.image.caption}></div>
@@ -126,7 +126,7 @@
 
                 <div class="article-section-container">
                     <ol>
-                        <{foreachq item=article from=$articles}>
+                        <{foreach item=article from=$articles}>
                         <li>
                             <div class="article-title">
                                 <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}><{$article.id}>"><{$article.title}></a>
@@ -162,7 +162,7 @@
                 </div>
 
                 <div class="article-section-container">
-                    <{foreachq item=cat name=cat from=$categories}>
+                    <{foreach item=cat name=cat from=$categories}>
                     <span class="article-term">
             <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$cat.id}>"><{$cat.title}></a>
             (<acronym title='<{php}>echo art_constant("MD_SUBCATEGORIES");<{/php}>'><{$cat.categories}></acronym>|<acronym

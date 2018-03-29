@@ -8,7 +8,7 @@
 <{if $search_info}>
     <div class="resultMsg"> <{$search_info}> </div>
     <{if $results}>
-        <{foreachq item=result from=$results}>
+        <{foreach item=result from=$results}>
         <div class="item">
             <strong><a href="<{$result.link}>"><{$result.art_title}></a></strong><br>
             <{$result.author}> <{$result.art_time}>

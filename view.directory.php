@@ -16,14 +16,18 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 
 // Set groups, template, header for cache purposes
 if (!empty($xoopsUser)) {
     $xoopsOption['cache_group'] = implode(',', $xoopsUser->groups());
 }
-$GLOBALS['xoopsOption']['template_main'] = art_getTemplate('directory', $xoopsModuleConfig['template']);
-$xoops_module_header                     = art_getModuleHeader($xoopsModuleConfig['template']) . '
+$GLOBALS['xoopsOption']['template_main'] = art_getTemplate('directory', $helper->getConfig('template'));
+$xoops_module_header                     = art_getModuleHeader($helper->getConfig('template')) . '
     <link rel="alternate" type="application/rss+xml" title="' . $xoopsModule->getVar('name') . ' rss" href="' . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/xml.php' . URL_DELIMITER . 'rss">
     <link rel="alternate" type="application/rss+xml" title="' . $xoopsModule->getVar('name') . ' rdf" href="' . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/xml.php' . URL_DELIMITER . 'rdf">
     <link rel="alternate" type="application/atom+xml" title="' . $xoopsModule->getVar('name') . ' atom" href="' . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/xml.php' . URL_DELIMITER . 'atom">
@@ -58,7 +62,7 @@ if (!$category_obj->isNew()) {
         'articles'    => (int)$counts_article[$category_id]
     ];
     $topicHandler                = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
-    $category_data['topics']     = $topicHandler->getCount(new Criteria('cat_id', $category_id));
+    $category_data['topics']     = $topicHandler->getCount(new \Criteria('cat_id', $category_id));
     $category_data['categories'] = count(@$data['child']);
     $tracks                      = $categoryHandler->getTrack($category_obj, true);
 }

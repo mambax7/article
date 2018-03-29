@@ -16,7 +16,12 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+
 include __DIR__ . '/header.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 $category_id = (int)(@$_GET['category']);
 $art_id      = (int)(@$_GET['article']);
@@ -25,8 +30,8 @@ $newpage     = (int)(@$_GET['newpage']);
 $from        = @$_GET['from'];
 
 $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
-if (!empty($xoopsModuleConfig['article_expire'])) {
-    $articleHandler->cleanExpires($xoopsModuleConfig['article_expire'] * 24 * 3600);
+if (!empty($helper->getConfig('article_expire'))) {
+    $articleHandler->cleanExpires($helper->getConfig('article_expire') * 24 * 3600);
 }
 if ($art_id > 0) {
     $article_obj = $articleHandler->get($art_id);
@@ -92,7 +97,7 @@ $art_keywords = $article_obj->getVar('art_keywords', 'E');
 $art_template = $article_obj->getVar('art_template');
 
 // Category
-$criteria = new CriteriaCompo(new Criteria('ac_register', 0, '>'));
+$criteria = new \CriteriaCompo(new \Criteria('ac_register', 0, '>'));
 $category = $articleHandler->getCategoryIds($article_obj, $criteria);
 
 // topic
@@ -142,17 +147,17 @@ include XOOPS_ROOT_PATH . '/header.php';
 include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 // Disclaimer
-if (!empty($xoopsModuleConfig['disclaimer']) /*&& !$isModerator*/) {
+if (!empty($helper->getConfig('disclaimer')) /*&& !$isModerator*/) {
     echo '<div><strong>' . art_constant('MD_DISCLAIMER') . '</strong></div><br>';
-    echo '<div class="confirmMsg" style="text-align:left;">' . $myts->displayTarea($xoopsModuleConfig['disclaimer']) . '</div><br>';
+    echo '<div class="confirmMsg" style="text-align:left;">' . $myts->displayTarea($helper->getConfig('disclaimer')) . '</div><br>';
 }
 
 if ($user_id > 0) {
-    $criteria = new CriteriaCompo(new Criteria('art_time_submit', 0));
-    $criteria->add(new Criteria('art_time_create', 0, '>'));
-    $criteria->add(new Criteria('uid', $user_id));
+    $criteria = new \CriteriaCompo(new \Criteria('art_time_submit', 0));
+    $criteria->add(new \Criteria('art_time_create', 0, '>'));
+    $criteria->add(new \Criteria('uid', $user_id));
     if ($art_id > 0) {
-        $criteria->add(new Criteria('art_id', $art_id, '<>'));
+        $criteria->add(new \Criteria('art_id', $art_id, '<>'));
     }
     $drafts = $articleHandler->getIds($criteria);
     if (count($drafts)) {

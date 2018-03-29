@@ -34,7 +34,7 @@ switch ($type) {
         }
 
         $limit    = empty($_GET['limit']) ? 20 : (int)$_GET['limit'];
-        $criteria = new Criteria('1', 1);
+        $criteria = new \Criteria('1', 1);
         $criteria->setStart($start);
         $criteria->setLimit($limit);
         $categories_obj = $categoryHandler->getAll($criteria);
@@ -55,7 +55,7 @@ switch ($type) {
         }
 
         $limit    = empty($_GET['limit']) ? 100 : (int)$_GET['limit'];
-        $criteria = new Criteria('1', 1);
+        $criteria = new \Criteria('1', 1);
         $criteria->setStart($start);
         $criteria->setLimit($limit);
         $articles_obj = $articleHandler->getAll($criteria);
@@ -64,13 +64,13 @@ switch ($type) {
 
         $sql    = '    SELECT art_id, COUNT(*) AS art_rates, SUM(rate_rating) AS art_rating ' . '    FROM ' . art_DB_prefix('rate') . '    WHERE art_id IN(' . implode(',', array_keys($articles_obj)) . ')' . '    GROUP BY art_id';
         $result = $xoopsDB->query($sql);
-        while ($myrow = $xoopsDB->fetchArray($result)) {
+        while (false !== ($myrow = $xoopsDB->fetchArray($result))) {
             $rates[$myrow['art_id']] = ['art_rates' => $myrow['art_rates'], 'art_rating' => $myrow['art_rating']];
         }
 
         $sql    = '    SELECT art_id, COUNT(*) AS art_trackbacks ' . '    FROM ' . art_DB_prefix('trackback') . '    WHERE art_id IN (' . implode(', ', array_keys($articles_obj)) . ')' . '        AND tb_status > 0' . '    GROUP BY art_id';
         $result = $xoopsDB->query($sql);
-        while ($myrow = $xoopsDB->fetchArray($result)) {
+        while (false !== ($myrow = $xoopsDB->fetchArray($result))) {
             $tbs[$myrow['art_id']] = $myrow['art_trackbacks'];
         }
 

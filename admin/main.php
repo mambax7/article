@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 /**
  * Function to check status of a folder
@@ -155,11 +159,11 @@ $form .= '</text><br>';
 $form .= '</div>';
 
 $form        .= "<div style='padding: 8px;'>";
-$path_image  = XOOPS_ROOT_PATH . '/' . $xoopsModuleConfig['path_image'] . '/';
+$path_image  = XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image') . '/';
 $path_status = art_admin_getPathStatus($path_image);
 $form        .= '<label>' . art_constant('AM_PATH_IMAGE') . ':</label><text>' . $path_image . ' ( ' . $path_status . ' )';
 $form        .= '</text><br>';
-$path_file   = XOOPS_ROOT_PATH . '/' . $xoopsModuleConfig['path_file'] . '/';
+$path_file   = XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_file') . '/';
 $path_status = art_admin_getPathStatus($path_file);
 $form        .= '<label>' . art_constant('AM_PATH_FILE') . ':</label><text>' . $path_file . ' ( ' . $path_status . ' )';
 $form        .= '</text><br>';
@@ -173,7 +177,7 @@ $category_count    = $categoryHandler->getCount();
 $topicHandler      = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
 $topic_count       = $topicHandler->getCount();
 $articleHandler    = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
-$article_count     = $articleHandler->getCount(new Criteria('art_time_publish', 0, '>'));
+$article_count     = $articleHandler->getCount(new \Criteria('art_time_publish', 0, '>'));
 $category          = 0;
 $article_submitted = $categoryHandler->getArticleCountRegistered($category);
 $article_published = $categoryHandler->getArticleCountPublished($category);

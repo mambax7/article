@@ -16,13 +16,13 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 art_parse_function('
-function xoops_module_install_[DIRNAME](XoopsModule $module)
+function xoops_module_install_[DIRNAME](\XoopsModule $module)
 {
     [DIRNAME]_updateXoopsConfig();
 
@@ -86,7 +86,7 @@ function xoops_module_install_[DIRNAME](XoopsModule $module)
     return true;
 }
 
-function xoops_module_pre_install_[DIRNAME](XoopsModule $module)
+function xoops_module_pre_install_[DIRNAME](\XoopsModule $module)
 {
     $mod_tables = $module->getInfo("tables");
     foreach ($mod_tables as $table) {
@@ -96,12 +96,12 @@ function xoops_module_pre_install_[DIRNAME](XoopsModule $module)
     return [DIRNAME]_setModuleConfig($module);
 }
 
-function xoops_module_pre_update_[DIRNAME](XoopsModule $module)
+function xoops_module_pre_update_[DIRNAME](\XoopsModule $module)
 {
     return [DIRNAME]_setModuleConfig($module);
 }
 
-function xoops_module_update_[DIRNAME](XoopsModule $module, $prev_version = null)
+function xoops_module_update_[DIRNAME](\XoopsModule $module, $prev_version = null)
 {
     //if ($prev_version < 100) {
         [DIRNAME]_updateXoopsConfig();
@@ -142,7 +142,7 @@ function xoops_module_update_[DIRNAME](XoopsModule $module, $prev_version = null
     $template_directory = XOOPS_ROOT_PATH . "/modules/" . $module->getVar("dirname", "n") . "/templates/";
     $template_list      = array_diff(scandir($template_directory, SCANDIR_SORT_NONE), array("..", "."));
     foreach ($template_list as $k => $v) {
-        $fileinfo = new SplFileInfo($template_directory . $v);
+        $fileinfo = new \SplFileInfo($template_directory . $v);
         if ($fileinfo->getExtension() == "html" && $fileinfo->getFilename() != "index.html") {
             @unlink($template_directory . $v);
         }
@@ -169,7 +169,7 @@ function [DIRNAME]_updateXoopsConfig()
     return true;
 }
 
-function [DIRNAME]_setModuleConfig(XoopsModule $module)
+function [DIRNAME]_setModuleConfig(\XoopsModule $module)
 {
     return true;
 }

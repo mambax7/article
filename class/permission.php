@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 require_once __DIR__ . '/../include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
@@ -56,10 +56,10 @@ class [CLASS_PREFIX]PermissionHandler extends XoopsGroupPermHandler
         }
 
         $gpermHandler = xoops_getHandler("groupperm");
-        $criteria = new CriteriaCompo(new Criteria("gperm_modid", $module_id));
+        $criteria = new \CriteriaCompo(new \Criteria("gperm_modid", $module_id));
         $gperm_names = "(\'" . implode( "\', \'", array_keys( $GLOBALS["perms_category"] ) ) . "\')";
-        $criteria->add(new Criteria("gperm_name", $gperm_names, "IN"));
-        $criteria->add(new Criteria("gperm_itemid", $cat_id));
+        $criteria->add(new \Criteria("gperm_name", $gperm_names, "IN"));
+        $criteria->add(new \Criteria("gperm_itemid", $cat_id));
         $gpermHandler->deleteAll($criteria);
 
         $this->createPermData();
@@ -215,20 +215,20 @@ class [CLASS_PREFIX]PermissionHandler extends XoopsGroupPermHandler
      */
     function _checkRight($gperm_name, $gperm_itemid, $gperm_groupid, $gperm_modid = 1)
     {
-        $criteria = new CriteriaCompo(new Criteria("gperm_modid", $gperm_modid));
-        $criteria->add(new Criteria("gperm_name", $gperm_name));
+        $criteria = new \CriteriaCompo(new \Criteria("gperm_modid", $gperm_modid));
+        $criteria->add(new \Criteria("gperm_name", $gperm_name));
         $gperm_itemid = (int)($gperm_itemid);
         if ($gperm_itemid > 0) {
-            $criteria->add(new Criteria("gperm_itemid", $gperm_itemid));
+            $criteria->add(new \Criteria("gperm_itemid", $gperm_itemid));
         }
         if (is_array($gperm_groupid)) {
-            $criteria2 = new CriteriaCompo();
+            $criteria2 = new \CriteriaCompo();
             foreach ($gperm_groupid as $gid) {
-                $criteria2->add(new Criteria("gperm_groupid", $gid), "OR");
+                $criteria2->add(new \Criteria("gperm_groupid", $gid), "OR");
             }
             $criteria->add($criteria2);
         } else {
-            $criteria->add(new Criteria("gperm_groupid", $gperm_groupid));
+            $criteria->add(new \Criteria("gperm_groupid", $gperm_groupid));
         }
         if ($this->getCount($criteria) > 0) {
             return true;
@@ -252,11 +252,11 @@ class [CLASS_PREFIX]PermissionHandler extends XoopsGroupPermHandler
         if (is_callable(array(&$this->XoopsGroupPermHandler, "deleteRight"))) {
             return parent::deleteRight($perm, $itemid, $groupid, $mid);
         } else {
-            $criteria = new CriteriaCompo(new Criteria("gperm_name", $perm));
-            $criteria->add(new Criteria("gperm_groupid", $groupid));
-            $criteria->add(new Criteria("gperm_itemid", $itemid));
-            $criteria->add(new Criteria("gperm_modid", $mid));
-            $perms_obj = $this->getObjects($criteria);
+            $criteria = new \CriteriaCompo(new \Criteria("gperm_name", $perm));
+            $criteria->add(new \Criteria("gperm_groupid", $groupid));
+            $criteria->add(new \Criteria("gperm_itemid", $itemid));
+            $criteria->add(new \Criteria("gperm_modid", $mid));
+            $perms_obj =& $this->getObjects($criteria);
             if (!empty($perms_obj)) {
                 foreach ($perms_obj as $perm_obj) {
                     $this->delete($perm_obj);

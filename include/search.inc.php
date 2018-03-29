@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
@@ -111,7 +111,7 @@ function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $ca
     $users = array();
     $arts = array();
     mod_loadFunctions("time", $GLOBALS["artdirname"]);
-    while ($myrow = $xoopsDB->fetchArray($result)) {
+    while (false !== ($myrow = $xoopsDB->fetchArray($result))) {
         if (empty($isFulltext)):
         $ret[] = array(
             "link"        => "view.article.php" . URL_DELIMITER . $myrow["art_id"],

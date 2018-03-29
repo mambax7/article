@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/../include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
@@ -170,7 +170,7 @@ function [VAR_PREFIX]_topic_show($options)
     $tops = array();
     $cids = array();
     $topicHandler = xoops_getModuleHandler("topic", $GLOBALS["artdirname"]);
-    while ($row = $xoopsDB->fetchArray($result)) {
+    while (false !== ($row = $xoopsDB->fetchArray($result))) {
         $topic = $topicHandler->create(false);
         $topic->assignVars($row);
         $_top = array();
@@ -184,7 +184,7 @@ function [VAR_PREFIX]_topic_show($options)
     }
 
     $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
-    $criteria = new Criteria("cat_id", "(" . implode(",", array_keys($cids)) . ")", "IN");
+    $criteria = new \Criteria("cat_id", "(" . implode(",", array_keys($cids)) . ")", "IN");
     $cats = $categoryHandler->getList($criteria);
 
     for ($i = 0, $iMax = count($tops); $i < $iMax; ++$i) {
@@ -249,7 +249,7 @@ function [VAR_PREFIX]_author_show($options)
     }
     $rows = array();
     $author = array();
-    while ($row = $xoopsDB->fetchArray($result)) {
+    while (false !== ($row = $xoopsDB->fetchArray($result))) {
         $rows[] = $row;
         $author[$row["uid"]] = 1;
     }

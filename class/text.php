@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 require_once __DIR__ . '/../include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
@@ -44,7 +44,7 @@ if (!class_exists('Text')) {
 art_parse_class('
 class [CLASS_PREFIX]TextHandler extends XoopsPersistableObjectHandler
 {
-    function __construct(XoopsDatabase $db)
+    function __construct(\XoopsDatabase $db)
     {
         parent::__construct($db, art_DB_prefix("text", true), "Text", "text_id", "text_title");
     }
@@ -74,7 +74,7 @@ class [CLASS_PREFIX]TextHandler extends XoopsPersistableObjectHandler
             $sql = "SELECT $select FROM " . art_DB_prefix("text") . " WHERE art_id = " . (int)($art_id) . " ORDER BY text_id";
             $result = $this->db->query($sql);
             $ret = array();
-            while ($myrow = $this->db->fetchArray($result)) {
+           while (false !== ($myrow = $this->db->fetchArray($result))) {
                 $text = $this->create(false);
                 $text->assignVars($myrow);
                 $ret[$myrow["text_id"]] = $text;
@@ -92,7 +92,7 @@ class [CLASS_PREFIX]TextHandler extends XoopsPersistableObjectHandler
         if ($page) {
             $sql = "SELECT text_id FROM " . art_DB_prefix("text") . " WHERE art_id = ". (int)($art_id) ." ORDER BY text_id LIMIT ".((int)($page)-1).", 1";
             $result = $this->db->query($sql);
-            while ($myrow = $this->db->fetchArray($result)) {
+           while (false !== ($myrow = $this->db->fetchArray($result))) {
                 $ret = $myrow["text_id"];
 
                 return $ret;
@@ -104,7 +104,7 @@ class [CLASS_PREFIX]TextHandler extends XoopsPersistableObjectHandler
             $sql = "SELECT text_id FROM " . art_DB_prefix("text") . " WHERE art_id = ". (int)($art_id) ." ORDER BY text_id";
             $result = $this->db->query($sql);
             $ret = array();
-            while ($myrow = $this->db->fetchArray($result)) {
+           while (false !== ($myrow = $this->db->fetchArray($result))) {
                 $ret[] = $myrow["text_id"];
                 unset($text);
             }

@@ -4,7 +4,7 @@
     <{if count($tracks)>0}>
         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/cp.topic.php?from=<{$from}>"><{$modulename}> <{php}>echo art_constant("MD_CPTOPIC");<{/php}></a>
         </a>
-        <{foreachq item=track from=$tracks}>
+        <{foreach item=track from=$tracks}>
         ::
         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/cp.topic.php?category=<{$track.id}>&amp;from=<{$from}>"><{$track.title}></a>
     <{/foreach}>
@@ -45,7 +45,7 @@
 
             <div class="article-section-container">
 
-                <{foreachq key=id item=topic from=$topics}>
+                <{foreach key=id item=topic from=$topics}>
                 <div class="article-list" style="padding-top: 10px;">
                     <strong><a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.topic.php<{$smarty.const.URL_DELIMITER}><{$topic.id}>"><{$topic.title}></a></strong>
                 </div>

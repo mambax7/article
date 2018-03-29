@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 
 if (art_parse_args($args_num, $args, $args_str)) {
@@ -51,7 +55,7 @@ require_once XOOPS_ROOT_PATH . '/header.php';
 include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 $articleHandler  = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
-$articles_object = $topicHandler->getArticles($topic_obj, $xoopsModuleConfig['articles_perpage'], $start);
+$articles_object = $topicHandler->getArticles($topic_obj, $helper->getConfig('articles_perpage'), $start);
 
 $articles = [];
 $uids     = [];
@@ -70,14 +74,14 @@ foreach ($articles_object as $id => $article) {
         'id'     => $id,
         'title'  => $article->getVar('art_title'),
         'author' => $author,
-        'time'   => $article->getTime($xoopsModuleConfig['timeformat'])
+        'time'   => $article->getTime($helper->getConfig('timeformat'))
     ];
 }
 
 $count_article = $topicHandler->getArticleCount($topic_id);
-if ($count_article > $xoopsModuleConfig['articles_perpage']) {
+if ($count_article > $helper->getConfig('articles_perpage')) {
     include XOOPS_ROOT_PATH . '/class/pagenav.php';
-    $nav     = new XoopsPageNav($count_article, $xoopsModuleConfig['articles_perpage'], $start, 'start', 'topic=' . $topic_id);
+    $nav     = new \XoopsPageNav($count_article, $helper->getConfig('articles_perpage'), $start, 'start', 'topic=' . $topic_id);
     $pagenav = $nav->renderNav(4);
 } else {
     $pagenav = '';
@@ -90,7 +94,7 @@ if (empty($start)) {
         'cat_id'      => $topic_obj->getVar('cat_id'),
         'title'       => $topic_obj->getVar('top_title'),
         'description' => $topic_obj->getVar('top_description'),
-        'time'        => $topic_obj->getTime($xoopsModuleConfig['timeformat']),
+        'time'        => $topic_obj->getTime($helper->getConfig('timeformat')),
         'expire'      => $topic_obj->getExpire(),
         'articles'    => $count_article
     ];

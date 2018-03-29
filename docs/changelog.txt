@@ -30,7 +30,7 @@ Compatible with XOOPS 2.3+
 =================================
 1 Added configuration for article edit form, check article/readme.editmode.txt
 2 Added support for extended dhtml textarea editor that allows flash/wm/iframe...
-3 Implemented includeq and foreachq SMARTY plugin
+3 Implemented includeq and foreach SMARTY plugin
 4 Fixed bugs in templates and permissions
 
 

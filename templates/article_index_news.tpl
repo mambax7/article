@@ -51,7 +51,7 @@
         </div>
 
         <div class="article-section-container">
-            <{foreachq item=article from=$features}>
+            <{foreach item=article from=$features}>
             <div class="article-list">
 
                 <div class="article-header-image"><img src="<{$article.image.url|default:$default_image}>"

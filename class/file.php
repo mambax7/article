@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 require_once __DIR__ . '/../include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
@@ -29,7 +29,7 @@ if (!class_exists('Xfile')) {
         public function __construct($id = null)
         {
             //$this->ArtObject();
-            //$this->db = XoopsDatabaseFactory::getDatabaseConnection();
+            //$this->db = \XoopsDatabaseFactory::getDatabaseConnection();
             $this->table = art_DB_prefix('file');
             $this->initVar('file_id', XOBJ_DTYPE_INT, null);
             $this->initVar('art_id', XOBJ_DTYPE_INT, 0, true);
@@ -44,7 +44,7 @@ if (!class_exists('Xfile')) {
 art_parse_class('
 class [CLASS_PREFIX]FileHandler extends XoopsPersistableObjectHandler
 {
-    function __construct(XoopsDatabase $db)
+    function __construct(\XoopsDatabase $db)
     {
         parent::__construct($db, art_DB_prefix("file", true), "Xfile", "file_id", "file_name");
     }
@@ -76,7 +76,7 @@ class [CLASS_PREFIX]FileHandler extends XoopsPersistableObjectHandler
         }
         $result = $this->db->query($sql, $limit, $start);
         $ret = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $file = $this->create(false);
             $file->assignVars($myrow);
 
@@ -91,7 +91,7 @@ class [CLASS_PREFIX]FileHandler extends XoopsPersistableObjectHandler
        {
         if (isset($criteria) && is_subclass_of($criteria, "criteriaelement")) {
         } elseif (!empty($limit)) {
-            $criteria = new CriteriaCompo();
+            $criteria = new \CriteriaCompo();
             $criteria->setLimit($limit);
             $criteria->setStart($start);
         }
@@ -105,7 +105,7 @@ class [CLASS_PREFIX]FileHandler extends XoopsPersistableObjectHandler
         $sql = "SELECT * FROM " . art_DB_prefix("file") . " WHERE art_id = " . (int)($art_id);
         $result = $this->db->query($sql);
         $ret = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $file = $this->create(false);
             $file->assignVars($myrow);
             $ret[$myrow["file_id"]] = $file;
@@ -115,7 +115,7 @@ class [CLASS_PREFIX]FileHandler extends XoopsPersistableObjectHandler
         return $ret;
     }
 
-    function delete(XoopsObject $file)
+    function delete(\XoopsObject $file)
     {
         global $xoopsModuleConfig;
 

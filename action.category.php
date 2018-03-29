@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/uploader.php';
 
@@ -57,7 +61,7 @@ if (art_isAdministrator()) {
     $cat_pid = @$_POST['cat_pid'];
     if ($cat_pid != $category->getVar('cat_pid') && $cat_pid != $category->getVar('cat_id')) {
         require_once XOOPS_ROOT_PATH . '/class/xoopstree.php';
-        $mytree  = new XoopsObjectTree(art_DB_prefix('category'), 'cat_id', 'cat_pid');
+        $mytree  = new \XoopsObjectTree(art_DB_prefix('category'), 'cat_id', 'cat_pid');
         $idarray = $mytree->getAllChildId($category->getVar('cat_id'));
         if (!in_array($cat_pid, $idarray)) {
             $category->setVar('cat_pid', $cat_pid);
@@ -69,7 +73,7 @@ if (art_isAdministrator()) {
 $error_upload = '';
 $cat_image    = '';
 if (!empty($_FILES['userfile']['name'])) {
-    $uploader = new art_uploader(XOOPS_ROOT_PATH . '/' . $xoopsModuleConfig['path_image']);
+    $uploader = new art_uploader(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image'));
     if ($uploader->fetchMedia($_POST['xoops_upload_file'][0])) {
         if (!$uploader->upload()) {
             $error_upload = $uploader->getErrors();

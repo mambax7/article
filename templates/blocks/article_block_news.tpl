@@ -66,7 +66,7 @@
             <div><{$block.lang.categories}></div>
             -->
             <ul style="margin: 5px; padding-left: 5px;">
-                <{foreachq item=article from=$block.articles}>
+                <{foreach item=article from=$block.articles}>
                 <li style="list-tyle-type: disc; list-style-position: outside; margin-left: 5px;">
                     <a href="<{$article.url}>" title="<{$article.title_full}>"><{$article.title}></a>
                     <{$article.time}> <{if $article.comments}> (
@@ -78,7 +78,7 @@
         </div>
         <div style="margin:5px 0;">
             <{$block.lang.categories}>:
-            <{foreachq item=category from=$block.categories}>
+            <{foreach item=category from=$block.categories}>
             <span>[<a href="<{$category.url}>" title="<{$category.title}>"><{$category.title}></a>]</span>
             <{/foreach}>
         </div>
@@ -90,7 +90,7 @@
 
             <div>
 
-                <{foreachq item=category name=category from=$block.categories}>
+                <{foreach item=category name=category from=$block.categories}>
                 <div style="float: left; width: <{$col_width}>%; padding: 0 5px; margin-top: 5px;">
                     <div style="font-weight: bold; border-bottom: solid 1px #ddd;">
                         <img src="<{$xoops_url}>/assets/images/pointer.gif" alt=""> <a
@@ -98,7 +98,7 @@
                     </div>
                     <div>
                         <ul style="margin: 5px; padding-left: 5px; list-style: disc outside;">
-                            <{foreachq item=article from=$category.articles}>
+                            <{foreach item=article from=$category.articles}>
                             <li style="list-style: disc outside;">
                                 <a href="<{$article.url}>" title="<{$article.title_full}>"><{$article.title}></a>
                                 <{$article.time}> <{if $article.comments}> (

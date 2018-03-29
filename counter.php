@@ -15,10 +15,14 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
+use XoopsModules\Article;
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 include __DIR__ . '/header.php';
 
-if (empty($xoopsModuleConfig['do_counter'])) {
+if (empty($helper->getConfig('do_counter'))) {
     return;
 }
 $article_id = empty($_GET['article']) ? 0 : (int)$_GET['article'];

@@ -34,13 +34,13 @@ if (!$categoryHandler->getPermission($category_id, 'rate')) {
     $message = art_constant('MD_NOACCESS');
 } else {
     $uid      = is_object($xoopsUser) ? $xoopsUser->getVar('uid') : 0;
-    $criteria = new CriteriaCompo(new Criteria('art_id', $article_id));
+    $criteria = new \CriteriaCompo(new \Criteria('art_id', $article_id));
     $ip       = art_getIP();
     if ($uid > 0) {
-        $criteria->add(new Criteria('uid', $uid));
+        $criteria->add(new \Criteria('uid', $uid));
     } else {
-        $criteria->add(new Criteria('rate_ip', $ip));
-        $criteria->add(new Criteria('rate_time', time() - 24 * 3600, '>'));
+        $criteria->add(new \Criteria('rate_ip', $ip));
+        $criteria->add(new \Criteria('rate_time', time() - 24 * 3600, '>'));
     }
     $rateHandler = xoops_getModuleHandler('rate', $GLOBALS['artdirname']);
     if ($count = $rateHandler->getCount($criteria)) {

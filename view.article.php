@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 
 //if(!empty($xoopsModuleConfig["do_urw"])):
@@ -56,7 +60,7 @@ $article_obj    = $articleHandler->get($article_id);
 $xoopsEntity =& $article_obj;
 
 $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-$criteria        = new CriteriaCompo(new Criteria('ac.ac_publish', 0, '>'));
+$criteria        = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
 $categories_obj  = $categoryHandler->getByArticle($article_id, $criteria);
 if (0 == count($categories_obj) || !in_array($category_id, array_keys($categories_obj))) {
     $category_id = 0;
@@ -124,7 +128,7 @@ include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/incl
 
 // Topics
 $topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
-$criteria     = new CriteriaCompo(new Criteria('t.top_expire', time(), '>'));
+$criteria     = new \CriteriaCompo(new \Criteria('t.top_expire', time(), '>'));
 $topics_obj   = $topicHandler->getByArticle($article_id, $criteria);
 $topics       = [];
 foreach ($topics_obj as $id => $topic) {
@@ -139,7 +143,7 @@ $article_data = [];
 $article_data['id']     = $article_obj->getVar('art_id');
 $article_data['cat_id'] = $category_id;
 if ($article_obj->getVar('art_forum')) {
-    $article_data['forum'] = XOOPS_URL . '/modules/' . sprintf($xoopsModuleConfig['url_forum'], $article_obj->getVar('art_forum'), $xoopsModuleConfig['forum']);
+    $article_data['forum'] = XOOPS_URL . '/modules/' . sprintf($helper->getConfig('url_forum'), $article_obj->getVar('art_forum'), $helper->getConfig('forum'));
 }
 
 // title
@@ -170,7 +174,7 @@ $article_data['writer'] = $article_obj->getWriter();
 $article_data['source'] = $article_obj->getVar('art_source');
 
 // publish time
-$article_data['time'] = $article_obj->getTime($xoopsModuleConfig['timeformat']);
+$article_data['time'] = $article_obj->getTime($helper->getConfig('timeformat'));
 
 // counter
 $article_data['counter'] = $article_obj->getVar('art_counter');
@@ -193,7 +197,7 @@ $article_data['category'] = $category_id;
 // text of page
 $text                 = $article_obj->getText($page);
 $article_data['text'] = $text;
-if (!empty($xoopsModuleConfig['do_keywords'])) {
+if (!empty($helper->getConfig('do_keywords'))) {
     $keywordsHandler = xoops_getModuleHandler('keywords', $GLOBALS['artdirname'], true);
     if ($keywordsHandler->init()) {
         $article_data['text']['body'] = $keywordsHandler->process($article_data['text']['body']);
@@ -208,10 +212,10 @@ $count_page = count($article_obj->getPages(false));
 if ($count_page > 1) {
     $pages = $article_obj->getPages(true);
     require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
-    $nav = new XoopsPageNav($count_page, 1, $page, 'page', 'category=' . $category_id . '&amp;article=' . $article_id);
-    //$nav = new XoopsPageNav($count_page, 1, $page, "page");
+    $nav = new \XoopsPageNav($count_page, 1, $page, 'page', 'category=' . $category_id . '&amp;article=' . $article_id);
+    //$nav = new \XoopsPageNav($count_page, 1, $page, "page");
     $article_data['pages'] = $nav->renderNav(5);
-    if ($xoopsModuleConfig['do_subtitle']) {
+    if ($helper->getConfig('do_subtitle')) {
         for ($ipage = 0; $ipage < $count_page; ++$ipage) {
             if (empty($pages[$ipage]['title'])) {
                 continue;
@@ -232,7 +236,7 @@ if ($count_page > 1) {
 /* trackback.title
  * trackback.url
  */
-if (2 != $xoopsModuleConfig['trackback_option']) { // trackback open
+if (2 != $helper->getConfig('trackback_option')) { // trackback open
     $trackbackHandler = xoops_getModuleHandler('trackback', $GLOBALS['artdirname']);
     $trackback_array  =& $trackbackHandler->getByArticle($article_obj->getVar('art_id'));
     $trackbacks       = [];
@@ -242,14 +246,14 @@ if (2 != $xoopsModuleConfig['trackback_option']) { // trackback open
             'title'   => $trackback->getVar('tb_title'),
             'url'     => $trackback->getVar('tb_url'),
             'excerpt' => $trackback->getVar('tb_excerpt'),
-            'time'    => $trackback->getTime($xoopsModuleConfig['timeformat']),
+            'time'    => $trackback->getTime($helper->getConfig('timeformat')),
             'ip'      => $trackback->getIp(),
             'name'    => $trackback->getVar('tb_blog_name'),
         ];
     }
 }
 
-if (!empty($xoopsModuleConfig['do_sibling'])) {
+if (!empty($helper->getConfig('do_sibling'))) {
     if (empty($idCategorized)) {
         $cats = array_keys($categoryHandler->getAllByPermission($permission = 'access', ['cat_id']));
     } else {
@@ -259,21 +263,21 @@ if (!empty($xoopsModuleConfig['do_sibling'])) {
     if (!empty($articles_sibling['previous'])) {
         $articles_sibling['previous']['url']   = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . URL_DELIMITER . $articles_sibling['previous']['id'] . '/c' . $idCategorized;
         $articles_sibling['previous']['title'] = $myts->htmlSpecialChars($articles_sibling['previous']['title']);
-        if (!empty($xoopsModuleConfig['sibling_length'])) {
-            $articles_sibling['previous']['title'] = xoops_substr($articles_sibling['previous']['title'], 0, $xoopsModuleConfig['sibling_length']);
+        if (!empty($helper->getConfig('sibling_length'))) {
+            $articles_sibling['previous']['title'] = xoops_substr($articles_sibling['previous']['title'], 0, $helper->getConfig('sibling_length'));
         }
     }
     if (!empty($articles_sibling['next'])) {
         $articles_sibling['next']['url']   = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . URL_DELIMITER . $articles_sibling['next']['id'] . '/c' . $idCategorized;
         $articles_sibling['next']['title'] = $myts->htmlSpecialChars($articles_sibling['next']['title']);
-        if (!empty($xoopsModuleConfig['sibling_length'])) {
-            $articles_sibling['next']['title'] = xoops_substr($articles_sibling['next']['title'], 0, $xoopsModuleConfig['sibling_length']);
+        if (!empty($helper->getConfig('sibling_length'))) {
+            $articles_sibling['next']['title'] = xoops_substr($articles_sibling['next']['title'], 0, $helper->getConfig('sibling_length'));
         }
     }
 }
 
 $xoopsTpl->assign('modulename', $xoopsModule->getVar('name'));
-$xoopsTpl->assign('copyright', sprintf($xoopsModuleConfig['copyright'], !empty($article_data['writer']['name']) ? $article_data['writer']['name'] : $article_data['author']));
+$xoopsTpl->assign('copyright', sprintf($helper->getConfig('copyright'), !empty($article_data['writer']['name']) ? $article_data['writer']['name'] : $article_data['author']));
 
 $xoopsTpl->assign('tracks', $categoryHandler->getTrack($category_obj, true));
 $xoopsTpl->assign('links', art_parseLinks($article_obj->getVar('art_elinks', 'E'))); // related external links
@@ -287,10 +291,10 @@ $xoopsTpl->assign_by_ref('sibling', $articles_sibling);
 $xoopsTpl->assign('isadmin', $isAdmin);
 $xoopsTpl->assign('isauthor', $isAuthor);
 
-$xoopsTpl->assign('do_counter', $xoopsModuleConfig['do_counter']);
-$xoopsTpl->assign('do_trackback', $xoopsModuleConfig['do_trackback']);
+$xoopsTpl->assign('do_counter', $helper->getConfig('do_counter'));
+$xoopsTpl->assign('do_trackback', $helper->getConfig('do_trackback'));
 
-$xoopsTpl->assign('canRate', !empty($xoopsModuleConfig['do_rate']) && $categoryHandler->getPermission($category_obj, 'rate'));
+$xoopsTpl->assign('canRate', !empty($helper->getConfig('do_rate')) && $categoryHandler->getPermission($category_obj, 'rate'));
 $xoopsTpl->assign('page', $page);
 
 $xoopsTpl->assign('sponsors', $category_obj->getSponsor());

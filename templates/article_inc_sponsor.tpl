@@ -5,7 +5,7 @@
 <div>
     <div>
 
-        <{foreachq item=sponsor name=sponsor from=$sponsors}>
+        <{foreach item=sponsor name=sponsor from=$sponsors}>
         <div style="width: <{$col_width}>%; display: inline; float: left; margin: 5px;">
             <a href="<{$sponsor.url}>" target="_blank"><{$sponsor.title}></a>
         </div>

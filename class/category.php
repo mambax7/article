@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 require_once __DIR__ . '/../include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
@@ -102,7 +102,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
      *
      * @param object $db reference to the {@link XoopsDatabase} object
      **/
-    function __construct(XoopsDatabase $db)
+    function __construct(\XoopsDatabase $db)
     {
         parent::__construct($db, art_DB_prefix("category", true), "Xcategory", "cat_id", "cat_title");
     }
@@ -155,7 +155,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
 
     function _setLastArticleIds(&$category)
     {
-        $criteria = new CriteriaCompo(new Criteria("ac.ac_publish", 0, ">"));
+        $criteria = new \CriteriaCompo(new \Criteria("ac.ac_publish", 0, ">"));
         $criteria->setSort("ac.ac_publish");
         $criteria->setOrder("DESC");
         $artConfig = art_load_config();
@@ -176,7 +176,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
      * @param  bool   $force    flag to force the query execution despite security settings
      * @return int    category ID
      */
-    function insert(XoopsObject $category, $force = true)
+    function insert(\XoopsObject $category, $force = true)
     {
         $cat_id = parent::insert($category, $force);
         if (!empty($category->vars["cat_pid"]["changed"])) {
@@ -198,7 +198,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
      * @param  bool   $forceDelete flag to force deleting articles/subcategories, otherwise move to its parent category
      * @return bool   true on success
      */
-    function delete(XoopsObject $category, $force = true, $forceDelete = false)
+    function delete(\XoopsObject $category, $force = true, $forceDelete = false)
     {
         $des_cat = ($category->getVar("cat_pid")) ? $category->getVar("cat_pid") : 0; // move to parent category
         $articleHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
@@ -212,7 +212,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
                 }
             }
         } else {
-            $articleHandler->updateAll("cat_id", $des_cat, new Criteria("cat_id", $category->getVar("cat_id")), true);
+            $articleHandler->updateAll("cat_id", $des_cat, new \Criteria("cat_id", $category->getVar("cat_id")), true);
             foreach (array_keys($articles) as $id) {
                 if ($des_cat > 0 && $articles[$id]->getVar("cat_id") == $category->getVar("cat_id")) {
                     $articleHandler->moveCategory($articles[$id], $des_cat, $category->getVar("cat_id"));
@@ -225,7 +225,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
         unset($articles);
 
         if (empty($forceDelete)) {
-            $this->updateAll("cat_pid", $des_cat, new Criteria("cat_pid", $category->getVar("cat_id")), true);
+            $this->updateAll("cat_pid", $des_cat, new \Criteria("cat_pid", $category->getVar("cat_id")), true);
             if (!empty($des_cat)) {
                 $this->setLastArticleIds($des_cat);
             }
@@ -242,7 +242,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
         $result = $this->db->{$queryFunc}($sql);
 
         $topicHandler = xoops_getModuleHandler("topic", $GLOBALS["artdirname"]);
-        $topicHandler->deleteAll(new Criteria("cat_id", $category->getVar("cat_id")));
+        $topicHandler->deleteAll(new \Criteria("cat_id", $category->getVar("cat_id")));
 
         xoops_notification_deletebyitem($GLOBALS["xoopsModule"]->getVar("mid"), "category", $category->getVar("cat_id"));
 
@@ -305,7 +305,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
             //xoops_error($this->db->error());
             return $ret;
         }
-        while ($row = $this->db->fetchArray($result)) {
+        while (false !== ($row = $this->db->fetchArray($result))) {
             $category = $this->create(false);
             $category->assignVars($row);
             $ret[$category->getVar("cat_id")] = $category;
@@ -331,9 +331,9 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
             $permissionHandler =  xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
             $allowed_cats =& $permissionHandler->getCategories($permission);
             if ( count($allowed_cats) == 0 ) return $ret;
-            $criteria = new Criteria("cat_id", "(" . implode(",", $allowed_cats) . ")", "IN");
+            $criteria = new \Criteria("cat_id", "(" . implode(",", $allowed_cats) . ")", "IN");
         } else {
-            $criteria = new Criteria("1", 1);
+            $criteria = new \Criteria("1", 1);
         }
         $criteria->setSort("cat_pid ASC, cat_order");
         $criteria->setOrder("ASC");
@@ -355,14 +355,14 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
         $pid = (int)($category);
         $ret = array();
 
-        $criteria = new CriteriaCompo(new Criteria("cat_pid", $pid));
+        $criteria = new \CriteriaCompo(new \Criteria("cat_pid", $pid));
         $criteria->setSort("cat_order");
         mod_loadFunctions("user", $GLOBALS["artdirname"]);
         if (!art_isAdministrator()) {
             $permissionHandler =  xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
             $allowed_cats =& $permissionHandler->getCategories($permission);
             if (count($allowed_cats) == 0) return $ret;
-            $criteria->add(new Criteria("cat_id", "(" . implode(", ", $allowed_cats) . ")", "IN"));
+            $criteria->add(new \Criteria("cat_id", "(" . implode(", ", $allowed_cats) . ")", "IN"));
         }
 
         $ret = parent::getAll($criteria, $tags);
@@ -483,7 +483,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
         }
         $tracks = $category->getVar("cat_track");
         if (!empty($tracks)) {
-            $criteria = new Criteria("cat_id", "(" . implode(",", $tracks) . ")", "IN");
+            $criteria = new \Criteria("cat_id", "(" . implode(",", $tracks) . ")", "IN");
             $cats = $this->getList($criteria);
             foreach ($tracks as $id) {
                 $ret[]=array(
@@ -599,7 +599,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
         $result = $this->db->query($sql, (int)($limit), (int)($start));
         $ret = array();
         $articleHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
-           while ($myrow = $this->db->fetchArray($result)) {
+          while (false !== ($myrow = $this->db->fetchArray($result))) {
             $article = $articleHandler->create(false);
             $article->assignVars($myrow);
             if ($asObject) {
@@ -630,9 +630,9 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
        function getArticleCountFeatured(&$cat_id, $criteria = null)
        {
         if (isset($criteria) && is_subclass_of($criteria, "criteriaelement")) {
-            $criteria->add(new Criteria("ac.ac_feature", 0, ">"));
+            $criteria->add(new \Criteria("ac.ac_feature", 0, ">"));
         } else {
-            $criteria = new CriteriaCompo(new Criteria("ac.ac_feature", 0, ">"));
+            $criteria = new \CriteriaCompo(new \Criteria("ac.ac_feature", 0, ">"));
         }
 
         return $this->getArticleCount($cat_id, $criteria);
@@ -650,9 +650,9 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
        function getArticleCountPublished(&$cat_id, $criteria = null)
        {
         if (isset($criteria) && is_subclass_of($criteria, "criteriaelement")) {
-            $criteria->add(new Criteria("ac.ac_publish", 0, ">"));
+            $criteria->add(new \Criteria("ac.ac_publish", 0, ">"));
         } else {
-            $criteria = new CriteriaCompo(new Criteria("ac.ac_publish", 0, ">"));
+            $criteria = new \CriteriaCompo(new \Criteria("ac.ac_publish", 0, ">"));
         }
 
         return $this->getArticleCount($cat_id, $criteria);
@@ -670,11 +670,11 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
        function getArticleCountRegistered(&$cat_id, $criteria = null)
        {
         if (isset($criteria) && is_subclass_of($criteria, "criteriaelement")) {
-            $criteria->add(new Criteria("ac.ac_register", 0, ">"));
+            $criteria->add(new \Criteria("ac.ac_register", 0, ">"));
         } else {
-            $criteria = new CriteriaCompo(new Criteria("ac.ac_register", 0, ">"));
+            $criteria = new \CriteriaCompo(new \Criteria("ac.ac_register", 0, ">"));
         }
-        $criteria->add(new Criteria("ac.ac_publish", 0));
+        $criteria->add(new \Criteria("ac.ac_publish", 0));
 
         return $this->getArticleCount($cat_id, $criteria);
        }
@@ -717,11 +717,11 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
        function getArticleCountsRegistered($cat_id = 0, $criteria = null)
        {
         if (isset($criteria) && is_subclass_of($criteria, "criteriaelement")) {
-            $criteria->add(new Criteria("ac.ac_register", 0, ">"));
+            $criteria->add(new \Criteria("ac.ac_register", 0, ">"));
         } else {
-            $criteria = new CriteriaCompo(new Criteria("ac.ac_register", 0, ">"));
+            $criteria = new \CriteriaCompo(new \Criteria("ac.ac_register", 0, ">"));
         }
-        $criteria->add(new Criteria("ac.ac_publish", 0));
+        $criteria->add(new \Criteria("ac.ac_publish", 0));
 
         return $this->getArticleCounts($cat_id, $criteria);
        }
@@ -749,7 +749,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
         $sql .= " GROUP BY ac.cat_id";
         $result = $this->db->query($sql);
         $ret = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $ret[$myrow["cat_id"]] = $myrow["count"];
         }
 
@@ -787,7 +787,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
         $sql .= " GROUP BY cat_pid";
         $result = $this->db->query($sql);
         $ret = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $ret[$myrow["cat_pid"]] = $myrow["count"];
         }
 
@@ -842,10 +842,10 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
                 " WHERE " . $this->table . ".cat_pid>0 AND (aa.cat_id IS NULL)";
         else:
         $this->identifierName = "cat_pid";
-        $category_list = $this->getList(new Criteria("cat_pid", 0, ">"));
+        $category_list = $this->getList(new \Criteria("cat_pid", 0, ">"));
         $this->identifierName = "cat_title";
         if ($parent_categories = @array_values($category_list)) {
-            $parent_list = $this->getIds(new Criteria("cat_id", "(" . implode(", ", $parent_categories) . ")", "IN"));
+            $parent_list = $this->getIds(new \Criteria("cat_id", "(" . implode(", ", $parent_categories) . ")", "IN"));
             foreach ($category_list as $cat_id => $parent_category) {
                 if (in_array($parent_category, $parent_list)) continue;
                 $category_obj = $this->get($cat_id);
@@ -878,7 +878,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
     function updateTrack($category = null, $tracks = null)
     {
         if (empty($category)) {
-            $categories_obj = $this->getObjects(new Criteria("cat_pid", 0), true);
+            $categories_obj =& $this->getObjects(new \Criteria("cat_pid", 0), true);
             foreach (array_keys($categories_obj) as $key) {
                 $this->updateTracks($categories_obj[$key]);
             }

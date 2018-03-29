@@ -3,11 +3,11 @@
 <!-- page breadcrumbs -->
 <div class="article-breadcrumbs head">
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/"><{$modulename}></a>
-    <{foreachq item=track from=$tracks}>
+    <{foreach item=track from=$tracks}>
     ::
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$track.id}>"><{$track.title}></a>
     <{/foreach}>
-    <{foreachq item=track from=$tracks_extra}>
+    <{foreach item=track from=$tracks_extra}>
     :: <a href="<{$track.link}>"><{$track.title}></a>
     <{/foreach}>
 </div>
@@ -15,7 +15,7 @@
 <!-- list header data -->
 <div class="article-section list-header">
     <h2 class="article-title">
-        <{foreachq item=track from=$page_meta}>
+        <{foreach item=track from=$page_meta}>
         <a href="<{$track.link}>"><{$track.title}></a>
         <{/foreach}>
     </h2>
@@ -28,7 +28,7 @@
             <{/if}>
 
             <div class="article-list">
-                <{foreachq item=profile from=$author.profiles}>
+                <{foreach item=profile from=$author.profiles}>
                 <div>
                     <span class="article-label"><{$profile.title}>:</span><span
                             class="article-content"><{$profile.content}></span>
@@ -37,7 +37,7 @@
                 <{if count($author.mods)>0}>
                     <div>
                         <span class="article-label"><{php}>echo art_constant("MD_MODERATOR");<{/php}>:</span>
-                        <{foreachq item=mod from=$author.mods}>
+                        <{foreach item=mod from=$author.mods}>
                         <span class="article-content"><a href="<{$mod.url}>"><{$mod.title}></a></span>
                         <{/foreach}>
                     </div>
@@ -63,7 +63,7 @@
             <span class="article-label">
                 <{php}>echo art_constant("MD_TYPES");<{/php}>:
             </span>
-            <{foreachq item=item from=$options.type}>
+            <{foreach item=item from=$options.type}>
             <span class="article-content"><{$item}></span>
             <{/foreach}>
         </div>
@@ -71,11 +71,11 @@
             <span class="article-label">
                 <{php}>echo art_constant("MD_SORTBY");<{/php}>:
             </span>
-            <{foreachq item=item from=$options.sort}>
+            <{foreach item=item from=$options.sort}>
             <span class="article-content"><{$item}></span>
             <{/foreach}>
             |
-            <{foreachq item=item from=$options.order}>
+            <{foreach item=item from=$options.order}>
             <span class="article-content"><{$item}></span>
             <{/foreach}>
         </div>
@@ -97,7 +97,7 @@
 
         <div class="article-section-container">
             <ol start=<{math equation="( pg / 10 ) * 10 + 1 " pg=$smarty.request.start|default:0}>>
-                <{foreachq item=article from=$articles}>
+                <{foreach item=article from=$articles}>
                 <li>
                     <div class="article-title">
                         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}><{$article.id}>"><{$article.title}></a>
@@ -129,7 +129,7 @@
                     <{if count($article.categories)>0}>
                         <div class="article-list">
                             <span><{php}>echo art_constant("MD_CATEGORIES");<{/php}>:</span>
-                            <{foreachq item=category key=catid from=$article.categories}>
+                            <{foreach item=category key=catid from=$article.categories}>
                             <span>
                         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$category.id}>/"><{$category.title}></a>
                     </span>

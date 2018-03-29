@@ -63,7 +63,7 @@
     <div class="article-title"><{php}>echo art_constant("MD_TRACKBACKS");<{/php}></div>
     <div class="article-list">
         <ol>
-            <{foreachq item=trackback from=$trackbacks}>
+            <{foreach item=trackback from=$trackbacks}>
             <li><a id="tb<{$trackback.id}>"></a>
                 <{php}>echo art_constant("MD_FROM");<{/php}>: <a href="<{$trackback.url}>"
                                                                  target="_blank"><{$trackback.name}></a>

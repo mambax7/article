@@ -16,7 +16,11 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 include __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_RPC_LOADED', true);
@@ -39,7 +43,7 @@ if (!defined('ART_FUNCTIONS_RPC')):
         $title     = $article->getVar('art_title');
         $excerpt   = $article->getSummary();
         $blog_name = $xoopsConfig['sitename'] . '-' . $xoopsModule->getVar('name');
-        if (!empty($xoopsModuleConfig['do_trackbackutf8'])) {
+        if (!empty($helper->getConfig('do_trackbackutf8'))) {
             $title     = xoops_utf8_encode($title);
             $excerpt   = xoops_utf8_encode($excerpt);
             $blog_name = xoops_utf8_encode($blog_name);
@@ -66,7 +70,7 @@ if (!defined('ART_FUNCTIONS_RPC')):
         }
         $fs = @fsockopen($trackback_url['host'], $trackback_url['port'], $errno, $errstr, 4);
         @fwrite($fs, $http_request);
-        if ($xoopsModuleConfig['do_debug']) {
+        if ($helper->getConfig('do_debug')) {
             $debug_file = XOOPS_CACHE_PATH . '/' . $GLOBALS['artdirname'] . '_trackback.log';
             $fr         = "\n*****\nRequest:\n\n$http_request\n\nResponse:\n\n";
             $fr         .= "CHARSET:$charset\n";

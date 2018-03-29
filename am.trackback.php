@@ -16,6 +16,10 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 include __DIR__ . '/header.php';
 
 $category_id  = empty($_GET['category']) ? (empty($_POST['category']) ? 0 : (int)$_POST['category']) : (int)$_GET['category'];
@@ -59,8 +63,8 @@ switch ($op) {
 $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
 foreach ($tb_id as $id) {
     $tb_obj   = $trackbackHandler->get($id);
-    $criteria = new CriteriaCompo(new Criteria('art_id', $tb_obj->getVar('art_id')));
-    $criteria->add(new Criteria('tb_status', 0, '>'));
+    $criteria = new \CriteriaCompo(new \Criteria('art_id', $tb_obj->getVar('art_id')));
+    $criteria->add(new \Criteria('tb_status', 0, '>'));
     $count       = $trackbackHandler->getCount($criteria);
     $article_obj = $articleHandler->get($tb_obj->getVar('art_id'));
     if (!$article_obj->getVar('art_id')) {
@@ -71,7 +75,7 @@ foreach ($tb_id as $id) {
         $articleHandler->insert($article_obj);
     }
 
-    if (!empty($xoopsModuleConfig['notification_enabled']) && 'approve' === $op) {
+    if (!empty($helper->getConfig('notification_enabled')) && 'approve' === $op) {
         $notificationHandler    = xoops_getHandler('notification');
         $tags                   = [];
         $tags['ARTICLE_TITLE']  = $article_obj->getVar('art_title');

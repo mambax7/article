@@ -16,7 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || exit('Restricted access.');
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 require_once __DIR__ . '/../include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
@@ -29,7 +29,7 @@ if (!class_exists('Pingback')) {
         public function __construct($id = null)
         {
             //$this->ArtObject();
-            //$this->db = XoopsDatabaseFactory::getDatabaseConnection();
+            //$this->db = \XoopsDatabaseFactory::getDatabaseConnection();
             //$this->table = art_DB_prefix("pingback");
             $this->initVar('pb_id', XOBJ_DTYPE_INT, null);
             $this->initVar('art_id', XOBJ_DTYPE_INT, 0, true);
@@ -43,7 +43,7 @@ if (!class_exists('Pingback')) {
 art_parse_class('
 class [CLASS_PREFIX]PingbackHandler extends XoopsPersistableObjectHandler
 {
-    function __construct(XoopsDatabase $db)
+    function __construct(\XoopsDatabase $db)
     {
         parent::__construct($db, art_DB_prefix("pingback", true), "Pingback", "pb_id", "pb_url");
     }
@@ -53,7 +53,7 @@ class [CLASS_PREFIX]PingbackHandler extends XoopsPersistableObjectHandler
         $sql = "SELECT * FROM " . art_DB_prefix("pingback") . " WHERE art_id = ". (int)($art_id);
         $result = $this->db->query($sql);
         $ret = array();
-        while ($myrow = $this->db->fetchArray($result)) {
+       while (false !== ($myrow = $this->db->fetchArray($result))) {
             $pingback = $this->create(false);
             $pingback->assignVars($myrow);
             $ret[$myrow["pb_id"]] = $pingback;
