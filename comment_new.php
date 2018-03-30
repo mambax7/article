@@ -17,7 +17,7 @@
  */
 
 include __DIR__ . '/header.php';
-$com_itemid = isset($_GET['com_itemid']) ? (int)$_GET['com_itemid'] : 0;
+$com_itemid = \Xmf\Request::getInt('com_itemid', 0, 'GET');
 if ($com_itemid > 0) {
     $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
     $article_obj    = $articleHandler->get($com_itemid);

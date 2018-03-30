@@ -24,12 +24,12 @@ include __DIR__ . '/header.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/uploader.php';
 
 // Initialize the critical variables
-$art_id            = isset($_POST['art_id']) ? (int)$_POST['art_id'] : 0;
-$page              = isset($_POST['page']) ? (int)$_POST['page'] : 0;
-$newpage           = isset($_POST['newpage']) ? (int)$_POST['newpage'] : 0;
-$cat_id            = isset($_POST['cat_id']) ? (int)$_POST['cat_id'] : 0;
-$uid               = isset($_POST['uid']) ? (int)$_POST['uid'] : 0;
-$from              = isset($_POST['from']) ? $_POST['from'] : '';
+$art_id            = \Xmf\Request::getInt('art_id', 0, 'POST');
+$page              = \Xmf\Request::getInt('page', 0, 'POST');
+$newpage           = \Xmf\Request::getInt('newpage', 0, 'POST');
+$cat_id            = \Xmf\Request::getInt('cat_id', 0, 'POST');
+$uid               = \Xmf\Request::getInt('uid', 0, 'POST');
+$from              = \Xmf\Request::getString('from', '', 'POST');
 $update_time_value = 0;
 
 $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);

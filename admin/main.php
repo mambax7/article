@@ -70,7 +70,7 @@ function art_admin_chmod($target, $mode = 0777)
 
 xoops_cp_header();
 
-$op = isset($_GET['op']) ? $_GET['op'] : '';
+$op = \Xmf\Request::getString('op', '', 'GET');
 
 switch ($op) {
     case 'createdir':

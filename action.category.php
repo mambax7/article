@@ -23,7 +23,7 @@ $helper = Article\Helper::getInstance();
 include __DIR__ . '/header.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/uploader.php';
 
-$cat_id = isset($_POST['cat_id']) ? (int)$_POST['cat_id'] : 0;
+$cat_id = \Xmf\Request::getInt('cat_id', 0, 'POST');
 $from   = empty($_POST['from']) ? 0 : 1;
 
 include XOOPS_ROOT_PATH . '/header.php';

@@ -22,7 +22,7 @@ require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/up
 include XOOPS_ROOT_PATH . '/header.php';
 include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
-$top_id       = isset($_POST['top_id']) ? (int)$_POST['top_id'] : 0;
+$top_id       = \Xmf\Request::getInt('top_id', 0, 'POST');
 $topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
 $topic        = $topicHandler->get($top_id);
 
