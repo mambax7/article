@@ -713,8 +713,8 @@ class FeedCreator extends HtmlDescribable
      * before anything else, especially before you do the time consuming task to build the feed
      * (web fetching, for example).
      * @since    1.4
-     * @param     filename  string  optional    the filename where a recent version of the feed is saved. If not specified, the filename is $_SERVER["PHP_SELF"] with the extension changed to .xml (see _generateFilename()).
-     * @param int $timeout
+     * @param string $filename
+     * @param int    $timeout
      * @internal param int $timeout optional    the timeout in seconds before a cached version is refreshed (defaults to 3600 = 1 hour)
      */
     public function useCached($filename = '', $timeout = 3600)
@@ -733,8 +733,8 @@ class FeedCreator extends HtmlDescribable
      * header may be sent to redirect the user to the newly created file.
      * @since    1.4
      *
-     * @param      filename  string  optional    the filename where a recent version of the feed is saved. If not specified, the filename is $_SERVER["PHP_SELF"] with the extension changed to .xml (see _generateFilename()).
-     * @param bool $displayContents
+     * @param string $filename
+     * @param bool   $displayContents
      * @internal param bool $redirect optional    send an HTTP redirect header or not. If true, the user will be automatically redirected to the created file.
      */
     public function saveFeed($filename = '', $displayContents = true)
@@ -872,7 +872,7 @@ class FeedDate
     /**
      * Gets the date stored in this FeedDate as unix time stamp.
      *
-     * @return a date as a unix time stamp
+     * @return int date as a unix time stamp
      */
     public function unix()
     {

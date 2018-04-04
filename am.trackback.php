@@ -17,10 +17,11 @@
  */
 
 use XoopsModules\Article;
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 include __DIR__ . '/header.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 $category_id  = empty($_GET['category']) ? (empty($_POST['category']) ? 0 : (int)$_POST['category']) : (int)$_GET['category'];
 $trackback_id = empty($_GET['trackback']) ? (empty($_POST['trackback']) ? 0 : (int)$_POST['trackback']) : (int)$_GET['trackback'];

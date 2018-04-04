@@ -66,7 +66,7 @@ if (!class_exists('ArtTree')) {
          * @param  string  $prefix         String to indent deeper levels
          * @param  integer $key            ID of the object to display as the root of select options
          * @param null     $tags
-         * @return string HTML select box
+         * @return array HTML select box
          * @internal param string $name Name of the select box
          * @internal param string $fieldName Name of the member variable from the
          *                                 node objects that should be used as the title for the options.
@@ -114,8 +114,8 @@ if (!class_exists('ArtTree')) {
          * @param  array   $ret   the tree
          * @param  array   $tags  fields to be used
          * @param  integer $depth level of subcategories
-         * @return array
-         **/
+         * @return void
+         */
         public function getAllChild_array($key, &$ret, $tags = [], $depth = 0)
         {
             if (0 == --$depth) {

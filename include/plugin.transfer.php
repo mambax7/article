@@ -40,6 +40,7 @@ class ModuleTransferHandler extends TransferHandler
      * @param array   $skip Addons to skip
      * @param boolean $sort To sort the list upon 'level'
      *                      return    array    $list
+     * @return
      */
     public function &getList($skip = [], $sort = true)
     {

@@ -46,7 +46,7 @@ function xoops_module_install_[DIRNAME](\XoopsModule $module)
 
     /* Set corresponding permissions for categories and articles */
     $module_id = $module->getVar("mid") ;
-    $gpermHandler = xoops_getHandler("groupperm");
+    $grouppermHandler = xoops_getHandler("groupperm");
     $groups_view = array(XOOPS_GROUP_USERS, XOOPS_GROUP_ANONYMOUS);
     $groups_post = array(XOOPS_GROUP_USERS);
     $groups_admin = array(XOOPS_GROUP_ADMIN);
@@ -59,26 +59,26 @@ function xoops_module_install_[DIRNAME](\XoopsModule $module)
     $cat_ids = $categoryHandler->getIds();
 
     foreach ($groups_view as $group_id) {
-        $gpermHandler->addRight("global", $GLOBALS["perms_global"]["search"]["id"], $group_id, $module_id);
+        $grouppermHandler->addRight("global", $GLOBALS["perms_global"]["search"]["id"], $group_id, $module_id);
         foreach ($view_items as $item) {
             foreach ($cat_ids as $id) {
-                $gpermHandler->addRight($item, $id, $group_id, $module_id);
+                $grouppermHandler->addRight($item, $id, $group_id, $module_id);
             }
         }
     }
     foreach ($groups_post as $group_id) {
-        $gpermHandler->addRight("global", $GLOBALS["perms_global"]["html"]["id"], $group_id, $module_id);
+        $grouppermHandler->addRight("global", $GLOBALS["perms_global"]["html"]["id"], $group_id, $module_id);
         foreach ($post_items as $item) {
             foreach ($cat_ids as $id) {
-                $gpermHandler->addRight($item, $id, $group_id, $module_id);
+                $grouppermHandler->addRight($item, $id, $group_id, $module_id);
             }
         }
     }
     foreach ($groups_admin as $group_id) {
-        $gpermHandler->addRight("global", $GLOBALS["perms_global"]["upload"]["id"], $group_id, $module_id);
+        $grouppermHandler->addRight("global", $GLOBALS["perms_global"]["upload"]["id"], $group_id, $module_id);
         foreach ($admin_items as $item) {
             foreach ($cat_ids as $id) {
-                $gpermHandler->addRight($item, $id, $group_id, $module_id);
+                $grouppermHandler->addRight($item, $id, $group_id, $module_id);
             }
         }
     }

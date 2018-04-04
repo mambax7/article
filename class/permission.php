@@ -55,12 +55,12 @@ class [CLASS_PREFIX]PermissionHandler extends XoopsGroupPermHandler
             unset($artModule);
         }
 
-        $gpermHandler = xoops_getHandler("groupperm");
+        $grouppermHandler = xoops_getHandler("groupperm");
         $criteria = new \CriteriaCompo(new \Criteria("gperm_modid", $module_id));
         $gperm_names = "(\'" . implode( "\', \'", array_keys( $GLOBALS["perms_category"] ) ) . "\')";
         $criteria->add(new \Criteria("gperm_name", $gperm_names, "IN"));
         $criteria->add(new \Criteria("gperm_itemid", $cat_id));
-        $gpermHandler->deleteAll($criteria);
+        $grouppermHandler->deleteAll($criteria);
 
         $this->createPermData();
 
@@ -132,7 +132,7 @@ class [CLASS_PREFIX]PermissionHandler extends XoopsGroupPermHandler
         $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
         $cat_ids = $categoryHandler->getIds();
 
-        $gpermHandler = xoops_getHandler("groupperm");
+        $grouppermHandler = xoops_getHandler("groupperm");
         $memberHandler = xoops_getHandler("member");
         $glist = $memberHandler->getGroupList();
 
@@ -141,7 +141,7 @@ class [CLASS_PREFIX]PermissionHandler extends XoopsGroupPermHandler
 
         if ( empty($perm_name) || in_array($perm_name, array_keys($GLOBALS["perms_global"])) ):
         foreach (array_keys($glist) as $i) {
-            $ids = $gpermHandler->getItemIds("global", $i, $module_id);
+            $ids = $grouppermHandler->getItemIds("global", $i, $module_id);
             foreach ($ids as $id) {
                 foreach ($GLOBALS["perms_global"] as  $permname => $perm_info) {
                     if ( !empty($perm_name) && $perm_name != $permname ) continue;
@@ -155,7 +155,7 @@ class [CLASS_PREFIX]PermissionHandler extends XoopsGroupPermHandler
         foreach (array_keys($GLOBALS["perms_category"]) as $permname) {
             if ( !empty($perm_name) && $perm_name != "all" && $perm_name != $permname) continue;
             foreach (array_keys($glist) as $i) {
-                $cats = $gpermHandler->getItemIds($permname, $i, $module_id);
+                $cats = $grouppermHandler->getItemIds($permname, $i, $module_id);
                 foreach ($cats as $cat) {
                     $perms[$permname][$cat][] = $i;
                     if (empty($perm_name) || $perm_name == "all") {
