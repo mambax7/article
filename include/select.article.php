@@ -21,7 +21,7 @@
 
 include __DIR__ . '/../../../mainfile.php';
 
-$category_id     = @(int)$_GET['category'];
+$category_id     = @\Xmf\Request::getInt('category', 0, 'GET');
 $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($category_id);
 if (empty($category_id) || !$categoryHandler->getPermission($category_obj, 'moderate')) {
@@ -33,7 +33,7 @@ require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
 require_once XOOPS_ROOT_PATH . '/header.php';
 
-$start = @(int)$_REQUEST['start'];
+$start = @\Xmf\Request::getInt('start', 0, 'REQUEST');
 $limit = 100;
 
 $name_parent  = $_REQUEST['target'];

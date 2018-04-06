@@ -27,12 +27,11 @@ if (art_parse_args($args_num, $args, $args_str)) {
     $args['op']      = @$args_str[0];
 }
 
-$category_id = (int)(empty($_GET['category']) ? (empty($_POST['category']) ? @$args['category'] : $_POST['category']) : $_GET['category']);
-$article_id  = (int)(empty($_GET['article']) ? (empty($_POST['article']) ? @$args['article'] : $_POST['article']) : $_GET['article']);
-$page        = (int)(empty($_GET['page']) ? (empty($_POST['page']) ? @$args['page'] : $_POST['page']) : $_GET['page']);
-
-$op = empty($_GET['op']) ? (empty($_POST['op']) ? @$args['op'] : $_POST['op']) : $_GET['op'];
-$op = strtolower(trim($op));
+$category_id = Xmf\Request::getInt('category', @$args['category']);
+$article_id  = Xmf\Request::getInt('article', @$args['article']);
+$page        = Xmf\Request::getInt('page', @$args['page']);
+$op          = \Xmf\Request::getCmd('op', @$args['op']);
+$op          = strtolower(trim($op));
 
 if (empty($article_id)) {
     if (empty($_SERVER['HTTP_REFERER'])) {

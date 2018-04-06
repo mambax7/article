@@ -878,7 +878,7 @@ class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
     function updateTrack($category = null, $tracks = null)
     {
         if (empty($category)) {
-            $categories_obj =& $this->getObjects(new \Criteria("cat_pid", 0), true);
+            $categories_obj = $this->getObjects(new \Criteria("cat_pid", 0), true);
             foreach (array_keys($categories_obj) as $key) {
                 $this->updateTracks($categories_obj[$key]);
             }

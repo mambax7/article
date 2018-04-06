@@ -23,9 +23,9 @@ include __DIR__ . '/header.php';
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
 
-$category_id = empty($_GET['category']) ? 0 : (int)$_GET['category'];
-$topic_id    = empty($_GET['topic']) ? 0 : (int)$_GET['topic'];
-$start       = empty($_GET['start']) ? 0 : (int)$_GET['start'];
+$category_id = \Xmf\Request::getInt('category', 0, 'GET');
+$topic_id    = \Xmf\Request::getInt('topic', 0, 'GET');
+$start       = \Xmf\Request::getInt('start', 0, 'GET');
 $from        = (!empty($_GET['from']) || !empty($_POST['from'])) ? 1 : 0;
 
 $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);

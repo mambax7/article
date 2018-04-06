@@ -18,13 +18,13 @@
 
 include __DIR__ . '/header.php';
 
-$category_id = empty($_GET['category']) ? (empty($_POST['category']) ? 0 : (int)$_POST['category']) : (int)$_GET['category'];
-$topic_id    = empty($_GET['topic']) ? (empty($_POST['topic']) ? 0 : (int)$_POST['topic']) : (int)$_GET['topic'];
-$start       = empty($_GET['start']) ? (empty($_POST['start']) ? 0 : (int)$_POST['start']) : (int)$_GET['start'];
-$op          = empty($_GET['op']) ? (empty($_POST['op']) ? '' : $_POST['op']) : $_GET['op'];
-$top_id      = empty($_POST['top_id']) ? (empty($topic_id) ? false : [$topic_id]) : $_POST['top_id'];
-$top_order   = empty($_POST['top_order']) ? false : $_POST['top_order'];
-$from        = empty($_POST['from']) ? 0 : 1;
+$category_id = Xmf\Request::getInt('category', 0);
+$topic_id    = Xmf\Request::getInt('topic', 0);
+$start       = \Xmf\Request::getInt('start', 0);
+$op          = \Xmf\Request::getCmd('op', '');
+$top_id      = \Xmf\Request::getInt('top_id', (empty($topic_id) ? false : [$topic_id]), 'POST');
+$top_order   = \Xmf\Request::getInt('top_order', false, 'POST');
+$from        = \Xmf\Request::hasVar('from', 'POST') ? 1 : 0;
 
 if (empty($top_id) && empty($topic_id)) {
     $redirect = empty($from) ? XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php' : XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/admin/admin.topic.php';

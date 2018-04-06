@@ -32,7 +32,7 @@ if (!empty($_POST['submit'])) {
     if (empty($_POST['option']) || empty($_POST['art_id'])) {
         $art_id = 0;
     } else {
-        $art_id = (int)$_POST['art_id'];
+        $art_id = \Xmf\Request::getInt('art_id', 0, 'POST');
     }
     if ($art_id != $spotlight_current->getVar('art_id')) {
         $spotlight_obj = $spotlightHandler->create();
@@ -43,8 +43,8 @@ if (!empty($_POST['submit'])) {
     if ($art_id != $spotlight_current->getVar('art_id') || $spotlight_obj->isNew()) {
         $spotlight_obj->setVar('sp_time', time());
     }
-    $sp_categories = empty($_POST['sp_categories']) ? [] : $_POST['sp_categories'];
-    $sp_note       = $_POST['sp_note'];
+    $sp_categories = \Xmf\Request::getArray('sp_categories', [], 'POST');
+    $sp_note       = \Xmf\Request::getString('sp_note', [], 'POST');
 
     $error_upload  = '';
     $sp_image_file = '';
@@ -68,7 +68,7 @@ if (!empty($_POST['submit'])) {
         $sp_image['file'] = $sp_image_file;
         $spotlight_obj->setVar('sp_image', $sp_image);
     } else {
-        $sp_image['file'] = empty($_POST['sp_image_file']) ? '' : $_POST['sp_image_file'];
+        $sp_image['file'] = \Xmf\Request::getString('sp_image_file', '', 'POST');
         $image            = $spotlight_obj->getVar('sp_image');
         if ($image['file'] != $sp_image['file'] || $sp_image_caption_strip != $sp_image['caption']) {
             $spotlight_obj->setVar('sp_image', $sp_image);

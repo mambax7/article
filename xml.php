@@ -30,11 +30,11 @@ if (art_parse_args($args_num, $args, $args_str)) {
     $args['type']    = @$args_str[0];
 }
 
-$article_id  = (int)(empty($_GET['article']) ? @$args['article'] : $_GET['article']);
-$category_id = (int)(empty($_GET['category']) ? @$args['category'] : $_GET['category']);
-$page        = (int)(empty($_GET['page']) ? @$args['page'] : $_GET['page']);
-$uid         = (int)(empty($_GET['uid']) ? @$args['uid'] : $_GET['uid']);
-$type        = empty($_GET['type']) ? (empty($_GET['op']) ? @$args['type'] : $_GET['op']) : $_GET['type'];
+$article_id = \Xmf\Request::getInt('article', @$args['article'], 'GET');
+$category_id    = \Xmf\Request::getInt('category', @$args['category'], 'GET');
+$start       = \Xmf\Request::getInt('page', @$args['page'], 'GET');
+$uid         = \Xmf\Request::getInt('uid', @$args['uid'], 'GET');
+$type        = \Xmf\Request::getString('type', \Xmf\Request::getString('op', @$args['type'], 'GET'), 'GET');
 $type        = strtoupper($type);
 
 $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);

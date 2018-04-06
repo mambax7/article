@@ -31,7 +31,7 @@ if (empty($_POST['submit'])) {
 }
 
 $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-$category        =& $categoryHandler->get((int)$_POST['cat_id']);
+$category        =& $categoryHandler->get(\Xmf\Request::getInt('cat_id', 0, 'POST'));
 if (!$categoryHandler->getPermission($category, 'moderate')) {
     redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php', 2, art_constant('MD_NOACCESS'));
 }

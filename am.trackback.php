@@ -23,12 +23,12 @@ include __DIR__ . '/header.php';
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
 
-$category_id  = empty($_GET['category']) ? (empty($_POST['category']) ? 0 : (int)$_POST['category']) : (int)$_GET['category'];
-$trackback_id = empty($_GET['trackback']) ? (empty($_POST['trackback']) ? 0 : (int)$_POST['trackback']) : (int)$_GET['trackback'];
-$start        = empty($_GET['start']) ? (empty($_POST['start']) ? 0 : (int)$_POST['start']) : (int)$_GET['start'];
-$op           = empty($_GET['op']) ? (empty($_POST['op']) ? '' : $_POST['op']) : $_GET['op'];
-$tb_id        = empty($_POST['tb_id']) ? (empty($trackback_id) ? [] : [$trackback_id]) : $_POST['tb_id'];
-$from         = empty($_POST['from']) ? 0 : 1;
+$category_id  = \Xmf\Request::getInt('category', 0); //empty($_GET['category']) ? (empty($_POST['category']) ? 0 : \Xmf\Request::getInt('category', 0, 'POST')) : \Xmf\Request::getInt('category', 0, 'GET');
+$trackback_id = \Xmf\Request::getInt('trackback', 0); //empty($_GET['trackback']) ? (empty($_POST['trackback']) ? 0 : \Xmf\Request::getInt('trackback', 0, 'POST')) : \Xmf\Request::getInt('trackback', 0, 'GET');
+$start        = \Xmf\Request::getInt('start', 0); //empty($_GET['start']) ? (empty($_POST['start']) ? 0 : \Xmf\Request::getInt('start', 0, 'POST')) : \Xmf\Request::getInt('start', 0, 'GET');
+$op           = \Xmf\Request::getCmd('op', 'default');
+$tb_id        = \Xmf\Request::getArray('tb_id', [], 'POST'); //empty($_POST['tb_id']) ? (empty($trackback_id) ? [] : [$trackback_id]) : $_POST['tb_id'];
+$from         = \Xmf\Request::hasVar('from', 'POST') ? 1 : 0;
 
 if (empty($tb_id)) {
     $redirect = empty($from) ? XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php' : XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/admin/admin.trackback.php';

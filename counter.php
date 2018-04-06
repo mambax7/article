@@ -25,7 +25,7 @@ include __DIR__ . '/header.php';
 if (empty($helper->getConfig('do_counter'))) {
     return;
 }
-$article_id = empty($_GET['article']) ? 0 : (int)$_GET['article'];
+$article_id = \Xmf\Request::getInt('article', 0, 'GET');
 if (empty($article_id)) {
     return;
 }

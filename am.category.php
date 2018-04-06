@@ -27,11 +27,11 @@ if (!$isadmin) {
     redirect_header('index.php', 2, art_constant('MD_NOACCESS'));
 }
 
-$category_id = empty($_GET['category']) ? (empty($_POST['category']) ? 0 : (int)$_POST['category']) : (int)$_GET['category'];
-$op          = empty($_GET['op']) ? (empty($_POST['op']) ? '' : $_POST['op']) : $_GET['op'];
-$cat_id      = empty($_POST['cat_id']) ? false : $_POST['cat_id'];
-$cat_order   = empty($_POST['cat_order']) ? false : $_POST['cat_order'];
-$from        = empty($_POST['from']) ? 0 : 1;
+$category_id = \Xmf\Request::getInt('category', 0); //empty($_GET['category']) ? (empty($_POST['category']) ? 0 : \Xmf\Request::getInt('category', 0, 'POST')) : \Xmf\Request::getInt('category', 0, 'GET');
+$op          = \Xmf\Request::getCmd('op', '');
+$cat_id      = \Xmf\Request::getInt('cat_id', 0); //empty($_POST['cat_id']) ? false : $_POST['cat_id'];
+$cat_order   = \Xmf\Request::getInt('cat_order', false, 'POST'); //empty($_POST['cat_order']) ? false : $_POST['cat_order'];
+$from        = \Xmf\Request::hasVar('from', 'POST') ? 1 : 0; //empty($_POST['from']) ? 0 : 1;
 
 if (empty($cat_id) && empty($category_id)) {
     $redirect = empty($from) ? XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php' : XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/admin/admin.category.php';

@@ -23,8 +23,8 @@ include __DIR__ . '/header.php';
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
 
-$category_id = empty($_GET['category']) ? 0 : (int)$_GET['category'];
-$start       = empty($_GET['start']) ? 0 : (int)$_GET['start'];
+$category_id = \Xmf\Request::getInt('category', 0, 'GET');
+$start       = \Xmf\Request::getInt('start', 0, 'GET');
 $from        = (!empty($_GET['from']) || !empty($_POST['from'])) ? 1 : 0;
 $type        = empty($_GET['type']) ? '' : strtolower($_GET['type']);
 

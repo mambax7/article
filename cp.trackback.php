@@ -23,11 +23,11 @@ include __DIR__ . '/header.php';
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
 
-$category_id = (int)(empty($_GET['category']) ? @$_POST['category'] : $_GET['category']);
-$article_id  = (int)(empty($_GET['article']) ? @$_POST['article'] : $_GET['article']);
-$start       = (int)(empty($_GET['start']) ? @$_POST['start'] : $_GET['start']);
-$type        = empty($_GET['type']) ? @$_POST['type'] : $_GET['type'];
-$from        = (!empty($_GET['from']) || !empty($_POST['from'])) ? 1 : 0;
+$category_id = \Xmf\Request::getInt('category', 0); //(int)(empty($_GET['category']) ? @$_POST['category'] : $_GET['category']);
+$article_id  = \Xmf\Request::getInt('article', 0); //(int)(empty($_GET['article']) ? @$_POST['article'] : $_GET['article']);
+$start       = \Xmf\Request::getInt('start', 0); //(int)(empty($_GET['start']) ? @$_POST['start'] : $_GET['start']);
+$type        = \Xmf\Request::getString('type', '');//empty($_GET['type']) ? @$_POST['type'] : $_GET['type'];
+$from        = \Xmf\Request::hasVar('from') ? 1 : 0;//(!empty($_GET['from']) || !empty($_POST['from'])) ? 1 : 0;
 
 $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($category_id);

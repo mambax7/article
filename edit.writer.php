@@ -32,8 +32,8 @@ xoops_loadLanguage('user');
 $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
 include XOOPS_ROOT_PATH . '/header.php';
 
-$writer_id         = empty($_GET['writer_id']) ? 0 : (int)$_GET['writer_id'];
-$writer_id         = empty($_POST['writer_id']) ? $writer_id : (int)$_POST['writer_id'];
+$writer_id         = \Xmf\Request::getInt('writer_id', 0, 'GET');
+$writer_id         = \Xmf\Request::getInt('writer_id', $writer_id, 'POST');
 $start             = isset($_GET['start']) ? $_GET['start'] : 0;
 $_REQUEST['query'] = isset($_REQUEST['query']) ? trim($_REQUEST['query']) : '';
 $limit             = 200;
@@ -170,7 +170,7 @@ $form_sel->addElement($button_tray);
 $form_sel->display();
 
 if (!empty($_POST['edit']) && !empty($_POST[$name_current])) {
-    $writer_id = (int)$_POST[$name_current][0];
+    $writer_id = \Xmf\Request::getInt($name_current, 0, 'POST')[0];
 }
 $writer_obj = $writerHandler->get($writer_id);
 if (art_isAdministrator()

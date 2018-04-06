@@ -18,9 +18,9 @@
 
 include __DIR__ . '/header.php';
 
-$topic_id    = empty($_GET['topic']) ? 0 : (int)$_GET['topic'];
-$category_id = empty($_GET['category']) ? 0 : (int)$_GET['category'];
-$from        = empty($_GET['from']) ? 0 : (int)$_GET['from'];
+$topic_id    = \Xmf\Request::getInt('topic', 0, 'GET');
+$category_id = \Xmf\Request::getInt('category', 0, 'GET');
+$from        = \Xmf\Request::getInt('from', 0, 'GET');
 
 $topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
 $topic_obj    = $topicHandler->get($topic_id);

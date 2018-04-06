@@ -658,10 +658,10 @@ if (!empty($article_isNew)) {
     $article_obj->setVar('uid', $uid);
 }
 $art_image['caption'] = $art_image_caption;
-$form_advance         = !empty($_POST['form_advance']) ? (int)$_POST['form_advance'] : 0;
+$form_advance         = \Xmf\Request::getInt('form_advance', 0, 'POST');
 $notify               = !empty($_POST['notify']) ? 1 : 0;
 $approved             = !empty($_POST['approved']) ? 1 : 0;
-$page                 = !empty($_POST['page']) ? (int)$_POST['page'] : 0;
+$page                 = \Xmf\Request::getInt('page', 0, 'POST');
 if ($newpage) {
     $page = -1;
 }

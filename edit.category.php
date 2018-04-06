@@ -18,7 +18,7 @@
 
 include __DIR__ . '/header.php';
 
-$category_id = empty($_GET['category']) ? 0 : (int)$_GET['category'];
+$category_id = \Xmf\Request::getInt('category', 0, 'GET');
 $from        = empty($_GET['from']) ? 0 : 1;
 
 $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);

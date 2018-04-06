@@ -23,7 +23,7 @@ if (art_parse_args($args_num, $args, $args_str)) {
     $args['type'] = @$args_str[0];
 }
 $uid  = (int)(empty($_GET['uid']) ? @$args['uid'] : $_GET['uid']);
-$type = empty($_GET['type']) ? @$args['type'] : $_GET['type'];
+$type = \Xmf\Request::getString('type', @$args['type'], 'GET');
 
 if (empty($uid)) {
     $uid = is_object($xoopsUser) ? $xoopsUser->getVar('uid') : 0;

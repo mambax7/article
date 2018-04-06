@@ -33,7 +33,7 @@ switch ($type) {
             break;
         }
 
-        $limit    = empty($_GET['limit']) ? 20 : (int)$_GET['limit'];
+        $limit    = \Xmf\Request::getInt('limit', 20, 'GET');
         $criteria = new \Criteria('1', 1);
         $criteria->setStart($start);
         $criteria->setLimit($limit);
@@ -54,7 +54,7 @@ switch ($type) {
             break;
         }
 
-        $limit    = empty($_GET['limit']) ? 100 : (int)$_GET['limit'];
+        $limit    = \Xmf\Request::getInt('limit', 100, 'GET');
         $criteria = new \Criteria('1', 1);
         $criteria->setStart($start);
         $criteria->setLimit($limit);

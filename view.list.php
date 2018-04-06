@@ -17,10 +17,11 @@
  */
 
 use XoopsModules\Article;
+
+include __DIR__ . '/header.php';
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
 
-include __DIR__ . '/header.php';
 
 // Valid types of articles for regular applications, except author view
 $valid_types = [
@@ -78,13 +79,13 @@ if ($REQUEST_URI_parsed = art_parse_args($args_num, $args, $args_str)) {
     $args['order'] = @$args_str[2];
 }
 
-$category_id = (int)(empty($_GET['category']) ? @$args['category'] : $_GET['category']);
-$topic_id    = (int)(empty($_GET['topic']) ? @$args['topic'] : $_GET['topic']);
-$uid         = (int)(empty($_GET['uid']) ? @$args['uid'] : $_GET['uid']);
-$start       = (int)(empty($_GET['start']) ? @$args['start'] : $_GET['start']);
-$type        = empty($_GET['type']) ? @$args['type'] : $_GET['type'];
-$sort        = empty($_GET['sort']) ? @$args['sort'] : $_GET['sort'];
-$order       = in_array($order = strtoupper(empty($_GET['order']) ? @$args['order'] : $_GET['order']), array_keys($valid_orders)) ? $order : 'DESC';
+$category_id = \Xmf\Request::getInt('category', @$args['category'], 'GET');
+$topic_id    = \Xmf\Request::getInt('topic', @$args['topic'], 'GET');
+$uid         = \Xmf\Request::getInt('uid', @$args['uid'], 'GET');
+$start       = \Xmf\Request::getInt('start', @$args['start'], 'GET');
+$type        = \Xmf\Request::getString('type', @$args['type'], 'GET');
+$sort        = \Xmf\Request::getString('sort', @$args['sort'], 'GET');
+$order       = array_key_exists($order = strtoupper(\Xmf\Request::getString('order', @$args['order'], 'GET')), $valid_orders) ? $order : 'DESC';
 
 /*
  * Instantiate category object and check access permissions
@@ -120,7 +121,7 @@ $categories_id = empty($categories_id) ? array_keys($categories_obj) : $categori
 /*
  * Instantiate user object
  */
-if (!empty($category_obj)) {
+if (null !== $category_obj) {
     $xoopsuser_is_admin = art_isAdministrator() || art_isModerator($category_obj);
 } else {
     $xoopsuser_is_admin = art_isAdministrator();
@@ -159,7 +160,7 @@ if (!empty($uid)) {
     $valid_types = array_merge($valid_types_author, $valid_types);
 }
 
-$type       = in_array($type, array_keys($valid_types)) ? $type : 'a';
+$type       = array_key_exists($type, $valid_types) ? $type : 'a';
 $byCategory = true;
 switch (strtolower($type)) {
 
@@ -215,19 +216,19 @@ $type_title = $valid_types[$type];
 if ($xoopsuser_is_author) {
     $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
 }
-$xoopsOption['xoops_pagetitle'] = $xoopsModule->getVar('name') . (empty($category_obj) ? '' : ' - ' . $category_obj->getVar('cat_title')) . ' - ' . (empty($author_obj) ? '' : ' - ' . $author_obj->getVar('uname')) . ' - ' . art_constant('MD_LIST') . ' - ' . $type_title;
+$xoopsOption['xoops_pagetitle'] = $xoopsModule->getVar('name') . (null === $category_obj ? '' : ' - ' . $category_obj->getVar('cat_title')) . ' - ' . (empty($author_obj) ? '' : ' - ' . $author_obj->getVar('uname')) . ' - ' . art_constant('MD_LIST') . ' - ' . $type_title;
 
 $xoopsOption['template_main']       = art_getTemplate('list', $helper->getConfig('template'));
 $xoopsOption['xoops_module_header'] = art_getModuleHeader($helper->getConfig('template'));
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+include XOOPS_ROOT_PATH . '/modules/' . $helper->getDirname() . '/include/vars.php';
 
 $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
 
 if (!empty($uid)) {
     $art_criteria->add(new \Criteria(($byCategory ? 'a.' : '') . 'uid', $uid));
 }
-$sort = in_array($sort, array_keys($valid_sorts)) ? $sort : 'id';
+$sort = array_key_exists($sort, $valid_sorts) ? $sort : 'id';
 
 $sp_data     = [];
 $articles_id = [];
@@ -300,12 +301,12 @@ foreach (array_keys($articles_obj) as $id) {
 }
 
 if (!empty($author_array)) {
-    require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/functions.author.php';
+    require_once XOOPS_ROOT_PATH . '/modules/' . $helper->getDirname() . '/include/functions.author.php';
     $users = art_getAuthorNameFromId(array_keys($author_array), true, true);
 }
 
 if (!empty($writer_array)) {
-    require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/functions.author.php';
+    require_once XOOPS_ROOT_PATH . '/modules/' . $helper->getDirname() . '/include/functions.author.php';
     $writers = art_getWriterNameFromIds(array_keys($writer_array));
 }
 
@@ -506,7 +507,7 @@ $xoopsTpl->assign('modulename', $xoopsModule->getVar('name'));
 $xoopsTpl->assign_by_ref('articles', $articles);
 $xoopsTpl->assign_by_ref('author', $author);
 
-if (!empty($category_obj)) {
+if (null !== $category_obj) {
     $xoopsTpl->assign('tracks', $categoryHandler->getTrack($category_obj, true));
 }
 $xoopsTpl->assign_by_ref('tracks_extra', $tracks_extra);

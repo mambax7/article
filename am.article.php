@@ -18,15 +18,15 @@
 
 include __DIR__ . '/header.php';
 
-$category_id = empty($_GET['category']) ? (empty($_POST['category']) ? 0 : (int)$_POST['category']) : (int)$_GET['category'];
-$topic_id    = empty($_GET['topic']) ? (empty($_POST['topic']) ? 0 : (int)$_POST['topic']) : (int)$_GET['topic'];
-$article_id  = empty($_GET['article']) ? (empty($_POST['article']) ? 0 : (int)$_POST['article']) : (int)$_GET['article'];
-$start       = empty($_GET['start']) ? (empty($_POST['start']) ? 0 : (int)$_POST['start']) : (int)$_GET['start'];
-$type        = empty($_GET['type']) ? (empty($_POST['type']) ? '' : $_POST['type']) : $_GET['type'];
-$op          = empty($_GET['op']) ? (empty($_POST['op']) ? '' : $_POST['op']) : $_GET['op'];
-$art_id_post = empty($_POST['art_id']) ? [] : $_POST['art_id'];
-$top_id_post = empty($_POST['top_id']) ? 0 : $_POST['top_id'];
-$from        = (int)(@$_POST['from']);
+$category_id = \Xmf\Request::getInt('category', 0); //empty($_GET['category']) ? (empty($_POST['category']) ? 0 : \Xmf\Request::getInt('category', 0, 'POST')) : \Xmf\Request::getInt('category', 0, 'GET');
+$topic_id    = \Xmf\Request::getInt('topic', 0); //empty($_GET['topic']) ? (empty($_POST['topic']) ? 0 : \Xmf\Request::getInt('topic', 0, 'POST')) : \Xmf\Request::getInt('topic', 0, 'GET');
+$article_id  = \Xmf\Request::getInt('article', 0);//empty($_GET['article']) ? (empty($_POST['article']) ? 0 : \Xmf\Request::getInt('article', 0, 'POST')) : \Xmf\Request::getInt('article', 0, 'GET');
+$start       = \Xmf\Request::getInt('start', 0);//empty($_GET['start']) ? (empty($_POST['start']) ? 0 : \Xmf\Request::getInt('start', 0, 'POST')) : \Xmf\Request::getInt('start', 0, 'GET');
+$type        = \Xmf\Request::getString('type', '');//empty($_GET['type']) ? (empty($_POST['type']) ? '' : $_POST['type']) : $_GET['type'];
+$op          = \Xmf\Request::getCmd('op', 'default');
+$art_id_post = \Xmf\Request::getArray('art_id', [], 'POST');
+$top_id_post = \Xmf\Request::getInt('top_id', 0, 'POST');
+$from        = \Xmf\Request::getInt('from', 0, 'POST'); //(int)(@$_POST['from']);
 
 if (!empty($article_id)) {
     $art_id[] = $article_id;

@@ -256,7 +256,7 @@ class [CLASS_PREFIX]PermissionHandler extends XoopsGroupPermHandler
             $criteria->add(new \Criteria("gperm_groupid", $groupid));
             $criteria->add(new \Criteria("gperm_itemid", $itemid));
             $criteria->add(new \Criteria("gperm_modid", $mid));
-            $perms_obj =& $this->getObjects($criteria);
+            $perms_obj = $this->getObjects($criteria);
             if (!empty($perms_obj)) {
                 foreach ($perms_obj as $perm_obj) {
                     $this->delete($perm_obj);
