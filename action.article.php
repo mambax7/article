@@ -89,7 +89,7 @@ if ($canupload && empty($_POST['del']) && empty($_POST['delete']) && !empty($_FI
         xoops_error($uploader->getErrors());
     }
 
-    if (!empty($_POST['art_image_file_tmp'])) {
+   if (\Xmf\Request::hasVar('art_image_file_tmp', 'POST')) {
         @unlink(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image') . '/' . $_POST['art_image_file_tmp']);
         unset($_POST['art_image_file_tmp']);
     }
@@ -173,7 +173,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
         $article_obj->setVar('art_time_publish', time());
     }
 
-    if (!empty($_POST['update_time'])) {
+   if (\Xmf\Request::hasVar('update_time', 'POST')) {
         $update_time_value = (int)(strtotime(@$_POST['update_time_value']['date']) + @$_POST['update_time_value']['time']);
         if ($isModerator) {
             $article_obj->setVar('art_time_publish', $update_time_value, true);
@@ -461,7 +461,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
          */
         // If notify checkbox is set, add subscription for approve; else unsubscribe
         if (is_object($xoopsUser)) {
-            if (!empty($_POST['notify'])) {
+           if (\Xmf\Request::hasVar('notify', 'POST')) {
                 $notificationHandler->subscribe('article', $article_obj->getVar('art_id'), 'article_approve');
             } else {
                 $notificationHandler->unsubscribe('article', $article_obj->getVar('art_id'), 'article_approve');
@@ -514,7 +514,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
         art_ping($pings, $article_obj->getVar('art_id'));
     }
 
-    if (!empty($_POST['save'])) {
+   if (\Xmf\Request::hasVar('save', 'POST')) {
         if (empty($from)) {
             $redirect = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . URL_DELIMITER . 'c' . $cat_id . '/' . $article_obj->getVar('art_id') . '/p' . (empty($newpage) ? $page : ($newpage - 1));
         } else {
@@ -522,7 +522,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
         }
         $message = art_constant('MD_SAVED');
     }
-    if (!empty($_POST['save_edit'])) {
+   if (\Xmf\Request::hasVar('save_edit', 'POST')) {
         $redirect = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/edit.article.php?category=' . $cat_id . '&amp;article=' . $article_obj->getVar('art_id');
         $redirect .= '&amp;page=' . $page;
         if (!empty($from)) {
@@ -530,7 +530,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
         }
         $message = art_constant('MD_SAVED');
     }
-    if (!empty($_POST['publish'])) {
+   if (\Xmf\Request::hasVar('publish', 'POST')) {
         if (empty($from)) {
             $redirect = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . URL_DELIMITER . 'c' . $cat_id . '/' . $article_obj->getVar('art_id') . '/p' . $page;
         } else {
@@ -582,7 +582,7 @@ if (!empty($_POST['preview'])) {
     $author_uid             = $article_isNew ? $user_id : $article_obj->getVar('uid');
     $authors                = art_getAuthorNameFromId($author_uid, false, true);
     $article_data['author'] = $authors[$author_uid];
-    if (!empty($_POST['writer_id'])) {
+   if (\Xmf\Request::hasVar('writer_id', 'POST')) {
         $article_obj->setVar('writer_id', $_POST['writer_id']);
         $article_data['writer'] = $article_obj->getWriter();
     }
