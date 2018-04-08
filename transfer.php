@@ -16,6 +16,7 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use Xmf\Request;
 use XoopsModules\Article;
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
@@ -34,20 +35,20 @@ $op          = \Xmf\Request::getCmd('op', @$args['op']);
 $op          = strtolower(trim($op));
 
 if (empty($article_id)) {
-    if (empty($_SERVER['HTTP_REFERER'])) {
+    if (empty(Request::getString('HTTP_REFERER', '', 'SERVER'))) {
         include XOOPS_ROOT_PATH . '/header.php';
         xoops_error(_NOPERM);
         $xoopsOption['output_type'] = 'plain';
         include XOOPS_ROOT_PATH . '/footer.php';
         exit();
     } else {
-        $ref_parser = parse_url($_SERVER['HTTP_REFERER']);
+        $ref_parser = parse_url(Request::getString('HTTP_REFERER', '', 'SERVER'));
         $uri_parser = parse_url($_SERVER['REQUEST_URI']);
         if ((!empty($ref_parser['host']) && !empty($uri_parser['host']) && $uri_parser['host'] != $ref_parser['host'])
             || ($ref_parser['path'] != $uri_parser['path'])) {
             include XOOPS_ROOT_PATH . '/header.php';
             include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
-            xoops_confirm([], 'javascript: window.close();', _MD_TRANSFER_DONE, _CLOSE, $_SERVER['HTTP_REFERER']);
+            xoops_confirm([], 'javascript: window.close();', _MD_TRANSFER_DONE, _CLOSE, Request::getString('HTTP_REFERER', '', 'SERVER'));
             $xoopsOption['output_type'] = 'plain';
             include XOOPS_ROOT_PATH . '/footer.php';
             exit();
