@@ -16,9 +16,15 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-include __DIR__ . '/../../mainfile.php';
+use XoopsModules\Article;
+
+include  dirname(dirname(__DIR__)) . '/mainfile.php';
 include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 mod_loadFunctions('', $xoopsModule->getVar('dirname'));
 
 art_define_url_delimiter();
 $myts = \MyTextSanitizer::getInstance();
+
+
+/** @var \XoopsModules\Article\Helper $helper */
+$helper = \XoopsModules\Article\Helper::getInstance();

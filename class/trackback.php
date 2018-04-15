@@ -17,11 +17,11 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once __DIR__ . '/../include/vars.php';
+require_once  dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 if (!class_exists('Trackback')) {
-    class Trackback extends XoopsObject
+    class Trackback extends \XoopsObject
     {
         public function __construct($id = null)
         {
@@ -54,7 +54,7 @@ if (!class_exists('Trackback')) {
 }
 
 art_parse_class('
-class [CLASS_PREFIX]TrackbackHandler extends XoopsPersistableObjectHandler
+class [CLASS_PREFIX]TrackbackHandler extends \XoopsPersistableObjectHandler
 {
     function __construct(\XoopsDatabase $db)
     {

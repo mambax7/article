@@ -17,7 +17,7 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once __DIR__ . '/../include/vars.php';
+require_once  dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 $GLOBALS['perms_global']   = [
@@ -40,7 +40,7 @@ if (!class_exists('XoopsGroupPermHandler')) {
 }
 
 art_parse_class('
-class [CLASS_PREFIX]PermissionHandler extends XoopsGroupPermHandler
+class [CLASS_PREFIX]PermissionHandler extends \XoopsGroupPermHandler
 {
     function deleteByCategory($cat_id)
     {

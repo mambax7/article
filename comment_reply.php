@@ -16,5 +16,5 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-include __DIR__ . '/../../mainfile.php';
+include  dirname(dirname(__DIR__)) . '/mainfile.php';
 include XOOPS_ROOT_PATH . '/include/comment_reply.php';

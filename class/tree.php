@@ -20,7 +20,7 @@
 require_once XOOPS_ROOT_PATH . '/class/tree.php';
 
 if (!class_exists('ArtTree')) {
-    class ArtTree extends XoopsObjectTree
+    class ArtTree extends \XoopsObjectTree
     {
         public function __construct(&$objectArr, $rootId = null)
         {

@@ -19,7 +19,7 @@
 
 use XoopsModules\Article;
 
-require_once __DIR__ . '/../../../include/cp_header.php';
+require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
 require_once $GLOBALS['xoops']->path('www/class/xoopsformloader.php');
 
 $moduleDirName = basename(dirname(__DIR__));

@@ -17,11 +17,13 @@
  */
 
 use XoopsModules\Article;
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 $xoopsOption['pagetype'] = 'search';
 include __DIR__ . '/header.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 //$xoopsModule->loadLanguage("main");
 art_load_lang_file('main');
 $configHandler     = xoops_getHandler('config');

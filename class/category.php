@@ -17,7 +17,7 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once __DIR__ . '/../include/vars.php';
+require_once  dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 /**
@@ -30,7 +30,7 @@ mod_loadFunctions('parse', $GLOBALS['artdirname']);
  * {@link XoopsObject}
  **/
 if (!class_exists('Xcategory')) {
-    class Xcategory extends XoopsObject
+    class Xcategory extends \XoopsObject
     {
         /**
          * Constructor
@@ -95,7 +95,7 @@ if (!class_exists('Xcategory')) {
  */
 
 art_parse_class('
-class [CLASS_PREFIX]CategoryHandler extends XoopsPersistableObjectHandler
+class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
 {
     /**
      * Constructor

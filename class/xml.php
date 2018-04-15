@@ -17,8 +17,8 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-include __DIR__ . '/../include/vars.php';
-include __DIR__ . '/../include/functions.parse.php';
+include  dirname(__DIR__) . '/include/vars.php';
+include  dirname(__DIR__) . '/include/functions.parse.php';
 xoops_load('xoopslocal');
 
 /*** GENERAL USAGE *********************************************************

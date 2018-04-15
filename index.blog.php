@@ -17,8 +17,6 @@
  */
 
 use XoopsModules\Article;
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 //if (!defined('XOOPS_ROOT_PATH') || !is_object($xoopsModule)) {
 //    return false;
@@ -29,6 +27,9 @@ if (art_parse_args($args_num, $args, $args_str)) {
     $args['start'] = @$args_num[0];
 }
 $start = (int)(empty($_GET['start']) ? @$args['start'] : $_GET['start']);
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
 $articleHandler  = xoops_getModuleHandler('article', $GLOBALS['artdirname']);

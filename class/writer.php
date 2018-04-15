@@ -17,11 +17,11 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once __DIR__ . '/../include/vars.php';
+require_once  dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 if (!class_exists('Writer')) {
-    class Writer extends XoopsObject
+    class Writer extends \XoopsObject
     {
         public function __construct($id = null)
         {

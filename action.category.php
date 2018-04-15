@@ -17,8 +17,6 @@
  */
 
 use XoopsModules\Article;
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 include __DIR__ . '/header.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/uploader.php';
@@ -28,6 +26,9 @@ $from   = empty($_POST['from']) ? 0 : 1;
 
 include XOOPS_ROOT_PATH . '/header.php';
 include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
 $category        = $categoryHandler->get($cat_id);

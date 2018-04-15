@@ -17,11 +17,11 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once __DIR__ . '/../include/vars.php';
+require_once  dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 if (!class_exists('Spotlight')) {
-    class Spotlight extends XoopsObject
+    class Spotlight extends \XoopsObject
     {
         public function __construct($id = null)
         {
@@ -79,7 +79,7 @@ if (!class_exists('Spotlight')) {
 }
 
 art_parse_class('
-class [CLASS_PREFIX]SpotlightHandler extends XoopsPersistableObjectHandler
+class [CLASS_PREFIX]SpotlightHandler extends \XoopsPersistableObjectHandler
 {
     function __construct(\XoopsDatabase $db)
     {

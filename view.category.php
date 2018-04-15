@@ -17,10 +17,11 @@
  */
 
 use XoopsModules\Article;
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 include __DIR__ . '/header.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 /**
  * The notification detection scripts should be removed once absolute url is used in notification_select.php

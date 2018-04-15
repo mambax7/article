@@ -17,10 +17,11 @@
  */
 
 use XoopsModules\Article;
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 include __DIR__ . '/header.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 if (art_parse_args($args_num, $args, $args_str)) {
     $args['year']  = !empty($args['year']) ? $args['year'] : @$args_num[0];

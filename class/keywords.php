@@ -31,11 +31,11 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once __DIR__ . '/../include/vars.php';
+require_once  dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 art_parse_class('
-class [CLASS_PREFIX]KeywordsHandler /*extends XoopsObjectHandler*/
+class [CLASS_PREFIX]KeywordsHandler /*extends \XoopsObjectHandler*/
 {
     var $keywords;
     var $skip_tags = array("A", "IMG", "PRE", "QUOTE", "CODE",

@@ -17,14 +17,16 @@
  */
 
 use XoopsModules\Article;
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 if (!is_object($form_art)) {
     die('No form declared');
 }
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 $form_element = [];
 
 // editor form mode
@@ -59,7 +61,7 @@ if ($isModerator) {
     $user_tray = new \XoopsFormElementTray('UID');
     $user_tray->addElement(new \XoopsFormText('', 'uid', 20, 255, $uid));
     xoops_load('XoopsUserUtility');
-    $user_tray->addElement(new \XoopsFormLabel('', XoopsUserUtility::getUnameFromId($article_obj->getVar('uid'), false, true)));
+    $user_tray->addElement(new \XoopsFormLabel('', \XoopsUserUtility::getUnameFromId($article_obj->getVar('uid'), false, true)));
     $form_element['active']['uid'] = $user_tray;
 } else {
     $form_element['active']['uid'] = $form_element['inactive']['uid'];

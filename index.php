@@ -19,8 +19,6 @@
 use XoopsModules\Article;
 
 include __DIR__ . '/header.php';
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 /*
  * Set groups for cache purposes

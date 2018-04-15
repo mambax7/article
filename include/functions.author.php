@@ -37,7 +37,7 @@ if (!defined('ART_FUNCTIONS_AUTHOR')):
             $userid = [$userid];
         }
         xoops_load('XoopsUserUtility');
-        $users = XoopsUserUtility::getUnameFromIds($userid, $usereal);
+        $users = \XoopsUserUtility::getUnameFromIds($userid, $usereal);
 
         if (!empty($linked)) {
             mod_loadFunctions('url', $GLOBALS['artdirname']);

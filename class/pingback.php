@@ -17,11 +17,11 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once __DIR__ . '/../include/vars.php';
+require_once  dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 if (!class_exists('Pingback')) {
-    class Pingback extends XoopsObject
+    class Pingback extends \XoopsObject
     {
         //var $db;
         //var $table;
@@ -41,7 +41,7 @@ if (!class_exists('Pingback')) {
 }
 
 art_parse_class('
-class [CLASS_PREFIX]PingbackHandler extends XoopsPersistableObjectHandler
+class [CLASS_PREFIX]PingbackHandler extends \XoopsPersistableObjectHandler
 {
     function __construct(\XoopsDatabase $db)
     {

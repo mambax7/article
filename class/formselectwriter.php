@@ -30,7 +30,7 @@
  * @author        D.J.(phppp)
  * @copyright     copyright (c) 2000-2005 XOOPS.org
  */
-class XoopsFormSelectWriter extends XoopsFormElementTray
+class XoopsFormSelectWriter extends \XoopsFormElementTray
 {
     /**
      * Constructor

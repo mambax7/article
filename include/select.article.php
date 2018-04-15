@@ -19,7 +19,7 @@
 // Where to locate the file? Member search should be restricted
 // Limitation: Only work with javascript enabled
 
-include __DIR__ . '/../../../mainfile.php';
+include  dirname(dirname(dirname(__DIR__))) . '/mainfile.php';
 
 $category_id     = @\Xmf\Request::getInt('category', 0, 'GET');
 $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
@@ -28,7 +28,7 @@ if (empty($category_id) || !$categoryHandler->getPermission($category_obj, 'mode
     redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php', 2, _NOPERM);
 }
 
-// require_once __DIR__ . '/../class/xoopsformloader.php';
+// require_once  dirname(__DIR__) . '/class/xoopsformloader.php';
 require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
 
 require_once XOOPS_ROOT_PATH . '/header.php';

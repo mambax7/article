@@ -17,8 +17,6 @@
  */
 
 use XoopsModules\Article;
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
@@ -29,6 +27,9 @@ $helper = Article\Helper::getInstance();
  require_once XOOPS_ROOT_PATH."/class/xoopsformloader.php";
  endif;
  */
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 // Form
 $form_art = new \XoopsThemeForm(art_constant('MD_AUTHOR') . ' ' . $writer_obj->getVar('writer_name') . ' (' . ($writer_obj->getVar('writer_id') ? _EDIT : _ADD) . ')', 'formwriter', xoops_getenv('PHP_SELF'), 'post', true);
@@ -54,7 +55,7 @@ if (art_isAdministrator() && !empty($helper->getConfig('path_image'))) {
 
     $image_option_tray = new \XoopsFormElementTray(art_constant('MD_IMAGE_SELECT'), '<br>');
     $path_image        = $helper->getConfig('path_image');
-    $image_array       = XoopsLists::getImgListAsArray(XOOPS_ROOT_PATH . '/' . $path_image . '/');
+    $image_array       = \XoopsLists::getImgListAsArray(XOOPS_ROOT_PATH . '/' . $path_image . '/');
     array_unshift($image_array, _NONE);
     $image_select = new \XoopsFormSelect('', 'writer_avatar', $writer_avatar);
     $image_select->addOptionArray($image_array);

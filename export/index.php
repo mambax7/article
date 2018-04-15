@@ -15,7 +15,7 @@ include __DIR__ . '/header.php';
 xoops_cp_header();
 
 require_once XOOPS_ROOT_PATH . '/class/xoopslists.php';
-$files = XoopsLists::getFileListAsArray('.');
+$files = \XoopsLists::getFileListAsArray('.');
 
 $mods = [];
 foreach ($files as $file => $filename) {

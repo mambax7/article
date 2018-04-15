@@ -9,7 +9,7 @@
  * @since          2.3.0
  * @author         Taiwen Jiang <phppp@users.sourceforge.net>
  */
-include __DIR__ . '/../../mainfile.php';
+include  dirname(dirname(__DIR__)) . '/mainfile.php';
 $xoopsLogger->activated = false;
 
 // Set to 1 if upload is disabled

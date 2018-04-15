@@ -17,11 +17,13 @@
  */
 
 use XoopsModules\Article;
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 include __DIR__ . '/header.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/xoopsformloader.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 
 $start            = (int)(@$_GET['start']);
 $articleHandler   = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
@@ -129,7 +131,7 @@ if (!$spotlight_obj->isNew()) {
     if ($xoopsUser->getVar('uid') == $uid) {
         $uname = $xoopsUser->getVar('uname');
     } else {
-        $uname = XoopsUser::getUnameFromId($uid);
+        $uname = \XoopsUser::getUnameFromId($uid);
     }
     $form_sp->addElement(new \XoopsFormLabel(art_constant('AM_SPOTLIGHT_CURRENT'), '<a href="' . XOOPS_URL . '/userinfo.php?uid=' . $uid . '">' . $uname . '</a> - ' . $spotlight_obj->getTime() . ': ' . $message));
 }
@@ -146,7 +148,7 @@ if (!empty($helper->getConfig('path_image'))) {
     unset($image_option_tray);
 
     $image_option_tray = new \XoopsFormElementTray(art_constant('AM_IMAGE_SELECT'), '<br>');
-    $image_array       = XoopsLists::getImgListAsArray(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image') . '/');
+    $image_array       = \XoopsLists::getImgListAsArray(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image') . '/');
     array_unshift($image_array, _NONE);
     $image_select = new \XoopsFormSelect('', 'sp_image_file', @$sp_image['file']);
     $image_select->addOptionArray($image_array);

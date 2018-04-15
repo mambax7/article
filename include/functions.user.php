@@ -39,7 +39,7 @@ if (!defined('ART_FUNCTIONS_USER')):
             $uid = [$uid];
         }
         xoops_load('XoopsUserUtility');
-        $ids = XoopsUserUtility::getUnameFromIds($uid, $usereal, $linked);
+        $ids = \XoopsUserUtility::getUnameFromIds($uid, $usereal, $linked);
 
         return $ids;
     }
@@ -82,9 +82,9 @@ if (!defined('ART_FUNCTIONS_USER')):
         $memberHandler = xoops_getHandler('member');
         $groups        = $memberHandler->getGroupsByUser($uid);
 
-        $modulepermHandler = xoops_getHandler('groupperm');
+        $grouppermHandler = xoops_getHandler('groupperm');
 
-        return $modulepermHandler->checkRight('module_admin', $mid, $groups);
+        return $grouppermHandler->checkRight('module_admin', $mid, $groups);
     }
 
     /**

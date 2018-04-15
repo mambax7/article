@@ -17,11 +17,11 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once __DIR__ . '/../include/vars.php';
+require_once  dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 if (!class_exists('Xfile')) {
-    class Xfile extends XoopsObject
+    class Xfile extends \XoopsObject
     {
         //var $db;
         //var $table;
@@ -42,7 +42,7 @@ if (!class_exists('Xfile')) {
 // TODO: handle mysql version 4.1
 
 art_parse_class('
-class [CLASS_PREFIX]FileHandler extends XoopsPersistableObjectHandler
+class [CLASS_PREFIX]FileHandler extends \XoopsPersistableObjectHandler
 {
     function __construct(\XoopsDatabase $db)
     {

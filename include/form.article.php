@@ -17,12 +17,13 @@
  */
 
 use XoopsModules\Article;
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/xoopsformloader.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 // The form
 $form_art = new \XoopsThemeForm('', 'formarticle', XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/action.article.php', 'post', true);

@@ -18,7 +18,7 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-require_once __DIR__ . '/../include/vars.php';
+require_once  dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 /**
@@ -32,7 +32,7 @@ mod_loadFunctions('parse', $GLOBALS['artdirname']);
  **/
 
 if (!class_exists('Article')) {
-    class Article extends XoopsObject
+    class Article extends \XoopsObject
     {
         /**
          * @var array
@@ -163,7 +163,7 @@ if (!class_exists('Article')) {
              */
             $author['uid'] = $this->getVar('uid');
             if ($retrieveUname) {
-                $author['name'] = XoopsUser::getUnameFromId($author['uid']);
+                $author['name'] = \XoopsUser::getUnameFromId($author['uid']);
             }
 
             return $author;
@@ -478,7 +478,7 @@ if (!class_exists('Article')) {
  */
 
 art_parse_class('
-class [CLASS_PREFIX]ArticleHandler extends XoopsPersistableObjectHandler
+class [CLASS_PREFIX]ArticleHandler extends \XoopsPersistableObjectHandler
 {
     /**
      * Constructor

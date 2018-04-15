@@ -17,10 +17,12 @@
  */
 
 use XoopsModules\Article;
+
+include __DIR__ . '/header.php';
+
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
 
-include __DIR__ . '/header.php';
 /**
  * Function to check status of a folder
  *

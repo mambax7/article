@@ -84,7 +84,7 @@ if (!empty($helper->getConfig('path_image'))) {
 
     $image_option_tray = new \XoopsFormElementTray(art_constant('MD_IMAGE_SELECT'), '<br>');
     $path_image        = $helper->getConfig('path_image');
-    $image_array       = XoopsLists::getImgListAsArray(XOOPS_ROOT_PATH . '/' . $path_image . '/');
+    $image_array       = \XoopsLists::getImgListAsArray(XOOPS_ROOT_PATH . '/' . $path_image . '/');
     array_unshift($image_array, _NONE);
     $image_select = new \XoopsFormSelect('', 'cat_image', $cat_image);
     $image_select->addOptionArray($image_array);

@@ -17,11 +17,11 @@
  */
 
 use XoopsModules\Article;
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 include __DIR__ . '/header.php';
-require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/uploader.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 // Initialize the critical variables
 $art_id            = \Xmf\Request::getInt('art_id', 0, 'POST');
@@ -425,6 +425,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
     // Notification
     // send notification for global [submit/new], each category [submit/new] and approval
     if (!empty($helper->getConfig('notification_enabled'))) {
+        /** @var \XoopsNotificationHandler $notificationHandler */
         $notificationHandler = xoops_getHandler('notification');
         // Moved to class article.php function registerCategory()
         /*

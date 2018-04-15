@@ -21,7 +21,7 @@
 require_once XOOPS_ROOT_PATH . '/class/uploader.php';
 
 if (!class_exists('art_uploader')) {
-    class Art_uploader extends XoopsMediaUploader
+    class Art_uploader extends \XoopsMediaUploader
     {
         public $ext                 = '';
         public $ImageSizeCheck      = false;

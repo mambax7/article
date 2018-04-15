@@ -17,11 +17,13 @@
  */
 
 use XoopsModules\Article;
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
 
 ob_start();
 include __DIR__ . '/header.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
 error_reporting(0);
 $xoopsLogger->activated = false;
 
@@ -192,7 +194,7 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
             break;
 
         case 'author':
-            $author_name = XoopsUser::getUnameFromId($uid);
+            $author_name = \XoopsUser::getUnameFromId($uid);
             $pagetitle   = art_constant('MD_AUTHOR');
             $rssdesc     = sprintf(art_constant('MD_XMLDESC_AUTHOR'), $author_name);
 

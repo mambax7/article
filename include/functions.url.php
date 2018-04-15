@@ -169,7 +169,7 @@ if (!defined('ART_FUNCTIONS_URL')):
         if (empty($imagePath)) {
             //            $moduleConfig = art_load_config();
             $moduleDirName = basename(dirname(__DIR__));
-            $helper  = Xmf\Module\Helper::getHelper($moduleDirName);
+            $helper = \XoopsModules\Article\Helper::getInstance();
             $path_image    = $helper->getConfig('path_file');
             $imageUrl      = XOOPS_URL . '/' . $path_image . '/' . htmlspecialchars($imageName, ENT_QUOTES | ENT_HTML5);
         } else {
