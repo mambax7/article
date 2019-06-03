@@ -3,7 +3,7 @@
  * Article module for XOOPS
  *
  * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting source code 
+ * of supporting developers from this source code or any supporting source code
  * which is considered copyrighted (c) material of the original comment or credit authors.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,33 +14,37 @@
  * @package         article
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id$
  */
- 
-if (!defined('XOOPS_ROOT_PATH')) { exit(); }
 
-include dirname(__FILE__) . "/vars.php";
-define($GLOBALS["artdirname"] . "_FUNCTIONS_TIME_LOADED", TRUE);
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-if (!defined("ART_FUNCTIONS_TIME")):
-define("ART_FUNCTIONS_TIME", 1);
+require_once __DIR__ . '/vars.php';
+define($GLOBALS['artdirname'] . '_FUNCTIONS_TIME_LOADED', true);
 
-/**
- * Function to convert UNIX time to formatted time string
- */
-function art_formatTimestamp($time, $format = "c", $timeoffset = null)
-{
-    $artConfig = art_load_config();
-    
-    if (strtolower($format) == "reg" || strtolower($format) == "") {
-        $format = "c";
+if (!defined('ART_FUNCTIONS_TIME')):
+    define('ART_FUNCTIONS_TIME', 1);
+
+    /**
+     * Function to convert UNIX time to formatted time string
+     * @param        $time
+     * @param string $format
+     * @param null   $timeoffset
+     * @return string
+     */
+    function art_formatTimestamp($time, $format = 'c', $timeoffset = null)
+    {
+        $artConfig = art_load_config();
+
+        if ('reg' === mb_strtolower($format) || '' == mb_strtolower($format)) {
+            $format = 'c';
+        }
+        if (('custom' === mb_strtolower($format) || 'c' === mb_strtolower($format))
+            && !empty($artConfig['formatTimestamp_custom'])) {
+            $format = $artConfig['formatTimestamp_custom'];
+        }
+
+        xoops_load('xoopslocal');
+
+        return \XoopsLocal::formatTimestamp($time, $format, $timeoffset);
     }
-    if ( (strtolower($format) == "custom" || strtolower($format) == "c") && !empty($artConfig["formatTimestamp_custom"]) ) {
-        $format = $artConfig["formatTimestamp_custom"];
-    }
-    
-    xoops_load("xoopslocal");
-    return XoopsLocal::formatTimestamp($time, $format, $timeoffset);
-}
-ENDIF;
-?>
+endif;

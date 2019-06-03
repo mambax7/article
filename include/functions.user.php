@@ -3,7 +3,7 @@
  * Article module for XOOPS
  *
  * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting source code 
+ * of supporting developers from this source code or any supporting source code
  * which is considered copyrighted (c) material of the original comment or credit authors.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,96 +14,114 @@
  * @package         article
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id$
  */
- 
-if (!defined('XOOPS_ROOT_PATH')) { exit(); }
 
-include dirname(__FILE__) . "/vars.php";
-define($GLOBALS["artdirname"] . "_FUNCTIONS_USER_LOADED", TRUE);
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
+require_once __DIR__ . '/vars.php';
+define($GLOBALS['artdirname'] . '_FUNCTIONS_USER_LOADED', true);
 
-IF (!defined("ART_FUNCTIONS_USER")):
-define("ART_FUNCTIONS_USER", 1);
+if (!defined('ART_FUNCTIONS_USER')):
+    define('ART_FUNCTIONS_USER', 1);
 
-load_functions("user");
+    load_functions('user');
 
-/**
- * Function to a list of user names associated with their user IDs
- * 
- */
-function &art_getUnameFromId( $uid, $usereal = 0, $linked = false )
-{
-    if (!is_array($uid)) {
-        $uid = array($uid);
-    }
-    xoops_load("userUtility");
-    $ids = XoopsUserUtility::getUnameFromIds($uid, $usereal, $linked);
-    return $ids;
-}
-
-/**
- * Function to check if a user is an administrator of the module
- *
- * @return bool
- */
-function art_isAdministrator( $user = -1, $mid = 0 )
-{
-    global $xoopsUser, $xoopsModule;
-
-    if ( is_numeric($user) && $user == -1 ) $user =& $xoopsUser;
-    if ( !is_object($user) && intval($user) < 1 ) return false;
-    $uid = (is_object($user)) ? $user->getVar("uid") : intval($user);
-
-    if (!$mid) {
-        if (is_object($xoopsModule) && $GLOBALS["artdirname"] == $xoopsModule->getVar("dirname")) {
-            $mid = $xoopsModule->getVar("mid");
-        } else {
-            $modhandler =& xoops_gethandler("module");
-            $art_module =& $modhandler->getByDirname($GLOBALS["artdirname"]);
-            $mid = $art_module->getVar("mid");
-            unset($art_module);
+    /**
+     * Function to a list of user names associated with their user IDs
+     * @param      $uid
+     * @param int  $usereal
+     * @param bool $linked
+     * @return array
+     */
+    function &art_getUnameFromId($uid, $usereal = 0, $linked = false)
+    {
+        if (!is_array($uid)) {
+            $uid = [$uid];
         }
-    }
-    
-    if ( is_object($xoopsModule) && $mid == $xoopsModule->getVar("mid") && is_object($xoopsUser) && $uid == $xoopsUser->getVar("uid") ) {
-        return $GLOBALS["xoopsUserIsAdmin"];
-    }
+        xoops_load('XoopsUserUtility');
+        $ids = \XoopsUserUtility::getUnameFromIds($uid, $usereal, $linked);
 
-    $member_handler =& xoops_gethandler('member');
-    $groups = $member_handler->getGroupsByUser($uid);
-    
-    $moduleperm_handler =& xoops_gethandler('groupperm');
-    return $moduleperm_handler->checkRight('module_admin', $mid, $groups);
-}
-
-/**
- * Function to check if a user is a moderator of a category
- *
- * @return bool
- */
-function art_isModerator( &$category, $user = -1 )
-{
-    global $xoopsUser;
-
-    if (!is_object($category)) {
-        $cat_id = intval($category);
-        if ( $cat_id == 0 ) return false;
-        $category_handler =& xoops_getmodulehandler("category", $GLOBALS["artdirname"]);
-        $category =& $category_handler->get($cat_id);
+        return $ids;
     }
 
-    if (is_numeric($user) && $user == -1) $user =& $xoopsUser;
-    if (!is_object($user) && intval($user) < 1) return false;
-    $uid = (is_object($user)) ? $user->getVar("uid") : intval($user);
+    /**
+     * Function to check if a user is an administrator of the module
+     *
+     * @param int $user
+     * @param int $mid
+     * @return bool
+     */
+    function art_isAdministrator($user = -1, $mid = 0)
+    {
+        global $xoopsUser, $xoopsModule;
 
-    return in_array($uid, $category->getVar("cat_moderator"));
-}
+        if (is_numeric($user) && -1 == $user) {
+            $user = $xoopsUser;
+        }
+        if (!is_object($user) && (int)$user < 1) {
+            return false;
+        }
+        $uid = is_object($user) ? $user->getVar('uid') : (int)$user;
 
-// Adapted from PMA_getIp() [phpmyadmin project]
-function art_getIP($asString = false)
-{
-    return mod_getIP($asString);
-}
-ENDIF;
-?>
+        if (!$mid) {
+            if (is_object($xoopsModule) && $GLOBALS['artdirname'] == $xoopsModule->getVar('dirname')) {
+                $mid = $xoopsModule->getVar('mid');
+            } else {
+                $moduleHandler = xoops_getHandler('module');
+                $art_module    = $moduleHandler->getByDirname($GLOBALS['artdirname']);
+                $mid           = $art_module->getVar('mid');
+                unset($art_module);
+            }
+        }
+
+        if (is_object($xoopsModule) && $mid == $xoopsModule->getVar('mid') && is_object($xoopsUser)
+            && $uid == $xoopsUser->getVar('uid')) {
+            return $GLOBALS['xoopsUserIsAdmin'];
+        }
+
+        $memberHandler = xoops_getHandler('member');
+        $groups        = $memberHandler->getGroupsByUser($uid);
+
+        $grouppermHandler = xoops_getHandler('groupperm');
+
+        return $grouppermHandler->checkRight('module_admin', $mid, $groups);
+    }
+
+    /**
+     * Function to check if a user is a moderator of a category
+     *
+     * @param     $category
+     * @param int $user
+     * @return bool
+     */
+    function art_isModerator(&$category, $user = -1)
+    {
+        global $xoopsUser;
+        $helper = \XoopsModules\Article\Helper::getInstance();
+
+        if (!is_object($category)) {
+            $cat_id = (int)$category;
+            if (0 == $cat_id) {
+                return false;
+            }
+            $categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+            $category        = $categoryHandler->get($cat_id);
+        }
+
+        if (is_numeric($user) && -1 == $user) {
+            $user = $xoopsUser;
+        }
+        if (!is_object($user) && (int)$user < 1) {
+            return false;
+        }
+        $uid = is_object($user) ? $user->getVar('uid') : (int)$user;
+
+        return in_array($uid, $category->getVar('cat_moderator'));
+    }
+
+    // Adapted from PMA_getIp() [phpmyadmin project]
+    function art_getIP($asString = false)
+    {
+        return mod_getIP($asString);
+    }
+endif;

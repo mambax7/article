@@ -16,21 +16,24 @@
 #
 
 CREATE TABLE `smartsection_categories` (
-  `categoryid` int(11) NOT NULL auto_increment,
-  `parentid` int(11) NOT NULL default '0',
-  `name` varchar(100) NOT NULL default '',
-  `description` text NOT NULL,
-  `image` varchar(255) NOT NULL default '',
-  `total` int(11) NOT NULL default '0',
-  `weight` int(11) NOT NULL default '1',
-  `created` int(11) NOT NULL default '1033141070',
-  `template` varchar(255) NOT NULL default '',
-  `header` TEXT NOT NULL,
-  `meta_keywords` TEXT NOT NULL,
-  `meta_description` TEXT NOT NULL,
-  `short_url` VARCHAR(255) NOT NULL,
-  PRIMARY KEY  (`categoryid`)
-) ENGINE=MyISAM COMMENT='SmartSection by The SmartFactory <www.smartfactory.ca>' AUTO_INCREMENT=1 ;
+  `categoryid`       INT(11)      NOT NULL AUTO_INCREMENT,
+  `parentid`         INT(11)      NOT NULL DEFAULT '0',
+  `name`             VARCHAR(100) NOT NULL DEFAULT '',
+  `description`      TEXT         NOT NULL,
+  `image`            VARCHAR(255) NOT NULL DEFAULT '',
+  `total`            INT(11)      NOT NULL DEFAULT '0',
+  `weight`           INT(11)      NOT NULL DEFAULT '1',
+  `created`          INT(11)      NOT NULL DEFAULT '1033141070',
+  `template`         VARCHAR(255) NOT NULL DEFAULT '',
+  `header`           TEXT         NOT NULL,
+  `meta_keywords`    TEXT         NOT NULL,
+  `meta_description` TEXT         NOT NULL,
+  `short_url`        VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`categoryid`)
+)
+  ENGINE = MyISAM
+  COMMENT = 'SmartSection by The SmartFactory <www.smartfactory.ca>'
+  AUTO_INCREMENT = 1;
 # --------------------------------------------------------
 
 #
@@ -41,32 +44,34 @@ CREATE TABLE `smartsection_categories` (
 #
 
 CREATE TABLE `smartsection_items` (
-  `itemid` int(11) NOT NULL auto_increment,
-  `categoryid` int(11) NOT NULL default '0',
-  `title` varchar(255) NOT NULL default '',
-  `summary` TEXT NOT NULL,
-  `display_summary` tinyint(1) NOT NULL default '1',
-  `body` LONGTEXT NOT NULL,
-  `uid` int(6) default '0',
-  `datesub` int(11) NOT NULL default '0',
-  `status` int(1) NOT NULL default '-1',
-  `image` varchar(255) NOT NULL default '',
-  `counter` int(8) unsigned NOT NULL default '0',
-  `weight` int(11) NOT NULL default '1',
-  `dohtml` tinyint(1) NOT NULL default '1',
-  `dosmiley` tinyint(1) NOT NULL default '1',
-  `doxcode` tinyint(1) NOT NULL default '1',
-  `doimage` tinyint(1) NOT NULL default '1',
-  `dobr` tinyint(1) NOT NULL default '1',
-  `cancomment` tinyint(1) NOT NULL default '1',
-  `comments` int(11) NOT NULL default '0',
-  `notifypub` tinyint(1) NOT NULL default '0',
-  `meta_keywords` TEXT NOT NULL,
-  `meta_description` TEXT NOT NULL,
-  `short_url` VARCHAR(255) NOT NULL,
-  PRIMARY KEY  (`itemid`)
-) ENGINE=MyISAM COMMENT='SmartSection by The SmartFactory <www.smartfactory.ca>' AUTO_INCREMENT=1 ;
-
+  `itemid`           INT(11)         NOT NULL AUTO_INCREMENT,
+  `categoryid`       INT(11)         NOT NULL DEFAULT '0',
+  `title`            VARCHAR(255)    NOT NULL DEFAULT '',
+  `summary`          TEXT            NOT NULL,
+  `display_summary`  TINYINT(1)      NOT NULL DEFAULT '1',
+  `body`             LONGTEXT        NOT NULL,
+  `uid`              INT(6)                   DEFAULT '0',
+  `datesub`          INT(11)         NOT NULL DEFAULT '0',
+  `status`           INT(1)          NOT NULL DEFAULT '-1',
+  `image`            VARCHAR(255)    NOT NULL DEFAULT '',
+  `counter`          INT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `weight`           INT(11)         NOT NULL DEFAULT '1',
+  `dohtml`           TINYINT(1)      NOT NULL DEFAULT '1',
+  `dosmiley`         TINYINT(1)      NOT NULL DEFAULT '1',
+  `doxcode`          TINYINT(1)      NOT NULL DEFAULT '1',
+  `doimage`          TINYINT(1)      NOT NULL DEFAULT '1',
+  `dobr`             TINYINT(1)      NOT NULL DEFAULT '1',
+  `cancomment`       TINYINT(1)      NOT NULL DEFAULT '1',
+  `comments`         INT(11)         NOT NULL DEFAULT '0',
+  `notifypub`        TINYINT(1)      NOT NULL DEFAULT '0',
+  `meta_keywords`    TEXT            NOT NULL,
+  `meta_description` TEXT            NOT NULL,
+  `short_url`        VARCHAR(255)    NOT NULL,
+  PRIMARY KEY (`itemid`)
+)
+  ENGINE = MyISAM
+  COMMENT = 'SmartSection by The SmartFactory <www.smartfactory.ca>'
+  AUTO_INCREMENT = 1;
 
 #
 # Table structure for table `smartsection_files`
@@ -76,35 +81,39 @@ CREATE TABLE `smartsection_items` (
 #
 
 CREATE TABLE `smartsection_files` (
-  `fileid` int(11) NOT NULL auto_increment,
-  `itemid` int(11) NOT NULL default '0',
-  `name` varchar(255) NOT NULL default '',
-  `description` TEXT NOT NULL,
-  `filename` varchar(255) NOT NULL default '', 
-  `mimetype` varchar(64) NOT NULL default '',
-  `uid` int(6) default '0',
-  `datesub` int(11) NOT NULL default '0',
-  `status` int(1) NOT NULL default '-1',
-  `notifypub` tinyint(1) NOT NULL default '1',
-  `counter` int(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`fileid`)
-) ENGINE=MyISAM COMMENT='SmartSection by The SmartFactory <www.smartfactory.ca>' AUTO_INCREMENT=1 ;
-
+  `fileid`      INT(11)         NOT NULL AUTO_INCREMENT,
+  `itemid`      INT(11)         NOT NULL DEFAULT '0',
+  `name`        VARCHAR(255)    NOT NULL DEFAULT '',
+  `description` TEXT            NOT NULL,
+  `filename`    VARCHAR(255)    NOT NULL DEFAULT '',
+  `mimetype`    VARCHAR(64)     NOT NULL DEFAULT '',
+  `uid`         INT(6)                   DEFAULT '0',
+  `datesub`     INT(11)         NOT NULL DEFAULT '0',
+  `status`      INT(1)          NOT NULL DEFAULT '-1',
+  `notifypub`   TINYINT(1)      NOT NULL DEFAULT '1',
+  `counter`     INT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`fileid`)
+)
+  ENGINE = MyISAM
+  COMMENT = 'SmartSection by The SmartFactory <www.smartfactory.ca>'
+  AUTO_INCREMENT = 1;
 
 # --------------------------------------------------------
 
 
 CREATE TABLE `smartsection_meta` (
-  `metakey` varchar(50) NOT NULL default '',
-  `metavalue` varchar(255) NOT NULL default '',
+  `metakey`   VARCHAR(50)  NOT NULL DEFAULT '',
+  `metavalue` VARCHAR(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`metakey`)
-) ENGINE=MyISAM COMMENT='SmartDoc by The SmartFactory <www.smartfactory.ca>' ;
+)
+  ENGINE = MyISAM
+  COMMENT = 'SmartDoc by The SmartFactory <www.smartfactory.ca>';
 
 # 
 # Dumping data for table `smartsection_categories`
 # 
 
-INSERT INTO `smartsection_meta` VALUES ('version','2.1');
+INSERT INTO `smartsection_meta` VALUES ('version', '2.1');
 # --------------------------------------------------------
 
 #
@@ -112,14 +121,15 @@ INSERT INTO `smartsection_meta` VALUES ('version','2.1');
 #
 
 CREATE TABLE smartsection_mimetypes (
-  mime_id int(11) NOT NULL auto_increment,
-  mime_ext varchar(60) NOT NULL default '',
-  mime_types text NOT NULL,
-  mime_name varchar(255) NOT NULL default '',
-  mime_admin int(1) NOT NULL default '1',
-  mime_user int(1) NOT NULL default '0',
+  mime_id    INT(11)      NOT NULL AUTO_INCREMENT,
+  mime_ext   VARCHAR(60)  NOT NULL DEFAULT '',
+  mime_types TEXT         NOT NULL,
+  mime_name  VARCHAR(255) NOT NULL DEFAULT '',
+  mime_admin INT(1)       NOT NULL DEFAULT '1',
+  mime_user  INT(1)       NOT NULL DEFAULT '0',
   KEY mime_id (mime_id)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 # --------------------------------------------------------
 
@@ -135,7 +145,8 @@ INSERT INTO smartsection_mimetypes VALUES (5, 'dll', 'application/octet-stream',
 INSERT INTO smartsection_mimetypes VALUES (6, 'hqx', 'application/binhex application/mac-binhex application/mac-binhex40', 'Macintosh BinHex 4 Compressed Archive', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (7, 'cpt', 'application/mac-compactpro application/compact_pro', 'Compact Pro Archive', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (8, 'lha', 'application/lha application/x-lha application/octet-stream application/x-compress application/x-compressed application/maclha', 'Compressed Archive File', 0, 0);
-INSERT INTO smartsection_mimetypes VALUES (9, 'lzh', 'application/lzh application/x-lzh application/x-lha application/x-compress application/x-compressed application/x-lzh-archive zz-application/zz-winassoc-lzh application/maclha application/octet-stream', 'Compressed Archive File', 0, 0);
+INSERT INTO smartsection_mimetypes VALUES
+  (9, 'lzh', 'application/lzh application/x-lzh application/x-lha application/x-compress application/x-compressed application/x-lzh-archive zz-application/zz-winassoc-lzh application/maclha application/octet-stream', 'Compressed Archive File', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (10, 'sh', 'application/x-shar', 'UNIX shar Archive File', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (11, 'shar', 'application/x-shar', 'UNIX shar Archive File', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (12, 'tar', 'application/tar application/x-tar applicaton/x-gtar multipart/x-tar application/x-compress application/x-compressed', 'Tape Archive File', 0, 0);
@@ -202,7 +213,9 @@ INSERT INTO smartsection_mimetypes VALUES (72, 'ra', 'audio/vnd.rn-realaudio aud
 INSERT INTO smartsection_mimetypes VALUES (73, 'wav', 'audio/wav audio/x-wav audio/wave audio/x-pn-wav', 'Waveform Audio', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (74, 'wax', ' audio/x-ms-wax', 'Windows Media Audio Redirector', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (75, 'wma', 'audio/x-ms-wma video/x-ms-asf', 'Windows Media Audio File', 0, 0);
-INSERT INTO smartsection_mimetypes VALUES (76, 'bmp', 'image/bmp image/x-bmp image/x-bitmap image/x-xbitmap image/x-win-bitmap image/x-windows-bmp image/ms-bmp image/x-ms-bmp application/bmp application/x-bmp application/x-win-bitmap application/preview', 'Windows OS/2 Bitmap Graphics', 1, 1);
+INSERT INTO smartsection_mimetypes VALUES
+  (76, 'bmp', 'image/bmp image/x-bmp image/x-bitmap image/x-xbitmap image/x-win-bitmap image/x-windows-bmp image/ms-bmp image/x-ms-bmp application/bmp application/x-bmp application/x-win-bitmap application/preview', 'Windows OS/2 Bitmap Graphics', 1,
+   1);
 INSERT INTO smartsection_mimetypes VALUES (77, 'gif', 'image/gif image/x-xbitmap image/gi_', 'Graphic Interchange Format', 1, 1);
 INSERT INTO smartsection_mimetypes VALUES (78, 'ief', 'image/ief', 'Image File - Bitmap graphics', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (79, 'jpeg', 'image/jpeg image/jpg image/jpe_ image/pjpeg image/vnd.swiftview-jpeg', 'JPEG/JIFF Image', 1, 1);
@@ -242,8 +255,10 @@ INSERT INTO smartsection_mimetypes VALUES (112, 'qt', 'video/quicktime audio/aif
 INSERT INTO smartsection_mimetypes VALUES (113, 'mov', 'video/quicktime video/x-quicktime image/mov audio/aiff audio/x-midi audio/x-wav video/avi', 'QuickTime Video Clip', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (114, 'avi', 'video/avi video/msvideo video/x-msvideo image/avi video/xmpg2 application/x-troff-msvideo audio/aiff audio/avi', 'Audio Video Interleave File', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (115, 'movie', 'video/sgi-movie video/x-sgi-movie', 'QuickTime Movie', 0, 0);
-INSERT INTO smartsection_mimetypes VALUES (116, 'asf', 'audio/asf application/asx video/x-ms-asf-plugin application/x-mplayer2 video/x-ms-asf application/vnd.ms-asf video/x-ms-asf-plugin video/x-ms-wm video/x-ms-wmx', 'Advanced Streaming Format', 0, 0);
-INSERT INTO smartsection_mimetypes VALUES (117, 'asx', 'video/asx application/asx video/x-ms-asf-plugin application/x-mplayer2 video/x-ms-asf application/vnd.ms-asf video/x-ms-asf-plugin video/x-ms-wm video/x-ms-wmx video/x-la-asf', 'Advanced Stream Redirector File', 0, 0);
+INSERT INTO smartsection_mimetypes
+VALUES (116, 'asf', 'audio/asf application/asx video/x-ms-asf-plugin application/x-mplayer2 video/x-ms-asf application/vnd.ms-asf video/x-ms-asf-plugin video/x-ms-wm video/x-ms-wmx', 'Advanced Streaming Format', 0, 0);
+INSERT INTO smartsection_mimetypes
+VALUES (117, 'asx', 'video/asx application/asx video/x-ms-asf-plugin application/x-mplayer2 video/x-ms-asf application/vnd.ms-asf video/x-ms-asf-plugin video/x-ms-wm video/x-ms-wmx video/x-la-asf', 'Advanced Stream Redirector File', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (118, 'wmv', 'video/x-ms-wmv', 'Windows Media File', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (119, 'wvx', 'video/x-ms-wvx', 'Windows Media Redirector', 0, 0);
 INSERT INTO smartsection_mimetypes VALUES (120, 'wm', 'video/x-ms-wm', 'Windows Media A/V File', 0, 0);

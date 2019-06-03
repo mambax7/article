@@ -14,81 +14,82 @@
  * @package         article
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id$
  */
 
-include "header.php";
+use XoopsModules\Article;
+
+require_once __DIR__ . '/header.php';
+
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
 
 if (art_parse_args($args_num, $args, $args_str)) {
-    $args["category"] = !empty($args["category"]) ? $args["category"] : @$args_num[0];
+    $args['category'] = !empty($args['category']) ? $args['category'] : @$args_num[0];
 }
 
-$category_id = intval( empty($_GET["category"]) ? @$args["category"] : $_GET["category"] );
-$start = intval( empty($_GET["start"]) ? @$args["start"] : $_GET["start"] );
+$category_id = (int)(empty($_GET['category']) ? @$args['category'] : $_GET['category']);
+$start       = (int)(empty($_GET['start']) ? @$args['start'] : $_GET['start']);
 
-$topic_handler =& xoops_getmodulehandler("topic", $GLOBALS["artdirname"]);
-$category_handler =& xoops_getmodulehandler("category", $GLOBALS["artdirname"]);
-$category =& $category_handler->get($category_id);
-if (!$category_handler->getPermission($category, "access")) {
-    redirect_header(XOOPS_URL . "/modules/" . $GLOBALS["artdirname"] . "/index.php", 2, art_constant("MD_NOACCESS"));
+$topicHandler    = $helper->getHandler('Topic', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+$category        = $categoryHandler->get($category_id);
+if (!$categoryHandler->getPermission($category, 'access')) {
+    redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php', 2, art_constant('MD_NOACCESS'));
 }
 
 if (!empty($xoopsUser)) {
-    $xoopsOption["cache_group"] = implode(",", $xoopsUser->groups());
+    $xoopsOption['cache_group'] = implode(',', $xoopsUser->groups());
 }
-$xoopsOption["xoops_pagetitle"] = $xoopsModule->getVar("name") . " - " . $category->getVar("cat_title");
-$template = $category->getVar("cat_template");
-$xoopsOption["template_main"] = art_getTemplate("topics", $template);
-//$xoopsOption["xoops_module_header"] = art_getModuleHeader($template);
-include_once XOOPS_ROOT_PATH . "/header.php";
-include XOOPS_ROOT_PATH . "/modules/" . $xoopsModule->getVar("dirname") . "/include/vars.php";
+$xoopsOption['xoops_pagetitle']     = $xoopsModule->getVar('name') . ' - ' . $category->getVar('cat_title');
+$template                           = $category->getVar('cat_template');
+$xoopsOption['template_main']       = art_getTemplate('topics', $template);
+$xoopsOption['xoops_module_header'] = art_getModuleHeader($template);
+require_once XOOPS_ROOT_PATH . '/header.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
-art_getModuleHeader($template);
-
-$topic_handler =& xoops_getmodulehandler("topic", $GLOBALS["artdirname"]);
-$criteria = new CriteriaCompo(new Criteria("top_expire", time(), ">"));
-$criteria->setSort("top_time");
-$criteria->setOrder("DESC");
-$topic_array =& $topic_handler->getByCategory($category_id, $xoopsModuleConfig["topics_max"], 0, $criteria);
-$topics = array();
-if (count($topic_array)>0) {
-    $counts =& $topic_handler->getArticleCounts(array_keys($topic_array));
+$topicHandler = $helper->getHandler('Topic', $GLOBALS['artdirname']);
+$criteria     = new \CriteriaCompo(new \Criteria('top_expire', time(), '>'));
+$criteria->setSort('top_time');
+$criteria->setOrder('DESC');
+$topic_array = &$topicHandler->getByCategory($category_id, $helper->getConfig('topics_max'), 0, $criteria);
+$topics      = [];
+if (count($topic_array) > 0) {
+    $counts = &$topicHandler->getArticleCounts(array_keys($topic_array));
     foreach ($topic_array as $id => $topic) {
-        $topics[] = array(
-            "id"        => $id,
-            "title"        => $topic->getVar("top_title"),
-            "description" => $topic->getVar("top_description"),
-            "articles"    => @intval($counts[$id])
-        );
+        $topics[] = [
+            'id'          => $id,
+            'title'       => $topic->getVar('top_title'),
+            'description' => $topic->getVar('top_description'),
+            'articles'    => @(int)$counts[$id],
+        ];
     }
 }
 
-$count_topic =& $topic_handler->getCountByCategory($category_id, $criteria);
-if ( $count_topic > $xoopsModuleConfig["articles_perpage"]) {
-    include XOOPS_ROOT_PATH . "/class/pagenav.php";
-    $nav = new XoopsPageNav($count_topic, $xoopsModuleConfig["topics_max"], $start, "start", "category=".$category_id);
+$count_topic = $topicHandler->getCountByCategory($category_id, $criteria);
+if ($count_topic > $helper->getConfig('articles_perpage')) {
+    require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
+    $nav     = new \XoopsPageNav($count_topic, $helper->getConfig('topics_max'), $start, 'start', 'category=' . $category_id);
     $pagenav = $nav->renderNav(5);
 } else {
-    $pagenav = "";
+    $pagenav = '';
 }
 
-$category_data = array();
+$category_data = [];
 if (!$category->isNew()) {
-    $category_data = array(
-        "id"        => $category->getVar("cat_id"),
-        "title"        => $category->getVar("cat_title"),
-        "description" => $category->getVar("cat_description")
-    );
+    $category_data = [
+        'id'          => $category->getVar('cat_id'),
+        'title'       => $category->getVar('cat_title'),
+        'description' => $category->getVar('cat_description'),
+    ];
 }
-$xoopsTpl -> assign("modulename", $xoopsModule->getVar("name"));
-$xoopsTpl -> assign("tracks", $category_handler->getTrack($category));
-$xoopsTpl -> assign_by_ref("category", $category_data);
-$xoopsTpl -> assign_by_ref("topics", $topics);
-$xoopsTpl -> assign_by_ref("pagenav", $pagenav);
+$xoopsTpl->assign('modulename', $xoopsModule->getVar('name'));
+$xoopsTpl->assign('tracks', $categoryHandler->getTrack($category));
+$xoopsTpl->assign_by_ref('category', $category_data);
+$xoopsTpl->assign_by_ref('topics', $topics);
+$xoopsTpl->assign_by_ref('pagenav', $pagenav);
 
 // Loading module meta data, NOT THE RIGHT WAY DOING IT
-$xoopsTpl -> assign("xoops_module_header", $xoopsOption["xoops_module_header"]);
-$xoopsTpl -> assign("xoops_pagetitle", $xoopsOption["xoops_pagetitle"]);
+$xoopsTpl->assign('xoops_module_header', $xoopsOption['xoops_module_header']);
+$xoopsTpl->assign('xoops_pagetitle', $xoopsOption['xoops_pagetitle']);
 
-include_once "footer.php";
-?>
+require_once __DIR__ . '/footer.php';

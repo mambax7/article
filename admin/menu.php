@@ -14,34 +14,112 @@
  * @package         article
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id$
  */
 
-if (!defined('XOOPS_ROOT_PATH')) { exit(); }
+use XoopsModules\Article;
 
-$adminmenu = array();
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-$adminmenu[]= array("link" => "admin/index.php",
-                                        "title" => art_constant("MI_ADMENU_INDEX"));
-$adminmenu[]= array("link" => "admin/admin.category.php",
-                                        "title" => art_constant("MI_ADMENU_CATEGORY"));
-$adminmenu[]= array("link" => "admin/admin.topic.php",
-                                        "title" => art_constant("MI_ADMENU_TOPIC"));
-$adminmenu[]= array("link" => "admin/admin.article.php",
-                                        "title" => art_constant("MI_ADMENU_ARTICLE"));
-$adminmenu[]= array("link" => "admin/admin.permission.php",
-                                        "title" => art_constant("MI_ADMENU_PERMISSION"));
-$adminmenu[]= array("link" => "admin/admin.block.php",
-                                        "title" => art_constant("MI_ADMENU_BLOCK"));
-$adminmenu[]= array("link" => "admin/admin.spotlight.php",
-                                        "title" => art_constant("MI_ADMENU_SPOTLIGHT"));
-$adminmenu[]= array("link" => "admin/admin.trackback.php",
-                                        "title" => art_constant("MI_ADMENU_TRACKBACK"));
-$adminmenu[]= array("link" => "admin/admin.file.php",
-                                        "title" => art_constant("MI_ADMENU_FILE"));
-$adminmenu[]= array("link" => "admin/admin.synchronization.php",
-                                        "title" => art_constant("MI_ADMENU_UTILITY"));
-$adminmenu[]= array("link" => "admin/about.php",
-                                        "title" => art_constant("MI_ADMENU_ABOUT"));
-// misc: comments, synchronize, achive, batch import
-?>
+include dirname(__DIR__) . '/preloads/autoloader.php';
+
+$moduleDirName      = basename(dirname(__DIR__));
+$moduleDirNameUpper = mb_strtoupper($moduleDirName);
+
+//require_once  dirname(__DIR__) . '/include/common.php';
+/** @var \XoopsModules\Article\Helper $helper */
+$helper = \XoopsModules\Article\Helper::getInstance();
+$helper->loadLanguage('common');
+$helper->loadLanguage('feedback');
+
+$pathIcon32 = \Xmf\Module\Admin::menuIconPath('');
+if (is_object($helper->getModule())) {
+    $pathModIcon32 = $helper->getModule()->getInfo('modicons32');
+}
+
+$adminmenu[] = [
+    'title' => art_constant('MI_ADMENU_HOME'),
+    'link'  => 'admin/index.php',
+    'icon'  => $pathIcon32 . '/home.png',
+];
+
+$adminmenu[] = [
+    'title' => art_constant('MI_ADMENU_INDEX'),
+    'link'  => 'admin/main.php',
+    'icon'  => $pathIcon32 . '/home.png',
+];
+
+$adminmenu[] = [
+    'title' => art_constant('MI_ADMENU_CATEGORY'),
+    'link'  => 'admin/admin.category.php',
+    'icon'  => $pathIcon32 . '/category.png',
+];
+
+$adminmenu[] = [
+    'title' => art_constant('MI_ADMENU_TOPIC'), //_MI_ADMENU_TOPIC,
+    'link'  => 'admin/admin.topic.php',
+    'icon'  => $pathIcon32 . '/folder1_html.png',
+];
+
+$adminmenu[] = [
+    'title' => art_constant('MI_ADMENU_ARTICLE'), //_MI_ADMENU_ARTICLE,
+    'link'  => 'admin/admin.article.php',
+    'icon'  => $pathIcon32 . '/index.png',
+];
+
+$adminmenu[] = [
+    'title' => art_constant('MI_ADMENU_PERMISSION'),
+    'link'  => 'admin/admin.permission.php',
+    'icon'  => $pathIcon32 . '/permissions.png',
+];
+
+$adminmenu[] = [
+    'title' => art_constant('MI_ADMENU_SPOTLIGHT'),
+    'link'  => 'admin/admin.spotlight.php',
+    'icon'  => $pathIcon32 . '/highlight.png',
+];
+
+$adminmenu[] = [
+    'title' => art_constant('MI_ADMENU_TRACKBACK'),
+    'link'  => 'admin/admin.trackback.php',
+    'icon'  => $pathIcon32 . '/export.png',
+];
+
+$adminmenu[] = [
+    'title' => art_constant('MI_ADMENU_FILE'),
+    'link'  => 'admin/admin.file.php',
+    'icon'  => $pathIcon32 . '/content.png',
+];
+
+$adminmenu[] = [
+    'title' => art_constant('MI_ADMENU_SYNC'),
+    'link'  => 'admin/admin.synchronization.php',
+    'icon'  => $pathIcon32 . '/synchronized.png',
+];
+
+// Blocks Admin
+$adminmenu[] = [
+    'title' => constant('CO_' . $moduleDirNameUpper . '_' . 'BLOCKS'),
+    'link'  => 'admin/blocksadmin.php',
+    'icon'  => $pathIcon32 . '/block.png',
+];
+
+//Feedback
+$adminmenu[] = [
+    'title' => constant('CO_' . $moduleDirNameUpper . '_' . 'ADMENU_FEEDBACK'),
+    'link'  => 'admin/feedback.php',
+    'icon'  => $pathIcon32 . '/mail_foward.png',
+];
+
+if ($helper->getConfig('displayDeveloperTools')) {
+    $adminmenu[] = [
+        'title' => constant('CO_' . $moduleDirNameUpper . '_' . 'ADMENU_MIGRATE'),
+        'link'  => 'admin/migrate.php',
+        'icon'  => $pathIcon32 . '/database_go.png',
+    ];
+}
+
+$adminmenu[] = [
+    'title' => art_constant('MI_ADMENU_ABOUT'),
+    'link'  => 'admin/about.php',
+    'icon'  => $pathIcon32 . '/about.png',
+];

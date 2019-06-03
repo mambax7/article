@@ -1,5 +1,5 @@
 <?php
-// $Id$
+//
 // ------------------------------------------------------------------------ //
 // This program is free software; you can redistribute it and/or modify     //
 // it under the terms of the GNU General Public License as published by     //
@@ -25,15 +25,15 @@
 // Project: Article Project                                                 //
 // ------------------------------------------------------------------------ //
 
-include("../../../include/cp_header.php");
-include XOOPS_ROOT_PATH."/modules/".$xoopsModule->getVar("dirname")."/include/vars.php";
+require_once dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 mod_loadFunctions();
-load_functions("admin");
+load_functions('admin');
 
 // include the default language file for the admin interface
-if(!@include_once(XOOPS_ROOT_PATH."/modules/".$xoopsModule->getVar("dirname")."/language/" . $xoopsConfig['language'] . "/main.php")){
-    include_once(XOOPS_ROOT_PATH."/modules/".$xoopsModule->getVar("dirname")."/language/english/main.php");
-}
+//if (!@require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/language/' . $xoopsConfig['language'] . '/main.php') {
+//    require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/language/english/main.php';
+//}
+xoops_loadLanguage('main', basename(dirname(__DIR__)));
 
-$myts = MyTextSanitizer::getInstance();
-?>
+$myts = \MyTextSanitizer::getInstance();

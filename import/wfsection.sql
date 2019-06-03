@@ -17,49 +17,50 @@
 #
 
 CREATE TABLE wfs_article (
-  articleid int(11) unsigned NOT NULL auto_increment,
-  categoryid int(11) NOT NULL default '0',
-  uid int(11) NOT NULL default '0',
-  title varchar(255) default NULL,
-  maintext text,
-  counter int(11) NOT NULL default '0',
-  created int(10) NOT NULL default '0',
-  changed int(10) default '0',
-  nohtml int(1) NOT NULL default '0',
-  nosmiley int(1) NOT NULL default '0',
-  noxcodes int(1) NOT NULL default '0',
-  nobreaks int(1) NOT NULL default '0',
-  summary text,
-  url varchar(255) default '',
-  page int(11) unsigned NOT NULL default '1',
-  groupid varchar(255) default NULL,
-  published int(10) NOT NULL default '0',
-  expired int(10) NOT NULL default '0',
-  notifypub int(1) NOT NULL default '0',
-  usertype varchar(5) default NULL,
-  isframe int(1) NOT NULL default '0',
-  htmlpage varchar(255) default '',
-  rating double(6,4) NOT NULL default '0.0000',
-  votes int(11) unsigned NOT NULL default '0',
-  hits int(11) unsigned NOT NULL default '0',
-  urlname varchar(255) default '',
-  offline int(1) NOT NULL default '0',
-  weight int(4) NOT NULL default '1',
-  noshowart int(1) NOT NULL default '0',
-  allowcom int(1) NOT NULL default '1',
-  cmainmenu int(11) NOT NULL default '0',
-  isforumid int(10) NOT NULL default '0',
-  articleimg varchar(255) default NULL,
-  subtitle varchar(255) default '',
-  wrapurl varchar(255) default '',
-  version decimal(3,2) NOT NULL default '0.00',
-  spotlight int(11) NOT NULL default '0',
-  spotlightmain int(11) NOT NULL default '0',
-  PRIMARY KEY  (articleid),
+  articleid     INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  categoryid    INT(11)          NOT NULL DEFAULT '0',
+  uid           INT(11)          NOT NULL DEFAULT '0',
+  title         VARCHAR(255)              DEFAULT NULL,
+  maintext      TEXT,
+  counter       INT(11)          NOT NULL DEFAULT '0',
+  created       INT(10)          NOT NULL DEFAULT '0',
+  changed       INT(10)                   DEFAULT '0',
+  nohtml        INT(1)           NOT NULL DEFAULT '0',
+  nosmiley      INT(1)           NOT NULL DEFAULT '0',
+  noxcodes      INT(1)           NOT NULL DEFAULT '0',
+  nobreaks      INT(1)           NOT NULL DEFAULT '0',
+  summary       TEXT,
+  url           VARCHAR(255)              DEFAULT '',
+  page          INT(11) UNSIGNED NOT NULL DEFAULT '1',
+  groupid       VARCHAR(255)              DEFAULT NULL,
+  published     INT(10)          NOT NULL DEFAULT '0',
+  expired       INT(10)          NOT NULL DEFAULT '0',
+  notifypub     INT(1)           NOT NULL DEFAULT '0',
+  usertype      VARCHAR(5)                DEFAULT NULL,
+  isframe       INT(1)           NOT NULL DEFAULT '0',
+  htmlpage      VARCHAR(255)              DEFAULT '',
+  rating        DOUBLE(6, 4)     NOT NULL DEFAULT '0.0000',
+  votes         INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  hits          INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  urlname       VARCHAR(255)              DEFAULT '',
+  offline       INT(1)           NOT NULL DEFAULT '0',
+  weight        INT(4)           NOT NULL DEFAULT '1',
+  noshowart     INT(1)           NOT NULL DEFAULT '0',
+  allowcom      INT(1)           NOT NULL DEFAULT '1',
+  cmainmenu     INT(11)          NOT NULL DEFAULT '0',
+  isforumid     INT(10)          NOT NULL DEFAULT '0',
+  articleimg    VARCHAR(255)              DEFAULT NULL,
+  subtitle      VARCHAR(255)              DEFAULT '',
+  wrapurl       VARCHAR(255)              DEFAULT '',
+  version       DECIMAL(3, 2)    NOT NULL DEFAULT '0.00',
+  spotlight     INT(11)          NOT NULL DEFAULT '0',
+  spotlightmain INT(11)          NOT NULL DEFAULT '0',
+  PRIMARY KEY (articleid),
   KEY categoryid (categoryid),
   KEY uid (uid),
   KEY CHANGED (changed)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_article`
@@ -72,19 +73,20 @@ CREATE TABLE wfs_article (
 #
 
 CREATE TABLE wfs_article_mod (
-  requestid int(11) unsigned NOT NULL auto_increment,
-  articleid int(8) unsigned NOT NULL default '0',
-  categoryid int(8) unsigned NOT NULL default '0',
-  title varchar(255) NOT NULL default '',
-  subtitle varchar(255) NOT NULL default '',
-  maintext text NOT NULL,
-  summary text NOT NULL,
-  url varchar(250) NOT NULL default '',
-  urlname varchar(255) NOT NULL default '',
-  requested int(10) NOT NULL default '0',
-  modifysubmitter int(11) NOT NULL default '0',
-  PRIMARY KEY  (requestid)
-) ENGINE=MyISAM;
+  requestid       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  articleid       INT(8) UNSIGNED  NOT NULL DEFAULT '0',
+  categoryid      INT(8) UNSIGNED  NOT NULL DEFAULT '0',
+  title           VARCHAR(255)     NOT NULL DEFAULT '',
+  subtitle        VARCHAR(255)     NOT NULL DEFAULT '',
+  maintext        TEXT             NOT NULL,
+  summary         TEXT             NOT NULL,
+  url             VARCHAR(250)     NOT NULL DEFAULT '',
+  urlname         VARCHAR(255)     NOT NULL DEFAULT '',
+  requested       INT(10)          NOT NULL DEFAULT '0',
+  modifysubmitter INT(11)          NOT NULL DEFAULT '0',
+  PRIMARY KEY (requestid)
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_article_mod`
@@ -98,51 +100,52 @@ CREATE TABLE wfs_article_mod (
 #
 
 CREATE TABLE wfs_article_restore (
-  restore_id int(11) NOT NULL auto_increment,
-  restore_date int(11) NOT NULL default '0',
-  articleid int(11) NOT NULL default '0',
-  categoryid int(11) NOT NULL default '0',
-  uid int(11) NOT NULL default '0',
-  title varchar(255) default NULL,
-  maintext text,
-  counter int(11) NOT NULL default '0',
-  created int(10) NOT NULL default '0',
-  changed int(10) default '0',
-  nohtml int(1) NOT NULL default '0',
-  nosmiley int(1) NOT NULL default '0',
-  noxcodes int(1) NOT NULL default '0',
-  nobreaks int(1) NOT NULL default '0',
-  summary text,
-  url varchar(255) default '',
-  page int(11) unsigned NOT NULL default '1',
-  groupid varchar(255) default NULL,
-  published int(10) NOT NULL default '0',
-  expired int(10) NOT NULL default '0',
-  notifypub int(1) NOT NULL default '0',
-  usertype varchar(5) default NULL,
-  isframe int(1) NOT NULL default '0',
-  htmlpage varchar(255) default '',
-  rating double(6,4) NOT NULL default '0.0000',
-  votes int(11) unsigned NOT NULL default '0',
-  hits int(11) unsigned NOT NULL default '0',
-  urlname varchar(255) default '',
-  offline int(1) NOT NULL default '0',
-  weight int(4) NOT NULL default '1',
-  noshowart int(1) NOT NULL default '0',
-  allowcom int(1) NOT NULL default '1',
-  cmainmenu int(11) NOT NULL default '0',
-  isforumid int(10) NOT NULL default '0',
-  articleimg varchar(255) default NULL,
-  subtitle varchar(255) default NULL,
-  wrapurl varchar(255) default '',
-  version decimal(3,2) NOT NULL default '0.00',
-  spotlight int(11) NOT NULL default '0',
-  spotlightmain int(11) NOT NULL default '0',
-  PRIMARY KEY  (restore_id),
+  restore_id    INT(11)          NOT NULL AUTO_INCREMENT,
+  restore_date  INT(11)          NOT NULL DEFAULT '0',
+  articleid     INT(11)          NOT NULL DEFAULT '0',
+  categoryid    INT(11)          NOT NULL DEFAULT '0',
+  uid           INT(11)          NOT NULL DEFAULT '0',
+  title         VARCHAR(255)              DEFAULT NULL,
+  maintext      TEXT,
+  counter       INT(11)          NOT NULL DEFAULT '0',
+  created       INT(10)          NOT NULL DEFAULT '0',
+  changed       INT(10)                   DEFAULT '0',
+  nohtml        INT(1)           NOT NULL DEFAULT '0',
+  nosmiley      INT(1)           NOT NULL DEFAULT '0',
+  noxcodes      INT(1)           NOT NULL DEFAULT '0',
+  nobreaks      INT(1)           NOT NULL DEFAULT '0',
+  summary       TEXT,
+  url           VARCHAR(255)              DEFAULT '',
+  page          INT(11) UNSIGNED NOT NULL DEFAULT '1',
+  groupid       VARCHAR(255)              DEFAULT NULL,
+  published     INT(10)          NOT NULL DEFAULT '0',
+  expired       INT(10)          NOT NULL DEFAULT '0',
+  notifypub     INT(1)           NOT NULL DEFAULT '0',
+  usertype      VARCHAR(5)                DEFAULT NULL,
+  isframe       INT(1)           NOT NULL DEFAULT '0',
+  htmlpage      VARCHAR(255)              DEFAULT '',
+  rating        DOUBLE(6, 4)     NOT NULL DEFAULT '0.0000',
+  votes         INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  hits          INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  urlname       VARCHAR(255)              DEFAULT '',
+  offline       INT(1)           NOT NULL DEFAULT '0',
+  weight        INT(4)           NOT NULL DEFAULT '1',
+  noshowart     INT(1)           NOT NULL DEFAULT '0',
+  allowcom      INT(1)           NOT NULL DEFAULT '1',
+  cmainmenu     INT(11)          NOT NULL DEFAULT '0',
+  isforumid     INT(10)          NOT NULL DEFAULT '0',
+  articleimg    VARCHAR(255)              DEFAULT NULL,
+  subtitle      VARCHAR(255)              DEFAULT NULL,
+  wrapurl       VARCHAR(255)              DEFAULT '',
+  version       DECIMAL(3, 2)    NOT NULL DEFAULT '0.00',
+  spotlight     INT(11)          NOT NULL DEFAULT '0',
+  spotlightmain INT(11)          NOT NULL DEFAULT '0',
+  PRIMARY KEY (restore_id),
   KEY categoryid (categoryid),
   KEY uid (uid),
   KEY CHANGED (changed)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_article_restore`
@@ -156,18 +159,19 @@ CREATE TABLE wfs_article_restore (
 #
 
 CREATE TABLE wfs_broken (
-  reportid int(5) NOT NULL auto_increment,
-  lid int(11) NOT NULL default '0',
-  sender int(11) NOT NULL default '0',
-  ip varchar(20) NOT NULL default '',
-  date varchar(11) NOT NULL default '0',
-  confirmed enum('0','1') NOT NULL default '0',
-  acknowledged enum('0','1') NOT NULL default '0',
-  PRIMARY KEY  (reportid),
+  reportid     INT(5)          NOT NULL AUTO_INCREMENT,
+  lid          INT(11)         NOT NULL DEFAULT '0',
+  sender       INT(11)         NOT NULL DEFAULT '0',
+  ip           VARCHAR(20)     NOT NULL DEFAULT '',
+  date         VARCHAR(11)     NOT NULL DEFAULT '0',
+  confirmed    ENUM ('0', '1') NOT NULL DEFAULT '0',
+  acknowledged ENUM ('0', '1') NOT NULL DEFAULT '0',
+  PRIMARY KEY (reportid),
   KEY lid (lid),
   KEY sender (sender),
   KEY ip (ip)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_broken`
@@ -181,30 +185,31 @@ CREATE TABLE wfs_broken (
 #
 
 CREATE TABLE wfs_category (
-  id int(4) unsigned NOT NULL auto_increment,
-  pid int(4) unsigned NOT NULL default '0',
-  imgurl varchar(255) NOT NULL default '',
-  displayimg int(10) NOT NULL default '0',
-  title varchar(255) NOT NULL default '',
-  description text NOT NULL,
-  catdescription text NOT NULL,
-  groupid varchar(255) default NULL,
-  catfooter text NOT NULL,
-  weight int(4) NOT NULL default '1',
-  cmainmenu tinyint(10) NOT NULL default '0',
-  nohtml tinyint(8) NOT NULL default '1',
-  nosmileys tinyint(8) NOT NULL default '1',
-  noxcodes tinyint(8) NOT NULL default '1',
-  noimages tinyint(8) NOT NULL default '1',
-  nobreaks tinyint(8) NOT NULL default '0',
-  imgalign tinyint(8) NOT NULL default '0',
-  template varchar(255) NOT NULL default 'wfsection_artindex.html',
-  status int(1) NOT NULL default '1',
-  groupcreate varchar(255) NOT NULL default '1 2 3',
-  PRIMARY KEY  (id),
+  id             INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
+  pid            INT(4) UNSIGNED NOT NULL DEFAULT '0',
+  imgurl         VARCHAR(255)    NOT NULL DEFAULT '',
+  displayimg     INT(10)         NOT NULL DEFAULT '0',
+  title          VARCHAR(255)    NOT NULL DEFAULT '',
+  description    TEXT            NOT NULL,
+  catdescription TEXT            NOT NULL,
+  groupid        VARCHAR(255)             DEFAULT NULL,
+  catfooter      TEXT            NOT NULL,
+  weight         INT(4)          NOT NULL DEFAULT '1',
+  cmainmenu      TINYINT(10)     NOT NULL DEFAULT '0',
+  nohtml         TINYINT(8)      NOT NULL DEFAULT '1',
+  nosmileys      TINYINT(8)      NOT NULL DEFAULT '1',
+  noxcodes       TINYINT(8)      NOT NULL DEFAULT '1',
+  noimages       TINYINT(8)      NOT NULL DEFAULT '1',
+  nobreaks       TINYINT(8)      NOT NULL DEFAULT '0',
+  imgalign       TINYINT(8)      NOT NULL DEFAULT '0',
+  template       VARCHAR(255)    NOT NULL DEFAULT 'wfsection_artindex.html',
+  status         INT(1)          NOT NULL DEFAULT '1',
+  groupcreate    VARCHAR(255)    NOT NULL DEFAULT '1 2 3',
+  PRIMARY KEY (id),
   KEY pid (pid),
   KEY id (id)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_category`
@@ -217,14 +222,15 @@ CREATE TABLE wfs_category (
 #
 
 CREATE TABLE wfs_checkin (
-  ci_id int(8) NOT NULL auto_increment,
-  article_id tinyint(10) NOT NULL default '0',
-  user_id tinyint(10) NOT NULL default '0',
-  c_in_time int(10) NOT NULL default '0',
-  c_out_time int(8) NOT NULL default '0',
-  c_edit int(1) NOT NULL default '0',
-  PRIMARY KEY  (ci_id)
-) ENGINE=MyISAM;
+  ci_id      INT(8)      NOT NULL AUTO_INCREMENT,
+  article_id TINYINT(10) NOT NULL DEFAULT '0',
+  user_id    TINYINT(10) NOT NULL DEFAULT '0',
+  c_in_time  INT(10)     NOT NULL DEFAULT '0',
+  c_out_time INT(8)      NOT NULL DEFAULT '0',
+  c_edit     INT(1)      NOT NULL DEFAULT '0',
+  PRIMARY KEY (ci_id)
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_checkin`
@@ -237,13 +243,14 @@ CREATE TABLE wfs_checkin (
 #
 
 CREATE TABLE wfs_config (
-  filesbasepath varchar(255) NOT NULL default '',
-  graphicspath varchar(255) NOT NULL default '',
-  sgraphicspath varchar(255) NOT NULL default '',
-  filebasepathtemp varchar(255) NOT NULL default '',
-  htmlpath varchar(255) NOT NULL default '',
-  logopath varchar(255) NOT NULL default ''
-) ENGINE=MyISAM;
+  filesbasepath    VARCHAR(255) NOT NULL DEFAULT '',
+  graphicspath     VARCHAR(255) NOT NULL DEFAULT '',
+  sgraphicspath    VARCHAR(255) NOT NULL DEFAULT '',
+  filebasepathtemp VARCHAR(255) NOT NULL DEFAULT '',
+  htmlpath         VARCHAR(255) NOT NULL DEFAULT '',
+  logopath         VARCHAR(255) NOT NULL DEFAULT ''
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_config`
@@ -258,23 +265,24 @@ INSERT INTO wfs_config VALUES ('modules/wfsection/cache/uploaded', 'modules/wfse
 #
 
 CREATE TABLE wfs_files (
-  fileid int(8) NOT NULL auto_increment,
-  filerealname varchar(255) NOT NULL default '',
-  filetext text NOT NULL,
-  articleid int(8) unsigned NOT NULL default '0',
-  fileshowname varchar(255) NOT NULL default '',
-  date int(10) NOT NULL default '0',
-  ext varchar(64) NOT NULL default '',
-  mimetype varchar(64) NOT NULL default '',
-  downloadname varchar(255) NOT NULL default '',
-  counter int(8) unsigned NOT NULL default '0',
-  filedescript text,
-  groupid varchar(255) NOT NULL default '1 2 3',
-  submit tinyint(11) NOT NULL default '1',
-  uid int(11) NOT NULL default '1',
-  PRIMARY KEY  (fileid),
+  fileid       INT(8)          NOT NULL AUTO_INCREMENT,
+  filerealname VARCHAR(255)    NOT NULL DEFAULT '',
+  filetext     TEXT            NOT NULL,
+  articleid    INT(8) UNSIGNED NOT NULL DEFAULT '0',
+  fileshowname VARCHAR(255)    NOT NULL DEFAULT '',
+  date         INT(10)         NOT NULL DEFAULT '0',
+  ext          VARCHAR(64)     NOT NULL DEFAULT '',
+  mimetype     VARCHAR(64)     NOT NULL DEFAULT '',
+  downloadname VARCHAR(255)    NOT NULL DEFAULT '',
+  counter      INT(8) UNSIGNED NOT NULL DEFAULT '0',
+  filedescript TEXT,
+  groupid      VARCHAR(255)    NOT NULL DEFAULT '1 2 3',
+  submit       TINYINT(11)     NOT NULL DEFAULT '1',
+  uid          INT(11)         NOT NULL DEFAULT '1',
+  PRIMARY KEY (fileid),
   KEY articleid (articleid)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_files`
@@ -287,32 +295,35 @@ CREATE TABLE wfs_files (
 #
 
 CREATE TABLE wfs_indexpage (
-  indid tinyint(8) NOT NULL auto_increment,
-  pagename varchar(255) NOT NULL default '',
-  indeximage varchar(255) NOT NULL default 'blank.png',
-  indexheading varchar(255) NOT NULL default 'WF-Sections',
-  indexheader text NOT NULL,
-  indexfooter text NOT NULL,
-  nohtml tinyint(8) NOT NULL default '1',
-  nosmileys tinyint(8) NOT NULL default '1',
-  noxcodes tinyint(8) NOT NULL default '1',
-  noimages tinyint(8) NOT NULL default '1',
-  nobreaks tinyint(4) NOT NULL default '0',
-  indexheaderalign varchar(25) NOT NULL default 'left',
-  indexfooteralign varchar(25) NOT NULL default 'center',
-  isdefault tinyint(8) NOT NULL default '0',
-  PRIMARY KEY  (indid),
+  indid            TINYINT(8)   NOT NULL AUTO_INCREMENT,
+  pagename         VARCHAR(255) NOT NULL DEFAULT '',
+  indeximage       VARCHAR(255) NOT NULL DEFAULT 'blank.png',
+  indexheading     VARCHAR(255) NOT NULL DEFAULT 'WF-Sections',
+  indexheader      TEXT         NOT NULL,
+  indexfooter      TEXT         NOT NULL,
+  nohtml           TINYINT(8)   NOT NULL DEFAULT '1',
+  nosmileys        TINYINT(8)   NOT NULL DEFAULT '1',
+  noxcodes         TINYINT(8)   NOT NULL DEFAULT '1',
+  noimages         TINYINT(8)   NOT NULL DEFAULT '1',
+  nobreaks         TINYINT(4)   NOT NULL DEFAULT '0',
+  indexheaderalign VARCHAR(25)  NOT NULL DEFAULT 'left',
+  indexfooteralign VARCHAR(25)  NOT NULL DEFAULT 'center',
+  isdefault        TINYINT(8)   NOT NULL DEFAULT '0',
+  PRIMARY KEY (indid),
   FULLTEXT KEY indexheading (indexheading),
   FULLTEXT KEY indexheader (indexheader),
   FULLTEXT KEY indexfooter (indexfooter)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_indexpage`
 #
 
 
-INSERT INTO wfs_indexpage VALUES (1, 'index.php', 'wfsection_logo.gif', 'WF-Sections', '[b][u]Welcome to the world of WF-Sections beta2.[/u][/b]\r\n\r\nThis release contains several bugfixes and changes \r\nover the last version.\r\n\r\nHere are some links:\r\n\r\nFor Bug reports: [url=http://www.wf-projects.com]WF-Sections Forum[/url]\r\n\r\n[Chinese users] <a href=https://xoops.org.cn/modules/newbb/viewtopic.php?topic_id=141&forum=3&post_id=501#forumpost501>Xoops.org.CN</a>\r\n\r\nMany thanks for choosing WF-Sections.\r\n\r\n[color=0000CC][u][b]Note:[/b][/u] \r\nYou can change this text within the WF-Sections admin area \r\nwith the function [i]page management[/i] and choose to edit [i]index.php[/i].[/color]\r\n\r\n\r\n ', 'Wfsection FOOTER', 0, 0, 0, 0, 1, 'left', 'left', 1);
+INSERT INTO wfs_indexpage VALUES (1, 'index.php', 'wfsection_logo.gif', 'WF-Sections',
+                                     '[b][u]Welcome to the world of WF-Sections beta2.[/u][/b]\r\n\r\nThis release contains several bugfixes and changes \r\nover the last version.\r\n\r\nHere are some links:\r\n\r\nFor Bug reports: [url=http://www.wf-projects.com]WF-Sections Forum[/url]\r\n\r\n[Chinese users] <a href=https://xoops.org.cn/modules/newbb/viewtopic.php?topic_id=141&forum=3&post_id=501#forumpost501>Xoops.org.CN</a>\r\n\r\nMany thanks for choosing WF-Sections.\r\n\r\n[color=0000CC][u][b]Note:[/b][/u] \r\nYou can change this text within the WF-Sections admin area \r\nwith the function [i]page management[/i] and choose to edit [i]index.php[/i].[/color]\r\n\r\n\r\n ',
+                                     'Wfsection FOOTER', 0, 0, 0, 0, 1, 'left', 'left', 1);
 INSERT INTO wfs_indexpage VALUES (2, 'topten.php', 'wfsection_logo.gif', 'Top Ten Articles', 'Top Ten Articles', '', 0, 0, 0, 0, 0, 'left', 'left', 1);
 INSERT INTO wfs_indexpage VALUES (3, 'submit.php', 'wfsection_logo.gif', 'Submit Article', 'heading', '', 0, 0, 0, 0, 0, 'left', 'left', 1);
 INSERT INTO wfs_indexpage VALUES (4, 'article.php', 'wfsection_logo.gif', 'Article Archives', 'Article Archives', '', 0, 0, 1, 1, 1, 'left', 'Center', 1);
@@ -324,15 +335,16 @@ INSERT INTO wfs_indexpage VALUES (4, 'article.php', 'wfsection_logo.gif', 'Artic
 #
 
 CREATE TABLE wfs_mainmenu (
-  mm_id tinyint(10) NOT NULL auto_increment,
-  ca_id tinyint(10) NOT NULL default '0',
-  mm_title varchar(255) NOT NULL default '',
-  istype varchar(255) NOT NULL default '',
-  groupid varchar(255) NOT NULL default '1 2 3',
-  weight int(11) NOT NULL default '0',
-  PRIMARY KEY  (mm_id),
+  mm_id    TINYINT(10)  NOT NULL AUTO_INCREMENT,
+  ca_id    TINYINT(10)  NOT NULL DEFAULT '0',
+  mm_title VARCHAR(255) NOT NULL DEFAULT '',
+  istype   VARCHAR(255) NOT NULL DEFAULT '',
+  groupid  VARCHAR(255) NOT NULL DEFAULT '1 2 3',
+  weight   INT(11)      NOT NULL DEFAULT '0',
+  PRIMARY KEY (mm_id),
   KEY ca_id (ca_id)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_mainmenu`
@@ -346,14 +358,15 @@ CREATE TABLE wfs_mainmenu (
 #
 
 CREATE TABLE wfs_mimetypes (
-  mime_id int(11) NOT NULL auto_increment,
-  mime_ext varchar(60) NOT NULL default '',
-  mime_types text NOT NULL,
-  mime_name varchar(255) NOT NULL default '',
-  mime_admin int(1) NOT NULL default '1',
-  mime_user int(1) NOT NULL default '0',
+  mime_id    INT(11)      NOT NULL AUTO_INCREMENT,
+  mime_ext   VARCHAR(60)  NOT NULL DEFAULT '',
+  mime_types TEXT         NOT NULL,
+  mime_name  VARCHAR(255) NOT NULL DEFAULT '',
+  mime_admin INT(1)       NOT NULL DEFAULT '1',
+  mime_user  INT(1)       NOT NULL DEFAULT '0',
   KEY mime_id (mime_id)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_mimetypes`
@@ -367,7 +380,8 @@ INSERT INTO wfs_mimetypes VALUES (5, 'dll', 'application/octet-stream', 'Dynamic
 INSERT INTO wfs_mimetypes VALUES (6, 'hqx', 'application/binhex application/mac-binhex application/mac-binhex40', 'Macintosh BinHex 4 Compressed Archive', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (7, 'cpt', 'application/mac-compactpro application/compact_pro', 'Compact Pro Archive', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (8, 'lha', 'application/lha application/x-lha application/octet-stream application/x-compress application/x-compressed application/maclha', 'Compressed Archive File', 1, 0);
-INSERT INTO wfs_mimetypes VALUES (9, 'lzh', 'application/lzh application/x-lzh application/x-lha application/x-compress application/x-compressed application/x-lzh-archive zz-application/zz-winassoc-lzh application/maclha application/octet-stream', 'Compressed Archive File', 1, 0);
+INSERT INTO wfs_mimetypes VALUES
+  (9, 'lzh', 'application/lzh application/x-lzh application/x-lha application/x-compress application/x-compressed application/x-lzh-archive zz-application/zz-winassoc-lzh application/maclha application/octet-stream', 'Compressed Archive File', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (10, 'sh', 'application/x-shar', 'UNIX shar Archive File', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (11, 'shar', 'application/x-shar', 'UNIX shar Archive File', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (12, 'tar', 'application/tar application/x-tar applicaton/x-gtar multipart/x-tar application/x-compress application/x-compressed', 'Tape Archive File', 1, 0);
@@ -434,7 +448,9 @@ INSERT INTO wfs_mimetypes VALUES (72, 'ra', 'audio/vnd.rn-realaudio audio/x-pn-r
 INSERT INTO wfs_mimetypes VALUES (73, 'wav', 'audio/wav audio/x-wav audio/wave audio/x-pn-wav', 'Waveform Audio', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (74, 'wax', ' audio/x-ms-wax', 'Windows Media Audio Redirector', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (75, 'wma', 'audio/x-ms-wma video/x-ms-asf', 'Windows Media Audio File', 1, 0);
-INSERT INTO wfs_mimetypes VALUES (76, 'bmp', 'image/bmp image/x-bmp image/x-bitmap image/x-xbitmap image/x-win-bitmap image/x-windows-bmp image/ms-bmp image/x-ms-bmp application/bmp application/x-bmp application/x-win-bitmap application/preview', 'Windows OS/2 Bitmap Graphics', 1, 0);
+INSERT INTO wfs_mimetypes VALUES
+  (76, 'bmp', 'image/bmp image/x-bmp image/x-bitmap image/x-xbitmap image/x-win-bitmap image/x-windows-bmp image/ms-bmp image/x-ms-bmp application/bmp application/x-bmp application/x-win-bitmap application/preview', 'Windows OS/2 Bitmap Graphics', 1,
+   0);
 INSERT INTO wfs_mimetypes VALUES (77, 'gif', 'image/gif image/x-xbitmap image/gi_', 'Graphic Interchange Format', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (78, 'ief', 'image/ief', 'Image File - Bitmap graphics', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (79, 'jpeg', 'image/jpeg image/jpg image/jpe_ image/pjpeg image/vnd.swiftview-jpeg', 'JPEG/JIFF Image', 1, 0);
@@ -475,7 +491,8 @@ INSERT INTO wfs_mimetypes VALUES (113, 'mov', 'video/quicktime video/x-quicktime
 INSERT INTO wfs_mimetypes VALUES (114, 'avi', 'video/avi video/msvideo video/x-msvideo image/avi video/xmpg2 application/x-troff-msvideo audio/aiff audio/avi', 'Audio Video Interleave File', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (115, 'movie', 'video/sgi-movie video/x-sgi-movie', 'QuickTime Movie', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (116, 'asf', 'audio/asf application/asx video/x-ms-asf-plugin application/x-mplayer2 video/x-ms-asf application/vnd.ms-asf video/x-ms-asf-plugin video/x-ms-wm video/x-ms-wmx', 'Advanced Streaming Format', 1, 0);
-INSERT INTO wfs_mimetypes VALUES (117, 'asx', 'video/asx application/asx video/x-ms-asf-plugin application/x-mplayer2 video/x-ms-asf application/vnd.ms-asf video/x-ms-asf-plugin video/x-ms-wm video/x-ms-wmx video/x-la-asf', 'Advanced Stream Redirector File', 1, 0);
+INSERT INTO wfs_mimetypes
+VALUES (117, 'asx', 'video/asx application/asx video/x-ms-asf-plugin application/x-mplayer2 video/x-ms-asf application/vnd.ms-asf video/x-ms-asf-plugin video/x-ms-wm video/x-ms-wmx video/x-la-asf', 'Advanced Stream Redirector File', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (118, 'wmv', 'video/x-ms-wmv', 'Windows Media File', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (119, 'wvx', 'video/x-ms-wvx', 'Windows Media Redirector', 1, 0);
 INSERT INTO wfs_mimetypes VALUES (120, 'wm', 'video/x-ms-wm', 'Windows Media A/V File', 1, 0);
@@ -494,26 +511,27 @@ INSERT INTO wfs_mimetypes VALUES (127, 'aa', 'aaaaaaaaaaaaaaa', 'aaaaaaaaaaaa', 
 #
 
 CREATE TABLE wfs_permissions (
-  paths varchar(255) NOT NULL default '1',
-  fileman varchar(255) NOT NULL default '1',
-  newsection varchar(255) NOT NULL default '1',
-  downloads varchar(255) NOT NULL default '1',
-  editarticle varchar(255) NOT NULL default '1',
-  deletearticles varchar(255) NOT NULL default '1',
-  adminrights varchar(255) NOT NULL default '1',
-  moderator varchar(255) NOT NULL default '1',
-  restore varchar(255) NOT NULL default '1',
-  templates varchar(255) NOT NULL default '1',
-  createarticles varchar(255) NOT NULL default '1',
-  docapprove varchar(255) NOT NULL default '1',
-  mimetypes varchar(255) NOT NULL default '1',
-  reviews varchar(255) NOT NULL default '1',
-  docstats varchar(255) NOT NULL default '1',
-  doclinks varchar(255) NOT NULL default '1',
-  indexpage varchar(255) NOT NULL default '1',
-  importdoc varchar(255) NOT NULL default '1',
-  uploads varchar(255) NOT NULL default '1'
-) ENGINE=MyISAM;
+  paths          VARCHAR(255) NOT NULL DEFAULT '1',
+  fileman        VARCHAR(255) NOT NULL DEFAULT '1',
+  newsection     VARCHAR(255) NOT NULL DEFAULT '1',
+  downloads      VARCHAR(255) NOT NULL DEFAULT '1',
+  editarticle    VARCHAR(255) NOT NULL DEFAULT '1',
+  deletearticles VARCHAR(255) NOT NULL DEFAULT '1',
+  adminrights    VARCHAR(255) NOT NULL DEFAULT '1',
+  moderator      VARCHAR(255) NOT NULL DEFAULT '1',
+  restore        VARCHAR(255) NOT NULL DEFAULT '1',
+  templates      VARCHAR(255) NOT NULL DEFAULT '1',
+  createarticles VARCHAR(255) NOT NULL DEFAULT '1',
+  docapprove     VARCHAR(255) NOT NULL DEFAULT '1',
+  mimetypes      VARCHAR(255) NOT NULL DEFAULT '1',
+  reviews        VARCHAR(255) NOT NULL DEFAULT '1',
+  docstats       VARCHAR(255) NOT NULL DEFAULT '1',
+  doclinks       VARCHAR(255) NOT NULL DEFAULT '1',
+  indexpage      VARCHAR(255) NOT NULL DEFAULT '1',
+  importdoc      VARCHAR(255) NOT NULL DEFAULT '1',
+  uploads        VARCHAR(255) NOT NULL DEFAULT '1'
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_permissions`
@@ -528,16 +546,17 @@ INSERT INTO wfs_permissions VALUES ('1', '1', '1', '1', '1 4', '1', '1', '1', '1
 #
 
 CREATE TABLE wfs_related (
-  related_id int(10) unsigned NOT NULL auto_increment,
-  related_idtopic int(11) NOT NULL default '0',
-  related_topicid mediumint(8) unsigned NOT NULL default '0',
-  related_catid int(11) NOT NULL default '0',
-  related_idcheck int(11) NOT NULL default '0',
-  related_weight tinyint(11) NOT NULL default '0',
-  related_mod int(11) NOT NULL default '1',
-  PRIMARY KEY  (related_id),
+  related_id      INT(10) UNSIGNED      NOT NULL AUTO_INCREMENT,
+  related_idtopic INT(11)               NOT NULL DEFAULT '0',
+  related_topicid MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  related_catid   INT(11)               NOT NULL DEFAULT '0',
+  related_idcheck INT(11)               NOT NULL DEFAULT '0',
+  related_weight  TINYINT(11)           NOT NULL DEFAULT '0',
+  related_mod     INT(11)               NOT NULL DEFAULT '1',
+  PRIMARY KEY (related_id),
   KEY itemid (related_topicid)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_related`
@@ -550,16 +569,17 @@ CREATE TABLE wfs_related (
 #
 
 CREATE TABLE wfs_relatedlink (
-  relatedlink_id int(11) unsigned NOT NULL auto_increment,
-  relatedlink_topicid int(11) unsigned NOT NULL default '0',
-  relatedlink_url varchar(255) NOT NULL default '',
-  relatedlink_urlname varchar(255) NOT NULL default '',
-  relatedlink_weight tinyint(11) NOT NULL default '0',
-  relatedlink_mod int(11) NOT NULL default '1',
-  relatedlink_lid int(11) NOT NULL default '0',
-  PRIMARY KEY  (relatedlink_id),
+  relatedlink_id      INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  relatedlink_topicid INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  relatedlink_url     VARCHAR(255)     NOT NULL DEFAULT '',
+  relatedlink_urlname VARCHAR(255)     NOT NULL DEFAULT '',
+  relatedlink_weight  TINYINT(11)      NOT NULL DEFAULT '0',
+  relatedlink_mod     INT(11)          NOT NULL DEFAULT '1',
+  relatedlink_lid     INT(11)          NOT NULL DEFAULT '0',
+  PRIMARY KEY (relatedlink_id),
   KEY itemid (relatedlink_topicid)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_relatedlink`
@@ -572,38 +592,39 @@ CREATE TABLE wfs_relatedlink (
 #
 
 CREATE TABLE wfs_reviews (
-  review_id int(11) unsigned NOT NULL auto_increment,
-  article_id int(11) NOT NULL default '0',
-  introtext text NOT NULL,
-  gameplaytext text NOT NULL,
-  graphicstext text NOT NULL,
-  musictext text NOT NULL,
-  finaltext text NOT NULL,
-  img_one varchar(255) NOT NULL default '',
-  img_two varchar(255) NOT NULL default '',
-  publisher varchar(255) NOT NULL default '',
-  developer varchar(255) NOT NULL default '',
-  websiteurl varchar(255) NOT NULL default '',
-  websitename varchar(255) NOT NULL default '',
-  released varchar(255) NOT NULL default '',
-  genre varchar(255) NOT NULL default '',
-  players varchar(255) NOT NULL default '',
-  platform varchar(255) NOT NULL default '',
-  playonline int(1) NOT NULL default '0',
-  family int(11) NOT NULL default '0',
-  difficulty int(11) NOT NULL default '0',
-  curve varchar(255) NOT NULL default '',
-  grading char(3) NOT NULL default '0',
-  graphics int(11) NOT NULL default '0',
-  sound int(11) NOT NULL default '0',
-  gameplay int(11) NOT NULL default '0',
-  concept int(11) NOT NULL default '0',
-  value int(11) NOT NULL default '0',
-  tilt int(11) NOT NULL default '0',
-  display int(11) NOT NULL default '0',
-  PRIMARY KEY  (review_id),
+  review_id    INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  article_id   INT(11)          NOT NULL DEFAULT '0',
+  introtext    TEXT             NOT NULL,
+  gameplaytext TEXT             NOT NULL,
+  graphicstext TEXT             NOT NULL,
+  musictext    TEXT             NOT NULL,
+  finaltext    TEXT             NOT NULL,
+  img_one      VARCHAR(255)     NOT NULL DEFAULT '',
+  img_two      VARCHAR(255)     NOT NULL DEFAULT '',
+  publisher    VARCHAR(255)     NOT NULL DEFAULT '',
+  developer    VARCHAR(255)     NOT NULL DEFAULT '',
+  websiteurl   VARCHAR(255)     NOT NULL DEFAULT '',
+  websitename  VARCHAR(255)     NOT NULL DEFAULT '',
+  released     VARCHAR(255)     NOT NULL DEFAULT '',
+  genre        VARCHAR(255)     NOT NULL DEFAULT '',
+  players      VARCHAR(255)     NOT NULL DEFAULT '',
+  platform     VARCHAR(255)     NOT NULL DEFAULT '',
+  playonline   INT(1)           NOT NULL DEFAULT '0',
+  family       INT(11)          NOT NULL DEFAULT '0',
+  difficulty   INT(11)          NOT NULL DEFAULT '0',
+  curve        VARCHAR(255)     NOT NULL DEFAULT '',
+  grading      CHAR(3)          NOT NULL DEFAULT '0',
+  graphics     INT(11)          NOT NULL DEFAULT '0',
+  sound        INT(11)          NOT NULL DEFAULT '0',
+  gameplay     INT(11)          NOT NULL DEFAULT '0',
+  concept      INT(11)          NOT NULL DEFAULT '0',
+  value        INT(11)          NOT NULL DEFAULT '0',
+  tilt         INT(11)          NOT NULL DEFAULT '0',
+  display      INT(11)          NOT NULL DEFAULT '0',
+  PRIMARY KEY (review_id),
   KEY categoryid (article_id)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_reviews`
@@ -617,14 +638,15 @@ CREATE TABLE wfs_reviews (
 #
 
 CREATE TABLE wfs_spotlightblock (
-  sid int(5) unsigned NOT NULL default '0',
-  item int(5) unsigned NOT NULL default '1',
-  image varchar(255) NOT NULL default 'blank.png',
-  itemlength int(5) unsigned NOT NULL default '500',
-  imagewidth int(5) unsigned NOT NULL default '150',
-  imageheight int(5) unsigned NOT NULL default '150',
-  sum_type tinyint(1) NOT NULL default '0'
-) ENGINE=MyISAM;
+  sid         INT(5) UNSIGNED NOT NULL DEFAULT '0',
+  item        INT(5) UNSIGNED NOT NULL DEFAULT '1',
+  image       VARCHAR(255)    NOT NULL DEFAULT 'blank.png',
+  itemlength  INT(5) UNSIGNED NOT NULL DEFAULT '500',
+  imagewidth  INT(5) UNSIGNED NOT NULL DEFAULT '150',
+  imageheight INT(5) UNSIGNED NOT NULL DEFAULT '150',
+  sum_type    TINYINT(1)      NOT NULL DEFAULT '0'
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_spotlightblock`
@@ -639,29 +661,32 @@ INSERT INTO wfs_spotlightblock VALUES (1, 0, 'stories.gif', 50, 150, 150, 3);
 #
 
 CREATE TABLE wfs_templates (
-  downloads varchar(255) NOT NULL default '',
-  archives varchar(255) NOT NULL default '',
-  artindex varchar(255) NOT NULL default '',
-  catindex varchar(255) NOT NULL default '',
-  articlepage varchar(255) NOT NULL default '',
-  articleplainpage varchar(255) NOT NULL default '',
-  toptentemp varchar(255) NOT NULL default '',
-  artmenublock varchar(255) NOT NULL default '',
-  bigartblock varchar(255) NOT NULL default '',
-  mainmenublock varchar(255) NOT NULL default '',
-  newartblock varchar(255) NOT NULL default '',
-  newdownblock varchar(255) NOT NULL default '',
-  topartblock varchar(255) NOT NULL default '',
-  topicsblock varchar(255) NOT NULL default '',
-  authorblock varchar(255) NOT NULL default '',
-  spotlightblock varchar(255) NOT NULL default ''
-) ENGINE=MyISAM;
+  downloads        VARCHAR(255) NOT NULL DEFAULT '',
+  archives         VARCHAR(255) NOT NULL DEFAULT '',
+  artindex         VARCHAR(255) NOT NULL DEFAULT '',
+  catindex         VARCHAR(255) NOT NULL DEFAULT '',
+  articlepage      VARCHAR(255) NOT NULL DEFAULT '',
+  articleplainpage VARCHAR(255) NOT NULL DEFAULT '',
+  toptentemp       VARCHAR(255) NOT NULL DEFAULT '',
+  artmenublock     VARCHAR(255) NOT NULL DEFAULT '',
+  bigartblock      VARCHAR(255) NOT NULL DEFAULT '',
+  mainmenublock    VARCHAR(255) NOT NULL DEFAULT '',
+  newartblock      VARCHAR(255) NOT NULL DEFAULT '',
+  newdownblock     VARCHAR(255) NOT NULL DEFAULT '',
+  topartblock      VARCHAR(255) NOT NULL DEFAULT '',
+  topicsblock      VARCHAR(255) NOT NULL DEFAULT '',
+  authorblock      VARCHAR(255) NOT NULL DEFAULT '',
+  spotlightblock   VARCHAR(255) NOT NULL DEFAULT ''
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_templates`
 #
 
-INSERT INTO wfs_templates VALUES ('wfsection_downloads.html', 'wfsection_archive.html', 'wfsection_artindex.html', 'wfsection_catindex.html', 'wfsection_article.html', 'wfsection_htmlart.html', 'wfsection_topten.html', 'wfs_block_artmenu.html', 'wfs_block_bigstory.html', 'wfs_block_menu.html', 'wfs_block_new.html', 'wfs_block_newdown.html', 'wfs_block_top.html', 'wfs_block_topics.html', 'wfs_block_author.html', 'wfs_block_spotlight.html');
+INSERT INTO wfs_templates VALUES
+  ('wfsection_downloads.html', 'wfsection_archive.html', 'wfsection_artindex.html', 'wfsection_catindex.html', 'wfsection_article.html', 'wfsection_htmlart.html', 'wfsection_topten.html', 'wfs_block_artmenu.html', 'wfs_block_bigstory.html',
+                               'wfs_block_menu.html', 'wfs_block_new.html', 'wfs_block_newdown.html', 'wfs_block_top.html', 'wfs_block_topics.html', 'wfs_block_author.html', 'wfs_block_spotlight.html');
 
 # --------------------------------------------------------
 
@@ -670,17 +695,18 @@ INSERT INTO wfs_templates VALUES ('wfsection_downloads.html', 'wfsection_archive
 #
 
 CREATE TABLE wfs_votedata (
-  ratingid int(11) unsigned NOT NULL auto_increment,
-  lid int(11) unsigned NOT NULL default '0',
-  ratinguser int(11) NOT NULL default '0',
-  rating tinyint(3) unsigned NOT NULL default '0',
-  ratinghostname varchar(60) NOT NULL default '',
-  ratingtimestamp int(10) NOT NULL default '0',
-  PRIMARY KEY  (ratingid),
+  ratingid        INT(11) UNSIGNED    NOT NULL AUTO_INCREMENT,
+  lid             INT(11) UNSIGNED    NOT NULL DEFAULT '0',
+  ratinguser      INT(11)             NOT NULL DEFAULT '0',
+  rating          TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  ratinghostname  VARCHAR(60)         NOT NULL DEFAULT '',
+  ratingtimestamp INT(10)             NOT NULL DEFAULT '0',
+  PRIMARY KEY (ratingid),
   KEY ratinguser (ratinguser),
   KEY ratinghostname (ratinghostname),
   KEY lid (lid)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `wfs_votedata`

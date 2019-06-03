@@ -3,7 +3,7 @@
  * Article module for XOOPS
  *
  * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting source code 
+ * of supporting developers from this source code or any supporting source code
  * which is considered copyrighted (c) material of the original comment or credit authors.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,13 +14,12 @@
  * @package         article
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id$
  */
- 
-if (!defined("XOOPS_ROOT_PATH")) { exit(); }
 
-include dirname(__FILE__) . "/vars.php";
-mod_loadFunctions("parse", $GLOBALS["artdirname"]);
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
+
+require_once __DIR__ . '/vars.php';
+mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 art_parse_function('
 function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $categories = array(), $sortby = 0, $searchin = "all", $extra = "")
@@ -29,24 +28,24 @@ function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $ca
     $ret = array();
 
     art_define_url_delimiter();
-    
+
     $uid = (is_object($xoopsUser) && $xoopsUser->isactive()) ? $xoopsUser->getVar("uid") : 0;
-    $permission_handler =& xoops_getmodulehandler("permission", $GLOBALS["artdirname"]);
-    $allowed_ids = $permission_handler->getCategories();
+    $permissionHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
+    $allowed_ids = $permissionHandler->getCategories();
     if (count($categories) > 0) {
         $allowed_ids = array_intersect($allowed_ids, $categories);
-    }    
+    }
     if (empty($allowed_ids)) {
         return $ret;
     }
-    
+
     $searchin = empty($searchin) ? array("all") : (is_array($searchin) ? $searchin : array($searchin));
     if (in_array("all", $searchin) || count($searchin) == 0) {
         $searchin = array("title", "author", "keywords", "summary", "text", "subtitle");
     }
-    
+
     $isFulltext = ($searchin == array("text"));
-    
+
     /* Fulltext search */
     if ($isFulltext):
      $sql = "SELECT" .
@@ -66,22 +65,22 @@ function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $ca
     $sql .= " LEFT JOIN " . art_DB_prefix("text") . " AS t ON t.art_id =a.art_id";
     endif;
     endif;
-    
+
     $sql .= " WHERE" .
             " a.art_time_publish > 0" .
             " AND ac.cat_id IN (" . implode(",", $allowed_ids) . ")" .
             " AND ac.ac_publish > 0";
 
-    if (is_array($userid) && count($userid) > 0) {
+    if ($userid && is_array($userid)) {
         $userid = array_map("intval", $userid);
         $sql .= " AND a.uid IN (" . implode(",", $userid) . ") ";
-    }elseif ( is_numeric($userid) && $userid > 0 ) {
+    } elseif ( is_numeric($userid) && $userid > 0 ) {
         $sql .= " AND a.uid=" . $userid . " ";
     }
 
     $count = count($queryarray);
     if ( is_array($queryarray) && $count > 0) {
-        foreach($queryarray as $query){
+        foreach ($queryarray as $query) {
             $query_array["title"][] = "a.art_title LIKE " . $xoopsDB->quoteString("%" . $query."%");
             //$query_array["author"][] = "a.art_author LIKE " . $xoopsDB->quoteString("%" . $query."%");
             $query_array["keywords"][] = "a.art_keywords LIKE " . $xoopsDB->quoteString("%" . $query . "%");
@@ -103,7 +102,7 @@ function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $ca
         $sortby = "a.art_id DESC";
     }
     $sql .= $extra . " ORDER BY " . $sortby;
-    
+
     if (!$result = $xoopsDB->query($sql, $limit, $offset)) {
         //xoops_error($xoopsDB->error());
         return $ret;
@@ -112,7 +111,7 @@ function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $ca
     $users = array();
     $arts = array();
     mod_loadFunctions("time", $GLOBALS["artdirname"]);
-    while ($myrow = $xoopsDB->fetchArray($result)) {
+    while (false !== ($myrow = $xoopsDB->fetchArray($result))) {
         if (empty($isFulltext)):
         $ret[] = array(
             "link"        => "view.article.php" . URL_DELIMITER . $myrow["art_id"],
@@ -127,19 +126,19 @@ function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $ca
         endif;
         $users[$myrow["uid"]] = 1;
     }
-    
+
     if (!empty($isFulltext)):
-    $article_handler =& xoops_getmodulehandler("article", $GLOBALS["artdirname"]);
+    $articleHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
     xoops_load("xoopslocal");
     foreach ($_ret as $myrow) {
-        $article_obj =& $article_handler->create(false);
+        $article_obj = $articleHandler->create(false);
         $article_obj->assignVars($myrow);
         $page = array_search($myrow["text_id"], $article_obj->getPages());
         $text = $myts->htmlSpecialChars($myrow["text_body"]);
-        
-        /* 
+
+        /*
          * "Fulltext search"/highlight needs better formulize
-         * 
+         *
          */
         $sanitized_text = "";
         $text_i = strtolower($text);
@@ -150,9 +149,9 @@ function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $ca
             $context    = preg_replace("/(" . preg_quote($query) . ")/si", "<span class=\"article-highlight\">$1</span>", xoops_substr($text, $start, $length, " [...]"));
             $sanitized_text .= "<p>[...] " . $context . "</p>";
         }
-        
+
         $ret[] = array(
-            "link"        => "view.article.php" . URL_DELIMITER . $myrow["art_id"] . "/p" . intval($page),
+            "link"        => "view.article.php" . URL_DELIMITER . $myrow["art_id"] . "/p" . (int)($page),
             "title"        => $myrow["art_title"],
             "time"        => $myrow["art_time_publish"],
             "uid"        => $myrow["uid"],
@@ -162,8 +161,8 @@ function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $ca
         );
         unset($article_obj, $page, $sanitized_text, $matches);
     }
-    endif;    
-    
+    endif;
+
     mod_loadFunctions("user", $GLOBALS["artdirname"]);
     $users = art_getUnameFromId(array_keys($users), false, true);
     foreach ( array_keys($ret) as $i) {
@@ -178,4 +177,3 @@ function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $ca
     return $ret;
 }
 ');
-?>

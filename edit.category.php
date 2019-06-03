@@ -3,7 +3,7 @@
  * Article module for XOOPS
  *
  * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting source code 
+ * of supporting developers from this source code or any supporting source code
  * which is considered copyrighted (c) material of the original comment or credit authors.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,24 +14,23 @@
  * @package         article
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id$
  */
- 
+require_once __DIR__ . '/header.php';
 
-include "header.php";
+$category_id = \Xmf\Request::getInt('category', 0, 'GET');
+$from        = empty($_GET['from']) ? 0 : 1;
+$helper      = \XoopsModules\Article\Helper::getInstance();
 
-$category_id = empty($_GET["category"]) ? 0 : intval($_GET["category"]);
-$from = empty($_GET["from"]) ? 0 : 1;
-
-$category_handler =& xoops_getmodulehandler("category", $GLOBALS["artdirname"]);
-$category_obj =& $category_handler->get($category_id);
-if ( (!empty($category_id) && !$category_handler->getPermission($category_obj, "moderate")) ||(empty($category_id) && !art_isAdministrator()) ) {
-    redirect_header(XOOPS_URL . "/modules/" . $GLOBALS["artdirname"] . "/index.php", 2, art_constant("MD_NOACCESS"));
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+$category_obj    = $categoryHandler->get($category_id);
+if ((!empty($category_id) && !$categoryHandler->getPermission($category_obj, 'moderate'))
+    || (empty($category_id)
+        && !art_isAdministrator())) {
+    redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php', 2, art_constant('MD_NOACCESS'));
 }
 // Disable cache
-$xoopsConfig["module_cache"][$xoopsModule->getVar("mid")] = 0;
-include XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . "/modules/" . $xoopsModule->getVar("dirname") . "/include/vars.php";
-include XOOPS_ROOT_PATH . "/modules/" . $GLOBALS["artdirname"] . "/include/form.category.php";
-include XOOPS_ROOT_PATH . "/footer.php";
-?>
+$xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
+require_once XOOPS_ROOT_PATH . '/header.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/form.category.php';
+require_once XOOPS_ROOT_PATH . '/footer.php';

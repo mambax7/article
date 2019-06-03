@@ -10,15 +10,16 @@
 #
 
 CREATE TABLE seccont (
-  artid int(11) NOT NULL auto_increment,
-  secid int(11) NOT NULL default '0',
-  title text NOT NULL,
-  content text NOT NULL,
-  counter int(11) NOT NULL default '0',
-  PRIMARY KEY  (artid),
+  artid   INT(11) NOT NULL AUTO_INCREMENT,
+  secid   INT(11) NOT NULL DEFAULT '0',
+  title   TEXT    NOT NULL,
+  content TEXT    NOT NULL,
+  counter INT(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (artid),
   KEY idxseccontsecid (secid),
   KEY idxseccontcounterdesc (counter)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 # --------------------------------------------------------
 
 #
@@ -26,9 +27,10 @@ CREATE TABLE seccont (
 #
 
 CREATE TABLE sections (
-  secid int(11) NOT NULL auto_increment,
-  secname varchar(40) NOT NULL default '',
-  image varchar(50) NOT NULL default '',
-  PRIMARY KEY  (secid),
+  secid   INT(11)     NOT NULL AUTO_INCREMENT,
+  secname VARCHAR(40) NOT NULL DEFAULT '',
+  image   VARCHAR(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (secid),
   KEY idxsectionssecname (secname)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;

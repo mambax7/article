@@ -1,38 +1,54 @@
-article 2.00
+<h5>2.2 Beta 1   [WORK IN PROGRESS - NOT RELEASED]</h5>  Dev: XOOPS 2.5.10, PHP 7.3.6
+<hr>
+- namespaces (mamba)
+- class autoloading (mamba)
+WORK IN PROGRESS
 
-October 31th, 2008
----------------------------------------
+
+2.10 Beta 2        2014-04-23
+=================================
+- moved all images, CSS, and JS files to /assets (mamba)
+- renamed .html Smarty templates to .tpl (mamba)
+
+
+2.10 Beta 1         2013-07-11
+=================================
+- Converted to XOOPS 2.5.6 Admin GUI (Mamba)
+
+
+2.00        October 31th, 2008
+=================================
 Fixed a typo in cp.trackback.php (phppp/dnprossi)
 Restored table definition for class category (phppp/onyxin)
 Fixed bug that a parent category can not be assigned to a new category (phppp/onyxin)
 
-Article 2.00 RC, October 12th, 2008
----------------------------------------
+2.00 RC,    October 12th, 2008
+=================================
 Compatible with XOOPS 2.3+
 
 
-Article 1.00 Final
-Release date: Jan 12th, 2007
+1.00 Final          Jan 12th, 2007
+=================================
 1 Added import/export scripts
 
 
-Article 1.00 FC
-Release date: Jan 3rd, 2007
+1.00 FC         Jan 3rd, 2007
+=================================
 1 Fixed a bunch of bugs
 2 Added data synchronization management
 3 Added inline help docs for edit pages (To be expanded)
 
 
-Article 0.99
-Release date: Oct 29th, 2006
+0.99            Oct 29th, 2006
+=================================
 1 Added configuration for article edit form, check article/readme.editmode.txt
 2 Added support for extended dhtml textarea editor that allows flash/wm/iframe...
-3 Implemented includeq and foreachq SMARTY plugin
+3 Implemented includeq and foreach SMARTY plugin
 4 Fixed bugs in templates and permissions
 
 
-Article 0.96 (1.0 RC2)
-Release date: August 1st, 2006
+0.96 (1.0 RC2)      August 1st, 2006
+=================================
 1 Added category entry (feature requested by Skalpa, not completed yet)
 2 Added MySQL version check concerning multiple table update not supported by 4.0.4- (scottlai)
 3 Bugfix for spotlight image (scottlai)
@@ -40,15 +56,16 @@ Release date: August 1st, 2006
 5 Added missing MySQL version check function that causes fatal errors
 
 
-Article 0.95 (1.0 RC)
-Release date: Jun 17th, 2006
+0.95 (1.0 RC)       Jun 17th, 2006
+=================================
 1 Bugfix for a variety of bugs including the one in permission mamangement form and the one in admin area with module clone
 2 Added permission template feature as what has been in CBB
 3 Added tag list page
 (As this is an unexpected release, detailed changelogs would come with next major release, which is expected to be 1.0)
 
-Article 0.90 (1.0 beta)
-Release date: Apr 20th, 2006
+
+0.90 (1.0 beta)         Apr 20th, 2006
+=================================
 1 Bugfix for PDF maker charset (reported by domecc)
 2 Skip cache for edit pages
 3 Correction/unification for image path
@@ -59,12 +76,13 @@ Release date: Apr 20th, 2006
 8 CSS correction (by michael and Souidas GB&A)
 
 
-Article 0.84 (1.0 Alpha 4)
-Release date: Mar 15th, 2006
+0.84 (1.0 Alpha 4)      Mar 15th, 2006
+=================================
 1 Make module clone work
 
-Article 0.83 (1.0 Alpha 4)
-Release date: Feb 26th, 2006
+
+0.83 (1.0 Alpha 4)     Feb 26th, 2006
+=================================
 1 bugfix for article/page deleting, which could delete all articles
 2 correction on article list on category page
 3 bugfix for category delete
@@ -72,17 +90,21 @@ Release date: Feb 26th, 2006
 5 added data synchronization on module update
 6 bugfix for article image path
 
-Article 0.80, 0.81, 0.82 ...
 
-Article 1.0 Alpha 3
-Release date: Dec 15th, 2005
+Article 0.80, 0.81, 0.82 ...
+=================================
+
+
+1.0 Alpha 3         Dec 15th, 2005
+=================================
 1 detect newbb/cbb function on installation, reported by mactoeknee/cplus
 2 bugfix for summary fetching/display, reported/fixed by Steven
 3 preset global/category permissions
 3 Chinese big5/utf-8 translation and gb2312 completeness by sjcxps
 
-Article 1.0 Alpha 2
-Release date: Nov 25th, 2005
+
+1.0 Alpha 2         Nov 25th, 2005
+=================================
 1 add option for URL rewrite (related to trouble brought by AcceptPathInfo On Apache2)
 2 bugfix for admin menu, reported by ADHorse
 3 bugfix for article status marking, reported by ADHorse
@@ -94,13 +116,16 @@ Release date: Nov 25th, 2005
 9 bugfix for topic assignment in article edit, fixed by Steven
 10 bugfix for category moderator management, reported by Steven
 
-Article 1.0 Alpha 1
-Release date: Nov 15th, 2005
+
+1.0 Alpha 1         Nov 15th, 2005
+=================================
 First public release
 For test
 
 
+
 Internal Test
+=================================
 From September 18th to November 1st, 2005
 Article pre-alpha 1 - pre-alpha 10
 Members:
@@ -112,4 +137,3 @@ marco - tester
 Design and Dev
 Oct 2004 - Aug 2005
 
-Article Dev site: http://xoopsforge.com

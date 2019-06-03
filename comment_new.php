@@ -3,7 +3,7 @@
  * Article module for XOOPS
  *
  * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting source code 
+ * of supporting developers from this source code or any supporting source code
  * which is considered copyrighted (c) material of the original comment or credit authors.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,15 +14,12 @@
  * @package         article
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id$
  */
- 
-include "header.php";
-$com_itemid = isset($_GET['com_itemid']) ? intval($_GET['com_itemid']) : 0;
+require_once __DIR__ . '/header.php';
+$com_itemid = \Xmf\Request::getInt('com_itemid', 0, 'GET');
 if ($com_itemid > 0) {
-    $article_handler =& xoops_getmodulehandler("article", $GLOBALS["artdirname"]);
-    $article_obj =& $article_handler->get($com_itemid);
-    $com_replytitle = $article_obj->getVar("art_title");
-    include_once XOOPS_ROOT_PATH . '/include/comment_new.php';
+    $articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
+    $article_obj    = $articleHandler->get($com_itemid);
+    $com_replytitle = $article_obj->getVar('art_title');
+    require_once XOOPS_ROOT_PATH . '/include/comment_new.php';
 }
-?>

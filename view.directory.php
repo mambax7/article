@@ -14,82 +14,87 @@
  * @package         article
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id$
  */
 
-include "header.php";
+use XoopsModules\Article;
+
+require_once __DIR__ . '/header.php';
+
+/** @var \XoopsModules\Article\Helper $helper */
+$helper = \XoopsModules\Article\Helper::getInstance();
 
 // Set groups, template, header for cache purposes
 if (!empty($xoopsUser)) {
-    $xoopsOption["cache_group"] = implode(",", $xoopsUser->groups());
+    $xoopsOption['cache_group'] = implode(',', $xoopsUser->groups());
 }
-$xoopsOption["template_main"] = art_getTemplate("directory", $xoopsModuleConfig["template"]);
-$xoops_module_header = '
-    <link rel="alternate" type="application/rss+xml" title="' . $xoopsModule->getVar('name') . ' rss" href="' . XOOPS_URL.'/modules/' . $GLOBALS["artdirname"] . '/xml.php' . URL_DELIMITER . 'rss" />
-    <link rel="alternate" type="application/rss+xml" title="' . $xoopsModule->getVar('name') . ' rdf" href="' . XOOPS_URL.'/modules/' . $GLOBALS["artdirname"] . '/xml.php' . URL_DELIMITER . 'rdf" />
-    <link rel="alternate" type="application/atom+xml" title="' . $xoopsModule->getVar('name') . ' atom" href="' . XOOPS_URL.'/modules/' . $GLOBALS["artdirname"] . '/xml.php' . URL_DELIMITER . 'atom" />
+$GLOBALS['xoopsOption']['template_main'] = art_getTemplate('directory', $helper->getConfig('template'));
+$xoops_module_header                     = art_getModuleHeader($helper->getConfig('template')) . '
+    <link rel="alternate" type="application/rss+xml" title="' . $xoopsModule->getVar('name') . ' rss" href="' . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/xml.php' . URL_DELIMITER . 'rss">
+    <link rel="alternate" type="application/rss+xml" title="' . $xoopsModule->getVar('name') . ' rdf" href="' . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/xml.php' . URL_DELIMITER . 'rdf">
+    <link rel="alternate" type="application/atom+xml" title="' . $xoopsModule->getVar('name') . ' atom" href="' . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/xml.php' . URL_DELIMITER . 'atom">
     ';
 
-$xoopsOption["xoops_module_header"] = $xoops_module_header;
-include_once XOOPS_ROOT_PATH . "/header.php";
-include XOOPS_ROOT_PATH . "/modules/" . $xoopsModule->getVar("dirname") . "/include/vars.php";
-
-art_getModuleHeader($xoopsModuleConfig["template"]);
+$xoopsOption['xoops_module_header'] = $xoops_module_header;
+require_once XOOPS_ROOT_PATH . '/header.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 // Following part will not be executed if cache enabled
 
 if (art_parse_args($args_num, $args, $args_str)) {
-    $args["category"] = !empty($args["category"]) ? $args["category"] : @$args_num[0];
+    $args['category'] = !empty($args['category']) ? $args['category'] : @$args_num[0];
 }
-$category_id = intval( empty($_GET["category"]) ? @$args["category"] : $_GET["category"] );
+$category_id = (int)(empty($_GET['category']) ? @$args['category'] : $_GET['category']);
 
-$category_handler =& xoops_getmodulehandler("category", $GLOBALS["artdirname"]);
-$category_obj =& $category_handler->get($category_id);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+$category_obj    = $categoryHandler->get($category_id);
 
 $category_depth = 2;
-$data = $category_handler->getArrayTree($category_id, "access", null, $category_depth);
-$counts_article = $category_handler->getArticleCounts();
+$data           = $categoryHandler->getArrayTree($category_id, 'access', null, $category_depth);
+$counts_article = $categoryHandler->getArticleCounts();
 
-$category_data = array();
-$tracks = array();
+$category_data = [];
+$tracks        = [];
 if (!$category_obj->isNew()) {
-    $category_data = array(
-        "id"            => $category_obj->getVar("cat_id"),
-        "title"         => $category_obj->getVar("cat_title"),
-        "description"     => $category_obj->getVar("cat_description"),
-        "image"         => $category_obj->getImage(),
-        "articles"        => intval($counts_article[$category_id])
-    );
-    $topic_handler =& xoops_getmodulehandler("topic", $GLOBALS["artdirname"]);
-    $category_data["topics"] = $topic_handler->getCount(new Criteria("cat_id", $category_id));
-    $category_data["categories"] = count( @$data["child"] );
-    $tracks = $category_handler->getTrack($category_obj, true);
+    $category_data               = [
+        'id'          => $category_obj->getVar('cat_id'),
+        'title'       => $category_obj->getVar('cat_title'),
+        'description' => $category_obj->getVar('cat_description'),
+        'image'       => $category_obj->getImage(),
+        'articles'    => (int)$counts_article[$category_id],
+    ];
+    $topicHandler                = $helper->getHandler('Topic', $GLOBALS['artdirname']);
+    $category_data['topics']     = $topicHandler->getCount(new \Criteria('cat_id', $category_id));
+    $category_data['categories'] = count(@$data['child']);
+    $tracks                      = $categoryHandler->getTrack($category_obj, true);
 }
 
-if (!empty($data["child"])):
-foreach (array_keys($data["child"]) as $key) {
-    if (empty($data["child"][$key])) continue;
-    $data["child"][$key]["count"] = @intval($counts_article[$key]);
-    if (empty($data["child"][$key]["child"])) continue;
-    foreach (array_keys($data["child"][$key]["child"]) as $skey) {
-        $data["child"][$key]["child"][$skey]["count"] = @intval($counts_article[$skey]);
-        if ($subcats = art_getSubCategory($skey)):
-        foreach (@$subcats as $subcat) {
-            $data["child"][$key]["child"][$skey]["count"] += @intval($counts_article[$subcat]);
+if (!empty($data['child'])):
+    foreach (array_keys($data['child']) as $key) {
+        if (empty($data['child'][$key])) {
+            continue;
         }
-        endif;
+        $data['child'][$key]['count'] = @(int)$counts_article[$key];
+        if (empty($data['child'][$key]['child'])) {
+            continue;
+        }
+        foreach (array_keys($data['child'][$key]['child']) as $skey) {
+            $data['child'][$key]['child'][$skey]['count'] = @(int)$counts_article[$skey];
+            if ($subcats = art_getSubCategory($skey)):
+                foreach (@$subcats as $subcat) {
+                    $data['child'][$key]['child'][$skey]['count'] += @(int)$counts_article[$subcat];
+                }
+            endif;
+        }
     }
-}
 endif;
 unset($counts_article);
 
-$xoopsTpl -> assign("modulename", $xoopsModule->getVar("name"));
-$xoopsTpl -> assign_by_ref("tracks", $tracks);
-$xoopsTpl -> assign_by_ref("categories", $data);
-$xoopsTpl -> assign_by_ref("category", $category_data);
+$xoopsTpl->assign('modulename', $xoopsModule->getVar('name'));
+$xoopsTpl->assign_by_ref('tracks', $tracks);
+$xoopsTpl->assign_by_ref('categories', $data);
+$xoopsTpl->assign_by_ref('category', $category_data);
 
 // Loading module meta data, NOT THE RIGHT WAY DOING IT
-$xoopsTpl -> assign("xoops_module_header", $xoopsOption["xoops_module_header"]);
+$xoopsTpl->assign('xoops_module_header', $xoopsOption['xoops_module_header']);
 
-include_once "footer.php";
-?>
+require_once __DIR__ . '/footer.php';

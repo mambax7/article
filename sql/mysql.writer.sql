@@ -3,12 +3,13 @@
 # 
 
 CREATE TABLE `art_writer` (
-  `writer_id` mediumint(8) unsigned NOT NULL auto_increment,
-  `writer_name` varchar(255) NOT NULL default '',
-  `writer_avatar` varchar(64) NOT NULL default '',
-  `writer_profile` text,
-  `writer_uid` mediumint(8) unsigned NOT NULL default '0',
-  `uid` mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`writer_id`),
+  `writer_id`      MEDIUMINT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `writer_name`    VARCHAR(255)          NOT NULL DEFAULT '',
+  `writer_avatar`  VARCHAR(64)           NOT NULL DEFAULT '',
+  `writer_profile` TEXT,
+  `writer_uid`     MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `uid`            MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`writer_id`),
   KEY `writer_name` (`writer_name`)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;

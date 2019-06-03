@@ -14,53 +14,58 @@
  * @package         article
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id$
  */
 
-if (!defined('XOOPS_ROOT_PATH')) { exit(); }
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include dirname(__FILE__) . "/vars.php";
-define($GLOBALS["artdirname"] . "_FUNCTIONS_RENDER_LOADED", TRUE);
+require_once __DIR__ . '/vars.php';
+define($GLOBALS['artdirname'] . '_FUNCTIONS_RENDER_LOADED', true);
 
 /**
  * Function to get template file of a specified style of a specified page
  *
- * @var string     $page    page name
- * @var string     $style    template style
- *
- * @return string    template file name, using default style if style is invalid
+ * @param mixed      $page  page name
+ * @param null|mixed $style template style
+ * @return string template file name, using default style if style is invalid
  */
-function art_getTemplate($page = "index", $style = null)
+function art_getTemplate($page = 'index', $style = null)
 {
     global $xoops;
 
-    $template_dir = $xoops->path("modules/{$GLOBALS["artdirname"]}/templates/");
-    $style = empty($style) ? "" : "_" . $style;
-    $file_name = "{$GLOBALS["artdirname"]}_{$page}{$style}.html";
-    if (file_exists($template_dir . $file_name)) return $file_name;
-    if (!empty($style)) {
-        $style = "";
-        $file_name = "{$GLOBALS["artdirname"]}_{$page}{$style}.html";
-        if(file_exists($template_dir . $file_name)) return $file_name;
+    $template_dir = $xoops->path("modules/{$GLOBALS['artdirname']}/templates/");
+    $style        = empty($style) ? '' : '_' . $style;
+    $file_name    = "{$GLOBALS['artdirname']}_{$page}{$style}.tpl";
+    if (file_exists($template_dir . $file_name)) {
+        return $file_name;
     }
+    if (!empty($style)) {
+        $style     = '';
+        $file_name = "{$GLOBALS['artdirname']}_{$page}{$style}.tpl";
+        if (file_exists($template_dir . $file_name)) {
+            return $file_name;
+        }
+    }
+
     return null;
 }
 
 /**
  * Function to get a list of template files of a page, indexed by file name
  *
- * @var string     $page        page name
- * @var boolen     $refresh    recreate the data
- *
- * @return array
+ * @param mixed       $page page name
+ * @param bool|boolen $refresh
+ * @return array@internal param boolen $refresh recreate the data
  */
-function &art_getTemplateList($page = "index", $refresh = false)
+function &art_getTemplateList($page = 'index', $refresh = false)
 {
     $TplFiles = art_getTplPageList($page, $refresh);
-    $template = array();
-    foreach (array_keys($TplFiles) as $temp) {
-        $template[$temp] = $temp;
+    $template = [];
+    if (isset($TplFiles)) {
+        foreach (array_keys($TplFiles) as $temp) {
+            $template[$temp] = $temp;
+        }
     }
+
     return $template;
 }
 
@@ -69,85 +74,90 @@ function &art_getTemplateList($page = "index", $refresh = false)
  *
  * The hardcoded path is not desirable for theme switch, however, we have to keep it before getting a good solution for cache
  *
- * @var string     $style
- *
- * @return string    file URL, false if not found
+ * @param mixed $style
+ * @return string file URL, false if not found
  */
-function art_getCss($style = "default")
+function art_getCss($style = 'default')
 {
     global $xoops;
 
-    if (is_readable($xoops->path("modules/" . $GLOBALS["artdirname"] . "/css/style_" . strtolower($style) . ".css"))) {
-        return $xoops->path("modules/" . $GLOBALS["artdirname"] . "/css/style_".strtolower($style).".css", true);
+    if (is_readable($xoops->path('modules/' . $GLOBALS['artdirname'] . '/assets/css/style_' . mb_strtolower($style) . '.css'))) {
+        return $xoops->path('modules/' . $GLOBALS['artdirname'] . '/assets/css/style_' . mb_strtolower($style) . '.css', true);
     }
-    return $xoops->path("modules/" . $GLOBALS["artdirname"] . "/css/style.css", true);
+
+    return $xoops->path('modules/' . $GLOBALS['artdirname'] . '/assets/css/style.css', true);
 }
 
 /**
  * Function to module header for a page with specified style
  *
- * @var string     $style
- *
+ * @param mixed $style
  * @return string
  */
-function art_getModuleHeader($style = "default")
+function art_getModuleHeader($style = 'default')
 {
-    $GLOBALS['xoTheme']->addStylesheet("modules/" . $GLOBALS["artdirname"] . "/css/style_" . strtolower($style) . ".css");
-    return true;
-}
+    $xoops_module_header = '<link rel="stylesheet" type="text/css" href="' . art_getCss($style) . '">';
 
+    return $xoops_module_header;
+}
 
 /**
  * Function to get a list of template files of a page, indexed by style
  *
- * @var string     $page    page name
+ * @param mixed $page page name
  *
+ * @param bool  $refresh
  * @return array
  */
-function &art_getTplPageList($page = "", $refresh = true)
+function &art_getTplPageList($page = '', $refresh = true)
 {
     $list = null;
 
-    $cache_file = empty($page) ? "template-list" : "template-page";
+    $cache_file = empty($page) ? 'template-list' : 'template-page';
     /*
-    load_functions("cache");
-    $list = mod_loadCacheFile($cache_file, $GLOBALS["artdirname"]);
-    */
+     load_functions("cache");
+     $list = mod_loadCacheFile($cache_file, $GLOBALS["artdirname"]);
+     */
 
-    xoops_load("cache");
-    $key = $GLOBALS["artdirname"] . "_{$cache_file}";
-    $list = XoopsCache::read($key);
+    xoops_load('xoopscache');
+    $key  = $GLOBALS['artdirname'] . "_{$cache_file}";
+    $list = \XoopsCache::read($key);
 
-    if ( !is_array($list) || $refresh ) {
+    if (!is_array($list) || $refresh) {
         $list = art_template_lookup(!empty($page));
     }
 
     $ret = empty($page) ? $list : @$list[$page];
+
     return $ret;
 }
 
 function &art_template_lookup($index_by_page = false)
 {
-    include_once XOOPS_ROOT_PATH . "/class/xoopslists.php";
+    require_once XOOPS_ROOT_PATH . '/class/xoopslists.php';
 
-    $files = XoopsLists::getHtmlListAsArray(XOOPS_ROOT_PATH . "/modules/" . $GLOBALS["artdirname"] . "/templates/");
-    $list = array();
+    $files = \XoopsLists::getHtmlListAsArray(XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/templates/');
+    $list  = [];
     foreach ($files as $file => $name) {
-        // The valid file name must be: art_article_mytpl.html OR art_category-1_your-trial.html
-        if (preg_match("/^" . $GLOBALS["ART_VAR_PREFIX"] . "_([^_]*)(_(.*))?\.(html|xotpl)$/i", $name, $matches)) {
-            if(empty($matches[1])) continue;
-            if(empty($matches[3])) $matches[3] = "default";
+        // The valid file name must be: art_article_mytpl.tpl OR art_category-1_your-trial.tpl
+        if (preg_match('/^' . $GLOBALS['ART_VAR_PREFIX'] . "_([^_]*)(_(.*))?\.(html|tpl|xotpl)$/i", $name, $matches)) {
+            if (empty($matches[1])) {
+                continue;
+            }
+            if (empty($matches[3])) {
+                $matches[3] = 'default';
+            }
             if (empty($index_by_page)) {
-                $list[] = array("file" => $name, "description" => $matches[3]);
+                $list[] = ['file' => $name, 'description' => $matches[3]];
             } else {
                 $list[$matches[1]][$matches[3]] = $name;
             }
         }
     }
 
-    $cache_file = empty($index_by_page) ? "template-list" : "template-page";
-    xoops_load("cache");
-    $key = $GLOBALS["artdirname"] . "_{$cache_file}";
+    $cache_file = empty($index_by_page) ? 'template-list' : 'template-page';
+    xoops_load('xoopscache');
+    $key = $GLOBALS['artdirname'] . "_{$cache_file}";
     XoopsCache::write($key, $list);
 
     //load_functions("cache");
@@ -157,43 +167,45 @@ function &art_template_lookup($index_by_page = false)
 
 function &art_htmlSpecialChars(&$text)
 {
-    $text = preg_replace(array("/&amp;/i", "/&nbsp;/i"), array("&", "&amp;nbsp;"), htmlspecialchars($text));
+    $text = preg_replace(['/&amp;/i', '/&nbsp;/i'], ['&', '&amp;nbsp;'], htmlspecialchars($text, ENT_QUOTES | ENT_HTML5));
+
     return $text;
 }
 
 function &art_displayTarea(&$text, $html = 1, $smiley = 1, $xcode = 1, $image = 1, $br = 1)
 {
-    $myts = MyTextSanitizer::getInstance();
-    if ($html != 1) {
+    $myts = \MyTextSanitizer::getInstance();
+    if (1 != $html) {
         // html not allowed
         $text = art_htmlSpecialChars($text);
     }
     $text = $myts->codePreConv($text, $xcode);
     $text = $myts->makeClickable($text);
-    if ($smiley != 0) {
+    if (0 != $smiley) {
         // process smiley
         $text = $myts->smiley($text);
     }
-    if ($xcode != 0) {
+    if (0 != $xcode) {
         // decode xcode
         $text = $myts->xoopsCodeDecode($text, $image);
     }
-    if ($br != 0) {
+    if (0 != $br) {
         $text = $myts->nl2Br($text);
     }
     $text = $myts->codeConv($text, $xcode, $image);
+
     return $text;
 }
 
 /**
  * Function to filter text
  *
- * @return string    filtered text
+ * @param $document
+ * @return string filtered text
  */
 function &art_html2text(&$document)
 {
     $document = strip_tags($document);
+
     return $document;
 }
-
-?>

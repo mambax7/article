@@ -1,4 +1,4 @@
-# $Id: xfsection.sql,v 1.2 2005/06/20 15:03:23 ohwada Exp $
+# 
 
 # 2004/03/27 K.OHWADA
 # add excle powerpoint
@@ -28,77 +28,79 @@
 
 # add field nobr, enaamp
 CREATE TABLE xfs_article (
-  articleid int(8) unsigned NOT NULL auto_increment,
-  categoryid int(8) unsigned NOT NULL default '0',
-  uid int(5) NOT NULL default '0',
-  title varchar(255) default NULL,
-  maintext text NOT NULL,
-  counter int(8) unsigned NOT NULL default '0',
-  created int(10) NOT NULL default '0',
-  changed int(10) NOT NULL default '0',
-  nohtml tinyint(1) NOT NULL default '0',
-  nosmiley tinyint(1) NOT NULL default '0',
-  summary text NOT NULL,
-  url varchar(255) NOT NULL default '',
-  page int(8) unsigned NOT NULL default '1',
-  groupid varchar(255) default NULL,
-  submit int(10) NOT NULL default '1',
-  published int(10) NOT NULL default '0',
-  expired int(10) NOT NULL default '0',
-  notifypub tinyint(1) NOT NULL default '0',
-  type varchar(5) NOT NULL default '',
-  ishtml int(10) NOT NULL default '0',
-  htmlpage varchar(255) NOT NULL default '',
-  rating double(6,4) NOT NULL default '0.0000',
-  votes int(11) unsigned NOT NULL default '0',
-  hits int(11) unsigned NOT NULL default '0',
-  urlname varchar(255) NOT NULL default '',
-  offline int(10) NOT NULL default '0',
-  weight int(4) NOT NULL default '1',
-  noshowart int(10) NOT NULL default '0',
-  nobr tinyint(1) NOT NULL default '0',	
-  enaamp tinyint(1) NOT NULL default '0',
-  PRIMARY KEY  (articleid),
+  articleid  INT(8) UNSIGNED  NOT NULL AUTO_INCREMENT,
+  categoryid INT(8) UNSIGNED  NOT NULL DEFAULT '0',
+  uid        INT(5)           NOT NULL DEFAULT '0',
+  title      VARCHAR(255)              DEFAULT NULL,
+  maintext   TEXT             NOT NULL,
+  counter    INT(8) UNSIGNED  NOT NULL DEFAULT '0',
+  created    INT(10)          NOT NULL DEFAULT '0',
+  changed    INT(10)          NOT NULL DEFAULT '0',
+  nohtml     TINYINT(1)       NOT NULL DEFAULT '0',
+  nosmiley   TINYINT(1)       NOT NULL DEFAULT '0',
+  summary    TEXT             NOT NULL,
+  url        VARCHAR(255)     NOT NULL DEFAULT '',
+  page       INT(8) UNSIGNED  NOT NULL DEFAULT '1',
+  groupid    VARCHAR(255)              DEFAULT NULL,
+  submit     INT(10)          NOT NULL DEFAULT '1',
+  published  INT(10)          NOT NULL DEFAULT '0',
+  expired    INT(10)          NOT NULL DEFAULT '0',
+  notifypub  TINYINT(1)       NOT NULL DEFAULT '0',
+  type       VARCHAR(5)       NOT NULL DEFAULT '',
+  ishtml     INT(10)          NOT NULL DEFAULT '0',
+  htmlpage   VARCHAR(255)     NOT NULL DEFAULT '',
+  rating     DOUBLE(6, 4)     NOT NULL DEFAULT '0.0000',
+  votes      INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  hits       INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  urlname    VARCHAR(255)     NOT NULL DEFAULT '',
+  offline    INT(10)          NOT NULL DEFAULT '0',
+  weight     INT(4)           NOT NULL DEFAULT '1',
+  noshowart  INT(10)          NOT NULL DEFAULT '0',
+  nobr       TINYINT(1)       NOT NULL DEFAULT '0',
+  enaamp     TINYINT(1)       NOT NULL DEFAULT '0',
+  PRIMARY KEY (articleid),
   KEY categoryid (categoryid),
   KEY uid (uid),
   KEY changed (changed)
-) ENGINE=MyISAM;
-
+)
+  ENGINE = MyISAM;
 
 #
 # Table structure for table `xfs_broken`
 #
 
 CREATE TABLE xfs_broken (
-  reportid int(5) NOT NULL auto_increment,
-  lid int(11) unsigned NOT NULL default '0',
-  sender int(11) unsigned NOT NULL default '0',
-  ip varchar(20) NOT NULL default '',
-  PRIMARY KEY  (reportid),
+  reportid INT(5)           NOT NULL AUTO_INCREMENT,
+  lid      INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  sender   INT(11) UNSIGNED NOT NULL DEFAULT '0',
+  ip       VARCHAR(20)      NOT NULL DEFAULT '',
+  PRIMARY KEY (reportid),
   KEY lid (lid),
   KEY sender (sender),
   KEY ip (ip)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Table structure for table `xfs_category`
 #
 
 CREATE TABLE xfs_category (
-  id int(4) unsigned NOT NULL auto_increment,
-  pid int(4) unsigned NOT NULL default '0',
-  imgurl varchar(20) NOT NULL default '',
-  displayimg int(10) NOT NULL default '0',
-  title varchar(50) NOT NULL default '',
-  description text NOT NULL,
-  catdescription text NOT NULL,
-  groupid varchar(255) default NULL,
-  catfooter text NOT NULL,
-  orders int(4) NOT NULL default '1',
-  editaccess varchar(255) NOT NULL default '1 2 3',
-  PRIMARY KEY  (id),
+  id             INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
+  pid            INT(4) UNSIGNED NOT NULL DEFAULT '0',
+  imgurl         VARCHAR(20)     NOT NULL DEFAULT '',
+  displayimg     INT(10)         NOT NULL DEFAULT '0',
+  title          VARCHAR(50)     NOT NULL DEFAULT '',
+  description    TEXT            NOT NULL,
+  catdescription TEXT            NOT NULL,
+  groupid        VARCHAR(255)             DEFAULT NULL,
+  catfooter      TEXT            NOT NULL,
+  orders         INT(4)          NOT NULL DEFAULT '1',
+  editaccess     VARCHAR(255)    NOT NULL DEFAULT '1 2 3',
+  PRIMARY KEY (id),
   KEY pid (pid)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Table structure for table `xfs_config`
@@ -106,58 +108,59 @@ CREATE TABLE xfs_category (
 
 # chnage indexheading
 CREATE TABLE xfs_config (
-  articlesapage int(10) NOT NULL default '10',
-  filesbasepath varchar(255) NOT NULL default '',
-  graphicspath varchar(255) NOT NULL default '',
-  sgraphicspath varchar(255) NOT NULL default '',
-  smiliepath varchar(255) NOT NULL default '',
-  htmlpath varchar(255) NOT NULL default '',
-  toppagetype varchar(255) NOT NULL default '',
-  wysiwygeditor int(10) NOT NULL default '1',
-  showcatpic int(10) NOT NULL default '0',
-  comments int(10) NOT NULL default '0',
-  blockscroll int(10) NOT NULL default '0',
-  blockheight int(10) NOT NULL default '50',
-  blockamount int(10) NOT NULL default '5',
-  blockdelay int(10) NOT NULL default '1',
-  submenus int(10) NOT NULL default '0',
-  webmstonly int(10) NOT NULL default '0',
-  lastart int(10) NOT NULL default '10',
-  numuploads int(10) NOT NULL default '5',
-  timestamp text NOT NULL,
-  autoapprove int(10) NOT NULL default '0',
-  showauthor int(10) NOT NULL default '1',
-  showcomments int(10) NOT NULL default '1',
-  showfile int(10) NOT NULL default '1',
-  showrated int(10) NOT NULL default '1',
-  showvotes int(10) NOT NULL default '1',
-  showupdated int(10) NOT NULL default '1',
-  showhits int(10) NOT NULL default '1',
-  showMarticles int(10) NOT NULL default '1',
-  showMupdated int(10) NOT NULL default '1',
-  anonpost int(10) NOT NULL default '0',
-  notifysubmit int(10) NOT NULL default '0',
-  shortart int(10) NOT NULL default '0',
-  shortcat int(10) NOT NULL default '0',
-  novote int(10) NOT NULL default '1',
-  realname int(10) NOT NULL default '0',
-  indexheading varchar(255) NOT NULL default 'XF-Sections',
-  indexheader text NOT NULL,
-  indexfooter text NOT NULL,
-  groupid varchar(255) NOT NULL default '1 2 3',
-  indeximage varchar(255) NOT NULL default '',
-  noicons int(10) NOT NULL default '1',
-  summary varchar(255) NOT NULL default '1',
-  aidxpathtype tinyint(4) NOT NULL default '1',
-  aidxorder varchar(32) NOT NULL default 'weight',
-  selmimetype text NOT NULL,
-  wfsmode varchar(50) NOT NULL default '666',
-  imgwidth int(10) NOT NULL default '100',
-  imgheight int(10) NOT NULL default '100',
-  filesize int(10) NOT NULL default '2097152',
-  picon int(10) NOT NULL default '1',
-  PRIMARY KEY  (articlesapage)
-) ENGINE=MyISAM;
+  articlesapage INT(10)      NOT NULL DEFAULT '10',
+  filesbasepath VARCHAR(255) NOT NULL DEFAULT '',
+  graphicspath  VARCHAR(255) NOT NULL DEFAULT '',
+  sgraphicspath VARCHAR(255) NOT NULL DEFAULT '',
+  smiliepath    VARCHAR(255) NOT NULL DEFAULT '',
+  htmlpath      VARCHAR(255) NOT NULL DEFAULT '',
+  toppagetype   VARCHAR(255) NOT NULL DEFAULT '',
+  wysiwygeditor INT(10)      NOT NULL DEFAULT '1',
+  showcatpic    INT(10)      NOT NULL DEFAULT '0',
+  comments      INT(10)      NOT NULL DEFAULT '0',
+  blockscroll   INT(10)      NOT NULL DEFAULT '0',
+  blockheight   INT(10)      NOT NULL DEFAULT '50',
+  blockamount   INT(10)      NOT NULL DEFAULT '5',
+  blockdelay    INT(10)      NOT NULL DEFAULT '1',
+  submenus      INT(10)      NOT NULL DEFAULT '0',
+  webmstonly    INT(10)      NOT NULL DEFAULT '0',
+  lastart       INT(10)      NOT NULL DEFAULT '10',
+  numuploads    INT(10)      NOT NULL DEFAULT '5',
+  timestamp     TEXT         NOT NULL,
+  autoapprove   INT(10)      NOT NULL DEFAULT '0',
+  showauthor    INT(10)      NOT NULL DEFAULT '1',
+  showcomments  INT(10)      NOT NULL DEFAULT '1',
+  showfile      INT(10)      NOT NULL DEFAULT '1',
+  showrated     INT(10)      NOT NULL DEFAULT '1',
+  showvotes     INT(10)      NOT NULL DEFAULT '1',
+  showupdated   INT(10)      NOT NULL DEFAULT '1',
+  showhits      INT(10)      NOT NULL DEFAULT '1',
+  showMarticles INT(10)      NOT NULL DEFAULT '1',
+  showMupdated  INT(10)      NOT NULL DEFAULT '1',
+  anonpost      INT(10)      NOT NULL DEFAULT '0',
+  notifysubmit  INT(10)      NOT NULL DEFAULT '0',
+  shortart      INT(10)      NOT NULL DEFAULT '0',
+  shortcat      INT(10)      NOT NULL DEFAULT '0',
+  novote        INT(10)      NOT NULL DEFAULT '1',
+  realname      INT(10)      NOT NULL DEFAULT '0',
+  indexheading  VARCHAR(255) NOT NULL DEFAULT 'XF-Sections',
+  indexheader   TEXT         NOT NULL,
+  indexfooter   TEXT         NOT NULL,
+  groupid       VARCHAR(255) NOT NULL DEFAULT '1 2 3',
+  indeximage    VARCHAR(255) NOT NULL DEFAULT '',
+  noicons       INT(10)      NOT NULL DEFAULT '1',
+  summary       VARCHAR(255) NOT NULL DEFAULT '1',
+  aidxpathtype  TINYINT(4)   NOT NULL DEFAULT '1',
+  aidxorder     VARCHAR(32)  NOT NULL DEFAULT 'weight',
+  selmimetype   TEXT         NOT NULL,
+  wfsmode       VARCHAR(50)  NOT NULL DEFAULT '666',
+  imgwidth      INT(10)      NOT NULL DEFAULT '100',
+  imgheight     INT(10)      NOT NULL DEFAULT '100',
+  filesize      INT(10)      NOT NULL DEFAULT '2097152',
+  picon         INT(10)      NOT NULL DEFAULT '1',
+  PRIMARY KEY (articlesapage)
+)
+  ENGINE = MyISAM;
 
 #
 # Dumping data for table `xfs_config`
@@ -165,7 +168,18 @@ CREATE TABLE xfs_config (
 
 # wfs -> xfs
 # add excle
-INSERT INTO xfs_config VALUES (10, 'modules/xfsection/cache/uploaded', 'modules/xfsection/images/article', 'modules/xfsection/images/category', 'uploads', 'modules/xfsection/html', '1', 1, 0, 0, 0, 100, 1, 25, 0, 0, 10, 1, 'Y/n/j', 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 'XF-Sections', 'This is a test header 2', 'This is a test footer', '1 2 3', 'logo.gif', 1, '1', 1, 'weight', 'doc lha lzh pdf gtar swf tar tex texinfo texi zip Zip au XM snd mid midi kar mpga mp2 mp3 aif aiff aifc m3u ram rm rpm ra wav wax bmp gif ief jpeg jpg jpe png tiff tif ico pbm ppm rgb xbm xpm css html htm asc txt rtx rtf mpeg mpg mpe qt mov mxu avi xls ppt', '666', 100, 100, 2097152, 1);
+INSERT INTO xfs_config VALUES
+  (10, 'modules/xfsection/cache/uploaded', 'modules/xfsection/images/article', 'modules/xfsection/images/category', 'uploads', 'modules/xfsection/html', '1', 1, 0, 0, 0, 100, 1, 25, 0, 0, 10, 1, 'Y/n/j', 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1,
+                                                                                                                                                                                                                                                0,
+                                                                                                                                                                                                                                                'XF-Sections',
+                                                                                                                                                                                                                                                'This is a test header 2',
+                                                                                                                                                                                                                                                'This is a test footer',
+                                                                                                                                                                                                                                                '1 2 3',
+                                                                                                                                                                                                                                                'logo.gif',
+                                                                                                                                                                                                                                                1, '1', 1,
+   'weight',
+   'doc lha lzh pdf gtar swf tar tex texinfo texi zip Zip au XM snd mid midi kar mpga mp2 mp3 aif aiff aifc m3u ram rm rpm ra wav wax bmp gif ief jpeg jpg jpe png tiff tif ico pbm ppm rgb xbm xpm css html htm asc txt rtx rtf mpeg mpg mpe qt mov mxu avi xls ppt',
+   '666', 100, 100, 2097152, 1);
 # --------------------------------------------------------
 
 #
@@ -173,36 +187,38 @@ INSERT INTO xfs_config VALUES (10, 'modules/xfsection/cache/uploaded', 'modules/
 #
 
 CREATE TABLE xfs_files (
-  fileid int(8) NOT NULL auto_increment,
-  filerealname varchar(255) NOT NULL default '',
-  filetext text NOT NULL,
-  articleid int(8) unsigned NOT NULL default '0',
-  fileshowname varchar(255) NOT NULL default '',
-  date int(10) NOT NULL default '0',
-  ext varchar(64) NOT NULL default '',
-  minetype varchar(64) NOT NULL default '',
-  downloadname varchar(255) NOT NULL default '',
-  counter int(8) unsigned NOT NULL default '0',
-  filedescript text,
-  groupid varchar(255) NOT NULL default '1 2 3',
-  PRIMARY KEY  (fileid),
+  fileid       INT(8)          NOT NULL AUTO_INCREMENT,
+  filerealname VARCHAR(255)    NOT NULL DEFAULT '',
+  filetext     TEXT            NOT NULL,
+  articleid    INT(8) UNSIGNED NOT NULL DEFAULT '0',
+  fileshowname VARCHAR(255)    NOT NULL DEFAULT '',
+  date         INT(10)         NOT NULL DEFAULT '0',
+  ext          VARCHAR(64)     NOT NULL DEFAULT '',
+  minetype     VARCHAR(64)     NOT NULL DEFAULT '',
+  downloadname VARCHAR(255)    NOT NULL DEFAULT '',
+  counter      INT(8) UNSIGNED NOT NULL DEFAULT '0',
+  filedescript TEXT,
+  groupid      VARCHAR(255)    NOT NULL DEFAULT '1 2 3',
+  PRIMARY KEY (fileid),
   KEY articleid (articleid)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 
 #
 # Table structure for table `xfs_votedata`
 #
 
 CREATE TABLE xfs_votedata (
-  ratingid int(11) unsigned NOT NULL auto_increment,
-  lid int(11) unsigned NOT NULL default '0',
-  ratinguser int(11) NOT NULL default '0',
-  rating tinyint(3) unsigned NOT NULL default '0',
-  ratinghostname varchar(60) NOT NULL default '',
-  ratingtimestamp int(10) NOT NULL default '0',
-  PRIMARY KEY  (ratingid),
+  ratingid        INT(11) UNSIGNED    NOT NULL AUTO_INCREMENT,
+  lid             INT(11) UNSIGNED    NOT NULL DEFAULT '0',
+  ratinguser      INT(11)             NOT NULL DEFAULT '0',
+  rating          TINYINT(3) UNSIGNED NOT NULL DEFAULT '0',
+  ratinghostname  VARCHAR(60)         NOT NULL DEFAULT '',
+  ratingtimestamp INT(10)             NOT NULL DEFAULT '0',
+  PRIMARY KEY (ratingid),
   KEY ratinguser (ratinguser),
   KEY ratinghostname (ratinghostname),
   KEY lid (lid)
-) ENGINE=MyISAM;
+)
+  ENGINE = MyISAM;
 

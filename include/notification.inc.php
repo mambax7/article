@@ -3,7 +3,7 @@
  * Article module for XOOPS
  *
  * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting source code 
+ * of supporting developers from this source code or any supporting source code
  * which is considered copyrighted (c) material of the original comment or credit authors.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,40 +14,38 @@
  * @package         article
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id$
  */
- 
-if (!defined('XOOPS_ROOT_PATH')) { exit(); }
 
-include dirname(__FILE__) . "/vars.php";
-mod_loadFunctions("parse", $GLOBALS["artdirname"]);
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
+require_once __DIR__ . '/vars.php';
+mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 art_parse_function('
 function [VAR_PREFIX]_notify_iteminfo($category, $item_id)
 {
     // The $item is not used !
-    
-    $item_id = intval($item_id);
+
+    $item_id = (int)($item_id);
     art_define_url_delimiter();
 
     switch ($category) {
     case "category":
-        $category_handler =& xoops_getmodulehandler("category", $GLOBALS["artdirname"]);
-        $category_obj =& $category_handler->get($item_id);
+        $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
+        $category_obj = categoryHandler->get($item_id);
         if (!is_object($category_obj)) {
             redirect_header(XOOPS_URL . "/modules/" . $GLOBALS["artdirname"] . "/index.php", 2, art_constant("MD_NOACCESS"));
-            exit();
+
         }
         $item["name"] = $category_obj->getVar("cat_title");
         $item["url"] = XOOPS_URL . "/modules/" . $GLOBALS["artdirname"] . "/view.category.php" . URL_DELIMITER . $item_id;
         break;
     case "article":
-        $article_handler =& xoops_getmodulehandler("article", $GLOBALS["artdirname"]);
-        $article_obj =& $article_handler->get($item_id);
+        $articleHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
+        $article_obj = articleHandler->get($item_id);
         if (!is_object($article_obj)) {
             redirect_header(XOOPS_URL . "/modules/" . $GLOBALS["artdirname"] . "/index.php", 2, art_constant("MD_NOACCESS"));
-            exit();
+
         }
         $item["name"] = $article_obj->getVar("art_title");
         $item["url"] = XOOPS_URL . "/modules/" . $GLOBALS["artdirname"] . "/view.article.php" . URL_DELIMITER . $item_id;
@@ -58,7 +56,7 @@ function [VAR_PREFIX]_notify_iteminfo($category, $item_id)
         $item["url"] = "";
         break;
     }
+
     return $item;
 }
 ');
-?>

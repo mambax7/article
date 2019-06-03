@@ -3,7 +3,7 @@
  * Article module for XOOPS
  *
  * You may not change or alter any portion of this comment or credits
- * of supporting developers from this source code or any supporting source code 
+ * of supporting developers from this source code or any supporting source code
  * which is considered copyrighted (c) material of the original comment or credit authors.
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,21 +14,30 @@
  * @package         article
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
- * @version         $Id$
  */
- 
-include "header.php";
 
-if (empty($xoopsModuleConfig['do_counter'])) return;
-$article_id = empty($_GET['article']) ? 0 : intval($_GET['article']);
-if (empty($article_id)) return;
-if (art_getcookie("art_" . $article_id) > 0) return;
+use XoopsModules\Article;
 
-$article_handler =& xoops_getmodulehandler('article', $xoopsModule->getVar("dirname"));
-$article_obj =& $article_handler->get($article_id);
-$article_obj->setVar( "art_counter", $article_obj->getVar("art_counter") + 1, true );
-$article_handler->insert($article_obj, true);
-art_setcookie("art_" . $article_id, time());
+/** @var Article\Helper $helper */
+$helper = Article\Helper::getInstance();
+
+require_once __DIR__ . '/header.php';
+
+if (empty($helper->getConfig('do_counter'))) {
+    return;
+}
+$article_id = \Xmf\Request::getInt('article', 0, 'GET');
+if (empty($article_id)) {
+    return;
+}
+if (art_getcookie('art_' . $article_id) > 0) {
+    return;
+}
+
+$articleHandler = $helper->getHandler('Article', $xoopsModule->getVar('dirname'));
+$article_obj    = $articleHandler->get($article_id);
+$article_obj->setVar('art_counter', $article_obj->getVar('art_counter') + 1, true);
+$articleHandler->insert($article_obj, true);
+art_setcookie('art_' . $article_id, time());
 
 return;
-?>
