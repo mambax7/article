@@ -2,7 +2,7 @@
 // $Id$
 // _LANGCODE: en
 // _CHARSET : ISO-8859-1
-// Translator: D.J., http://xoopsforge.com, http://xoops.org.cn
+// Translator: D.J., http://xoopsforge.com, https://xoops.org.cn
 
 if (!defined('XOOPS_ROOT_PATH')){ exit(); }
 

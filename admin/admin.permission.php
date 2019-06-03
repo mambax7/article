@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * @copyright       The XOOPS Project http://sourceforge.net/projects/xoops/
+ * @copyright       XOOPS Project (https://xoops.org)
  * @license         http://www.fsf.org/copyleft/gpl.html GNU public license
  * @package         article
  * @since           1.0
@@ -116,7 +116,7 @@ switch ($action) {
             $cat_options[$id]=$cat["prefix"] . $cat["cat_title"];
         }
         
-        $fmform = new XoopsThemeForm(art_constant("AM_PERMISSION_TEMPLATE_APPLY"), 'fmform', 'admin.permission.php', "post");
+        $fmform = new XoopsThemeForm(art_constant("AM_PERMISSION_TEMPLATE_APPLY"), 'fmform', 'admin.permission.php', 'post', true);
         $fm_select = new XoopsFormSelect(_SELECT, 'categories', null, 10, true);
         $fm_select->addOptionArray($cat_options);
         $fmform->addElement($fm_select);

@@ -9,7 +9,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * @copyright       The XOOPS Project http://sourceforge.net/projects/xoops/
+ * @copyright       XOOPS Project (https://xoops.org)
  * @license         http://www.fsf.org/copyleft/gpl.html GNU public license
  * @package         article
  * @since           1.0
@@ -453,7 +453,7 @@ $modversion["config"][] = array(
     "description"   => $GLOBALS["ART_VAR_PREFIXU"] . "_MI_SPONSOR_DESC",
     "formtype"      => "textarea",
     "valuetype"     => "text",
-    "default"       => "http://xoops.org The XOOPS Projects\nhttp://xoopsforge.com XForge Site",
+    "default"       => "https://xoops.org The XOOPS Projects\nhttp://xoopsforge.com XForge Site",
     "category"      => "module"
     );
     
@@ -654,7 +654,7 @@ $modversion["config"][] = array(
     "description"   => $GLOBALS["ART_VAR_PREFIXU"] . "_MI_KEYWORDS_DESC",
     "formtype"      => "textarea",
     "valuetype"     => "text",
-    "default"       => "http://xoops.org XOOPS Official\nhttp://xoops.org xoops\nhttp://xoops.org.cn XOOPS CHINA\nhttp://xoops.org CMS\nhttp://www.php.net php\nhttp://mysql.com MySQL",
+    "default"       => "https://xoops.org XOOPS Official\nhttps://xoops.org xoops\nhttps://xoops.org.cn XOOPS CHINA\nhttps://xoops.org CMS\nhttp://www.php.net php\nhttp://mysql.com MySQL",
     "category"      => "article"
     );
 

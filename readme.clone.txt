@@ -1,6 +1,6 @@
 Xoops Article Module Clone Guide
 
-http://xoops.org.cn
+https://xoops.org.cn
 
 Author: (phppp or D.J.) <php_pp@hotmail.com>
 

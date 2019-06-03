@@ -1,7 +1,7 @@
 Article模块复制指南：
 
 作者：(phppp or D.J.) <php_pp@hotmail.com>
-http://xoops.org.cn
+https://xoops.org.cn
 
 复制步骤如下：
 
