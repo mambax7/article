@@ -15,14 +15,15 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/admin_header.php';
 xoops_cp_header();
-require XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 //loadModuleAdminMenu(1);
-
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-$article_counts  =& $categoryHandler->getArticleCountsRegistered();
+$adminObject->displayNavigation(basename(__FILE__));
+$helper = \XoopsModules\Article\Helper::getInstance();
+//$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category');
+$article_counts  = $categoryHandler->getArticleCountsRegistered();
 $counts          = [];
 foreach ($article_counts as $id => $count) {
     if ($count > 0) {
@@ -33,7 +34,7 @@ $ids = array_keys($counts);
 if (count($ids) > 0) {
     echo '<fieldset><legend style="font-weight: bold; color: #900;">' . art_constant('AM_SUBMITTED') . '</legend>';
     echo '<div style="padding: 8px;">';
-    $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+    $categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
     $criteria        = new \Criteria('cat_id', '(' . implode(',', $ids) . ')', 'IN');
     $cat_titles      = $categoryHandler->getList($criteria);
     foreach ($cat_titles as $id => $title) {

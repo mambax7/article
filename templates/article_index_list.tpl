@@ -42,7 +42,7 @@
 <{assign var="default_image" value="`$xoops_url`/modules/`$xoops_dirname`/assets/images/xoops.png"}>
 
 <!-- Featured articles -->
-<{if count($features) gt 0}>
+<{if $features|is_array && count($features) > 0 }>
     <div class="article-section article-feature">
         <div class="article-section-title">
             <span class="subject"><{php}>echo art_constant("MD_FEATURED");<{/php}></span>
@@ -74,7 +74,7 @@
 <{/if}>
 
 <!-- Recent articles -->
-<{if count($articles) gt 0}>
+<{if $articles|is_array && count($articles) > 0}>
     <div id="list-article" class="article-section list-article">
         <div class="article-section-title">
         <span class="subject">
@@ -99,7 +99,7 @@
                         <{$article.writer|default:$article.author}>
                         <{$article.time}>
                     </div>
-                    <{if count($article.categories)>0}>
+                    <{if $article.categories|is_array && count($article.categories) > 0 }>
                         <div class="article-list">
                             <span class="article-subject"><{php}>echo art_constant("MD_CATEGORIES");<{/php}>:</span>
                             <{foreach item=category key=catid from=$article.categories}>
@@ -120,7 +120,7 @@
 <{/if}>
 
 
-<{if count($categories) gt 0}>
+<{if $categories|is_array && count($categories) > 0}>
     <div id="category" class="article-section article-category">
         <div class="article-section-title">
             <span class="subject"><{php}>echo art_constant("MD_CATEGORIES");<{/php}></span>
@@ -141,7 +141,7 @@
     </div>
 <{/if}>
 
-<{if count($topics) gt 0}>
+<{if $topics|is_array && count($topics) > 0}>
     <div class="article-section article-topic">
         <div class="article-section-title">
             <span class="subject"><{php}>echo art_constant("MD_TOPICS");<{/php}></span>
@@ -162,14 +162,14 @@
 <{/if}>
 
 <!-- Sponsors -->
-<{if count($sponsors) gt 0}>
+<{if $sponsors|is_array && count($sponsors) > 0 }>
     <div class="article-section article-sponsor">
         <div class="article-section-title">
             <span class="subject"><{php}>echo art_constant("MD_SPONSORS");<{/php}></span>
             <span class="navigation"></span>
         </div>
         <div class="article-section-container">
-            <{includeq file="db:`$xoops_dirname`_inc_sponsor.tpl"}>
+            <{include file="db:`$xoops_dirname`_inc_sponsor.tpl"}>
         </div>
         <br style="clear:both;">
     </div>
@@ -203,5 +203,5 @@
 </div>
 
 <{if $xoops_notification}>
-    <{includeq file='db:system_notification_select.tpl'}>
+    <{include file='db:system_notification_select.tpl'}>
 <{/if}>

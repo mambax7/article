@@ -1,4 +1,7 @@
 <?php
+
+namespace XoopsModules\Article;
+
 /**
  * Article module for XOOPS
  *
@@ -17,7 +20,7 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once  dirname(__DIR__) . '/include/vars.php';
+require_once dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 if (!class_exists('Xmlrpc_client')) {
@@ -43,53 +46,3 @@ if (!class_exists('Xmlrpc_client')) {
         }
     }
 }
-
-if (!class_exists('Xmlrpc_server')) {
-    class Xmlrpc_server
-    {
-        public function __construct()
-        {
-        }
-
-        public function setVar($var, $val)
-        {
-            $this->$var = $val;
-        }
-
-        public function getVar($var)
-        {
-            return $this->$var;
-        }
-    }
-}
-
-art_parse_class('
-class [CLASS_PREFIX]XmlrpcHandler
-{
-    function &get($type = "c")
-    {
-        switch (strtolower($type)) {
-        case "s":
-        case "server":
-            return new Xmlrpc_server();
-        case "c":
-        case "client":
-            return new Xmlrpc_client();
-        }
-    }
-
-    function display(&$feed, $filename = "")
-    {
-        if (!is_object($feed)) return null;
-        $filename = empty($filename) ? $feed->filename : $filename;
-        echo $feed->saveFeed($feed->version, $filename);
-    }
-
-    function utf8_encode(&$feed)
-    {
-        if (!is_object($feed)) return null;
-        $text = xoops_utf8_encode(serialize($feed));
-        $feed = unserialize($text);
-    }
-}
-');

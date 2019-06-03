@@ -18,7 +18,7 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include __DIR__ . '/vars.php';
+require_once __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_PARSE_LOADED', true);
 
 if (!defined('ART_FUNCTIONS_PARSE')):
@@ -27,10 +27,9 @@ if (!defined('ART_FUNCTIONS_PARSE')):
     /**
      * Function to parse arguments for a page according to $_SERVER['REQUEST_URI']
      *
-     * @var array $args_numeric array of numeric variable values
-     * @var array $args         array of indexed variables: name and value
-     * @var array $args_string  array of string variable values
-     *
+     * @param mixed $args_numeric array of numeric variable values
+     * @param mixed $args         array of indexed variables: name and value
+     * @param mixed $args_string  array of string variable values
      * @return bool true on args parsed
      */
 
@@ -47,7 +46,7 @@ if (!defined('ART_FUNCTIONS_PARSE')):
             'p' => 'page',
             's' => 'start',
             't' => 'topic',
-            'u' => 'uid'
+            'u' => 'uid',
         ];
         $args         = [];
         $args_numeric = [];
@@ -59,9 +58,9 @@ if (!defined('ART_FUNCTIONS_PARSE')):
                 foreach ($vars as $var) {
                     if (is_numeric($var)) {
                         $args_numeric[] = $var;
-                    } elseif (false === strpos($var, '=')) {
-                        if (is_numeric(substr($var, 1))) {
-                            $args[$args_abb[strtolower($var{0})]] = (int)substr($var, 1);
+                    } elseif (false === mb_strpos($var, '=')) {
+                        if (is_numeric(mb_substr($var, 1))) {
+                            $args[$args_abb[mb_strtolower($var[0])]] = (int)mb_substr($var, 1);
                         } else {
                             $args_string[] = urldecode($var);
                         }
@@ -79,10 +78,9 @@ if (!defined('ART_FUNCTIONS_PARSE')):
     /**
      * Function to parse class prefix
      *
-     * @var string $class_string string to be parsed
-     * @var mixed  $pattern
-     * @var mixed  $replacement
-     *
+     * @param mixed $class_string string to be parsed
+     * @param mixed $pattern
+     * @param mixed $replacement
      * @return bool true on success
      */
     function art_parse_class($class_string, $pattern = '', $replacement = '')
@@ -91,12 +89,12 @@ if (!defined('ART_FUNCTIONS_PARSE')):
             return;
         }
         $patterns     = ["/\[CLASS_PREFIX\]/"];
-        $replacements = [ucfirst(strtolower($GLOBALS['artdirname']))];
+        $replacements = [ucfirst(mb_strtolower($GLOBALS['artdirname']))];
         if (!empty($pattern) && !is_array($pattern) && !is_array($replacement)) {
             $pattern     = [$pattern];
             $replacement = [$replacement];
         }
-        if (is_array($pattern) && count($pattern) > 0) {
+        if ($pattern && is_array($pattern)) {
             $ii = 0;
             foreach ($pattern as $pat) {
                 if (!in_array($pat, $patterns)) {
@@ -115,10 +113,9 @@ if (!defined('ART_FUNCTIONS_PARSE')):
     /**
      * Function to parse function prefix
      *
-     * @var string $function_string string to be parsed
-     * @var mixed  $pattern
-     * @var mixed  $replacement
-     *
+     * @param mixed $function_string string to be parsed
+     * @param mixed $pattern
+     * @param mixed $replacement
      * @return bool true on success
      */
     function art_parse_function($function_string, $pattern = '', $replacement = '')
@@ -132,7 +129,7 @@ if (!defined('ART_FUNCTIONS_PARSE')):
             $pattern     = [$pattern];
             $replacement = [$replacement];
         }
-        if (is_array($pattern) && count($pattern) > 0) {
+        if ($pattern && is_array($pattern)) {
             $ii = 0;
             foreach ($pattern as $pat) {
                 if (!in_array($pat, $patterns)) {
@@ -151,7 +148,7 @@ if (!defined('ART_FUNCTIONS_PARSE')):
     /**
      * Function to parse links, links are delimited by link break, URL and title of a link are delimited by space
      *
-     * @var string $text raw content
+     * @param mixed $text raw content
      *
      * @return array associative array of link url and title
      */
@@ -170,7 +167,7 @@ if (!defined('ART_FUNCTIONS_PARSE')):
             }
             $links[] = [
                 'url'   => $url,
-                'title' => $myts->htmlSpecialChars($title)
+                'title' => $myts->htmlSpecialChars($title),
             ];
         }
 

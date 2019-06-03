@@ -19,12 +19,15 @@
 
 use XoopsModules\Article;
 
-require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
+include dirname(__DIR__) . '/preloads/autoloader.php';
+
+require_once dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
+
 require_once $GLOBALS['xoops']->path('www/class/xoopsformloader.php');
 
 $moduleDirName = basename(dirname(__DIR__));
-/** @var \Xmf\Module\Helper\ $helper */
-$helper = Article\Helper::getInstance();
+/** @var \XoopsModules\Article\Helper $helper */
+$helper      = \XoopsModules\Article\Helper::getInstance();
 $adminObject = \Xmf\Module\Admin::getInstance();
 
 $pathIcon16    = \Xmf\Module\Admin::iconUrl('', 16);
@@ -35,6 +38,7 @@ $pathModIcon32 = $helper->getModule()->getInfo('modicons32');
 $helper->loadLanguage('admin');
 $helper->loadLanguage('modinfo');
 $helper->loadLanguage('main');
+$helper->loadLanguage('common');
 
 $myts = \MyTextSanitizer::getInstance();
 

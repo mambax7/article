@@ -18,7 +18,7 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include __DIR__ . '/vars.php';
+require_once __DIR__ . '/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 art_parse_function('
@@ -42,7 +42,7 @@ function xoops_module_install_[DIRNAME](\XoopsModule $module)
     mod_loadFunctions("recon", $GLOBALS["artdirname"]);
     art_updateTag($module->getVar("mid"));
 
-    require_once(XOOPS_ROOT_PATH . "/modules/" . $GLOBALS["artdirname"] . "/class/permission.php");
+//    require(XOOPS_ROOT_PATH . "/modules/" . $GLOBALS["artdirname"] . "/class/permission.php");
 
     /* Set corresponding permissions for categories and articles */
     $module_id = $module->getVar("mid") ;
@@ -55,7 +55,7 @@ function xoops_module_install_[DIRNAME](\XoopsModule $module)
     $post_items = array("submit", "rate");
     $admin_items = array("publish", "moderate");
 
-    $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+    $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
     $cat_ids = $categoryHandler->getIds();
 
     foreach ($groups_view as $group_id) {
@@ -125,7 +125,7 @@ function xoops_module_update_[DIRNAME](\XoopsModule $module, $prev_version = nul
     art_synchronization();
 
     // Update permissions
-    $permissionHandler = xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+    $permissionHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
     $permissionHandler->createPermData();
 
     // Clear caches

@@ -16,10 +16,9 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
@@ -36,12 +35,12 @@ $charset    = trim($_POST['charset']);
 if (2 == $helper->getConfig('trackback_option')) {
     art_trackback_response(1, 'Trackback is closed');
 }
-if (!strlen($title . $url . $blog_name)) {
+if (!mb_strlen($title . $url . $blog_name)) {
     art_trackback_response(1, art_constant('MD_INVALID'));
 }
 
 if (!empty($article_id) && !empty($url)) {
-    $trackbackHandler = xoops_getModuleHandler('trackback', $GLOBALS['artdirname']);
+    $trackbackHandler = $helper->getHandler('Trackback', $GLOBALS['artdirname']);
     $criteria         = new \CriteriaCompo(new \Criteria('art_id', $article_id));
     $criteria->add(new \Criteria('tb_url', $url));
     if ($trackbackHandler->getCount($criteria) > 0) {
@@ -49,9 +48,9 @@ if (!empty($article_id) && !empty($url)) {
     }
 
     $charset   = empty($charset) ? 'utf-8' : $charset;
-    $title     = XoopsLocal::convert_encoding($title, _CHARSET, $charset);
-    $excerpt   = XoopsLocal::convert_encoding($excerpt, _CHARSET, $charset);
-    $blog_name = XoopsLocal::convert_encoding($blog_name, _CHARSET, $charset);
+    $title     = \XoopsLocal::convert_encoding($title, _CHARSET, $charset);
+    $excerpt   = \XoopsLocal::convert_encoding($excerpt, _CHARSET, $charset);
+    $blog_name = \XoopsLocal::convert_encoding($blog_name, _CHARSET, $charset);
     $tb_status = (int)$helper->getConfig('trackback_option');
 
     $trackback_obj = $trackbackHandler->create();
@@ -69,7 +68,7 @@ if (!empty($article_id) && !empty($url)) {
     $criteria = new \CriteriaCompo(new \Criteria('art_id', $article_id));
     $criteria->add(new \Criteria('tb_status', 0, '>'));
     $count          = $trackbackHandler->getCount($criteria);
-    $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+    $articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
     $article_obj    = $articleHandler->get($article_id);
     if ($count > $article_obj->getVar('art_trackbacks')) {
         $article_obj->setVar('art_trackbacks', $count);

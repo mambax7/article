@@ -18,7 +18,7 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
@@ -26,10 +26,10 @@ $helper = Article\Helper::getInstance();
 $category_id = \Xmf\Request::getInt('category', 0); //(int)(empty($_GET['category']) ? @$_POST['category'] : $_GET['category']);
 $article_id  = \Xmf\Request::getInt('article', 0); //(int)(empty($_GET['article']) ? @$_POST['article'] : $_GET['article']);
 $start       = \Xmf\Request::getInt('start', 0); //(int)(empty($_GET['start']) ? @$_POST['start'] : $_GET['start']);
-$type        = \Xmf\Request::getString('type', '');//empty($_GET['type']) ? @$_POST['type'] : $_GET['type'];
-$from        = \Xmf\Request::hasVar('from') ? 1 : 0;//(!empty($_GET['from']) || !empty($_POST['from'])) ? 1 : 0;
+$type        = \Xmf\Request::getString('type', ''); //empty($_GET['type']) ? @$_POST['type'] : $_GET['type'];
+$from        = \Xmf\Request::hasVar('from') ? 1 : 0; //(!empty($_GET['from']) || !empty($_POST['from'])) ? 1 : 0;
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($category_id);
 if ((!empty($category_id) && !$categoryHandler->getPermission($category_obj, 'moderate'))
     || (empty($category_id)
@@ -46,7 +46,7 @@ $xoopsOption['xoops_module_header'] = art_getModuleHeader($template);
 $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
 
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 $criteria = new \CriteriaCompo();
 if (!empty($category_id)) {
@@ -66,7 +66,7 @@ if ('pending' === $type) {
     $type_name = _ALL;
 }
 
-$trackbackHandler = xoops_getModuleHandler('trackback', $GLOBALS['artdirname']);
+$trackbackHandler = $helper->getHandler('Trackback', $GLOBALS['artdirname']);
 $tb_count         = $trackbackHandler->getCount($criteria);
 $criteria->setStart($start);
 $criteria->setLimit($helper->getConfig('articles_perpage'));
@@ -94,7 +94,7 @@ if (!empty($article_id)) {
 }
 $article_list = [];
 if (!empty($articleIds)) {
-    $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+    $articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
     $criteria       = new \CriteriaCompo(new \Criteria('art_id', '(' . implode(',', array_keys($articleIds)) . ')', 'IN'));
     $article_list   = $articleHandler->getList($criteria);
 }
@@ -106,7 +106,7 @@ foreach (array_keys($trackbacks) as $i) {
 }
 
 if ($tb_count > $helper->getConfig('articles_perpage')) {
-    include XOOPS_ROOT_PATH . '/class/pagenav.php';
+    require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
     $nav     = new \XoopsPageNav($tb_count, $helper->getConfig('articles_perpage'), $start, 'start', "category={$category_id}&amp;type={$type}&amp;from={$from}");
     $pagenav = $nav->renderNav(4);
 } else {
@@ -115,25 +115,25 @@ if ($tb_count > $helper->getConfig('articles_perpage')) {
 
 $category_data = [];
 if (!empty($category_id)) {
-    $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+    $categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
     $category_obj    = $categoryHandler->get($category_id);
     $category_data   = [
         'id'          => $category_obj->getVar('cat_id'),
         'title'       => $category_obj->getVar('cat_title'),
         'description' => $category_obj->getVar('cat_description'),
-        'trackbacks'  => $tb_count
+        'trackbacks'  => $tb_count,
     ];
 }
 
 $article_data = [];
 if (!empty($article_id)) {
-    $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+    $articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
     $article_obj    = $articleHandler->get($article_id);
     $article_data   = [
         'id'          => $article_obj->getVar('cat_id'),
         'title'       => $article_obj->getVar('art_title'),
         'description' => $article_obj->getSummary(),
-        'trackbacks'  => $tb_count
+        'trackbacks'  => $tb_count,
     ];
 }
 

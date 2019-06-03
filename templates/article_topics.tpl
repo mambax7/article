@@ -15,7 +15,7 @@
     <div class="description"><{$category.description}></div>
 </div>
 
-<{if count($topics)>0}>
+<{if $topics|is_array && count($topics) > 0}>
     <div id="topic">
         <{foreach item=topic from=$topics}>
         <div class="item">

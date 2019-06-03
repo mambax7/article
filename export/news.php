@@ -10,7 +10,6 @@
  * @since       1.00
  * @package     module::article
  */
-
 $sql = '   INSERT INTO '
        . $GLOBALS['xoopsDB']->prefix('topics')
        . '       (topic_id,  topic_title,    topic_pid,  topic_imgurl,   topic_description)'

@@ -18,13 +18,14 @@
 
 use XoopsModules\Article;
 
-include  dirname(dirname(__DIR__)) . '/mainfile.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require __DIR__ . '/preloads/autoloader.php';
+
+require_once dirname(dirname(__DIR__)) . '/mainfile.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 mod_loadFunctions('', $xoopsModule->getVar('dirname'));
 
 art_define_url_delimiter();
 $myts = \MyTextSanitizer::getInstance();
-
 
 /** @var \XoopsModules\Article\Helper $helper */
 $helper = \XoopsModules\Article\Helper::getInstance();

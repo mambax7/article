@@ -15,12 +15,12 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/admin_header.php';
 
 xoops_cp_header();
-require XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 //loadModuleAdminMenu(9);
+$helper = \XoopsModules\Article\Helper::getInstance();
 
 $type = @$_GET['type'];
 //if (!empty($_GET['type'])) {
@@ -28,13 +28,13 @@ $start = (int)(@$_GET['start']);
 
 switch ($type) {
     case 'category':
-        $categoryHandler = xoops_getModuleHandler('category', $xoopsModule->getVar('dirname', 'n'));
+        $categoryHandler = $helper->getHandler('Category', $xoopsModule->getVar('dirname', 'n'));
         if ($start >= ($count = $categoryHandler->getCount())) {
             break;
         }
 
         $limit    = \Xmf\Request::getInt('limit', 20, 'GET');
-        $criteria = new \Criteria('1', 1);
+        $criteria = new \Criteria('');
         $criteria->setStart($start);
         $criteria->setLimit($limit);
         $categories_obj = $categoryHandler->getAll($criteria);
@@ -46,16 +46,15 @@ switch ($type) {
         redirect_header("admin.synchronization.php?type={$type}&amp;start=" . ($start + $limit) . "&amp;limit={$limit}", 2, art_constant('AM_SYNC_SYNCING') . " {$count}: {$start} - " . ($start + $limit));
 
         break;
-
     case 'article':
 
-        $articleHandler = xoops_getModuleHandler('article', $xoopsModule->getVar('dirname', 'n'));
+        $articleHandler = $helper->getHandler('Article', $xoopsModule->getVar('dirname', 'n'));
         if ($start >= ($count = $articleHandler->getCount())) {
             break;
         }
 
         $limit    = \Xmf\Request::getInt('limit', 100, 'GET');
-        $criteria = new \Criteria('1', 1);
+        $criteria = new \Criteria('');
         $criteria->setStart($start);
         $criteria->setLimit($limit);
         $articles_obj = $articleHandler->getAll($criteria);
@@ -98,7 +97,7 @@ switch ($type) {
 
         redirect_header("admin.synchronization.php?type={$type}&amp;start=" . ($start + $limit) . "&amp;limit={$limit}", 2, art_constant('AM_SYNC_SYNCING') . " {$count}: {$start} - " . ($start + $limit));
 
-        // no break
+    // no break
     case 'misc':
     default:
         mod_loadFunctions('recon', $xoopsModule->getVar('dirname', 'n'));

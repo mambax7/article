@@ -119,7 +119,7 @@
 </div>
 
 <!-- Recent articles -->
-<{if count($articles) gt 0}>
+<{if $articles|is_array && count($articles) > 0}>
     <div id="list-article" class="article-section list-article">
         <div class="article-section-title">
         <span class="subject">
@@ -155,7 +155,7 @@
                             | <{php}>echo art_constant("MD_RATE");<{/php}>: <{$article.rating}>
                         <{/if}>
                     </div>
-                    <{if count($article.categories)>0}>
+                    <{if $article.categories|is_array && count($article.categories) > 0 }>
                         <div class="article-list">
                             <span class="article-subject"><{php}>echo art_constant("MD_CATEGORIES");<{/php}>:</span>
                             <{foreach item=cat key=catid from=$article.categories}>

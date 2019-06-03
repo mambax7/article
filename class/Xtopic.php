@@ -1,4 +1,7 @@
 <?php
+
+namespace XoopsModules\Article;
+
 /**
  * Article module for XOOPS
  *
@@ -17,7 +20,7 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once  dirname(__DIR__) . '/include/vars.php';
+require_once dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 if (!class_exists('Xtopic')) {
@@ -56,7 +59,7 @@ if (!class_exists('Xtopic')) {
         /**
          * get formatted creation time of the topic
          *
-         * @param  string $format format of time
+         * @param string $format format of time
          * @return string
          */
         public function getTime($format = '')
@@ -70,7 +73,7 @@ if (!class_exists('Xtopic')) {
         /**
          * get formatted expiring time of the topic
          *
-         * @param  string $format format of time
+         * @param string $format format of time
          * @return string
          */
         public function getExpire($format = '')
@@ -85,16 +88,15 @@ if (!class_exists('Xtopic')) {
 
 /**
  * Topic object handler class.
- * @package   module::article
- *
+ * @param CLASS_PREFIX variable prefix for the class name
  * @author    D.J. (phppp)
  * @copyright copyright &copy; 2005 XOOPS Project
  *
- * {@link XoopsPersistableObjectHandler}
+ * {@link \XoopsPersistableObjectHandler}
  *
- * @param CLASS_PREFIX variable prefix for the class name
+ * @package   module::article
+ *
  */
-
 art_parse_class('
 class [CLASS_PREFIX]TopicHandler extends \XoopsPersistableObjectHandler
 {
@@ -103,7 +105,7 @@ class [CLASS_PREFIX]TopicHandler extends \XoopsPersistableObjectHandler
      *
      * @param object $db reference to the {@link XoopsDatabase} object
      **/
-    function __construct(\XoopsDatabase $db)
+    function __construct(\XoopsDatabase $db = null)
     {
         parent::__construct($db, art_DB_prefix("topic", true), "Xtopic", "top_id", "top_title");
     }
@@ -130,7 +132,7 @@ class [CLASS_PREFIX]TopicHandler extends \XoopsPersistableObjectHandler
         $sql .= " WHERE at.art_id =" . (int)($art_id);
         mod_loadFunctions("user", $GLOBALS["artdirname"]);
         if (!art_isAdministrator()) {
-            $permissionHandler = xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+            $permissionHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
             $allowed_cats =& $permissionHandler->getCategories();
             if (count($allowed_cats) == 0) return null;
             $sql .= " AND t.cat_id IN (" . implode(",", $allowed_cats) . ")";
@@ -179,7 +181,7 @@ class [CLASS_PREFIX]TopicHandler extends \XoopsPersistableObjectHandler
         $criteria->setLimit($limit);
         $criteria->setStart($start);
 
-        if (is_array($cat_id) && count($cat_id) > 0) {
+        if ($cat_id && is_array($cat_id)) {
             $cat_id = array_map("intval",$cat_id);
             $criteria->add(new \Criteria("cat_id", "(" . implode(",", $cat_id) . ")", "IN"));
         } elseif ((int)($cat_id)) {
@@ -255,7 +257,7 @@ class [CLASS_PREFIX]TopicHandler extends \XoopsPersistableObjectHandler
     function &getArticles($topic, $limit = 0, $start = 0, $criteria = null, $tags = null)
     {
         $top_id = (is_object($topic)) ? $topic->getVar("top_id") : (int)($topic);
-        $articleHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
+        $articleHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
         $ret =& $articleHandler->getByTopic($top_id, $limit, $start, $criteria, $tags);
 
         return $ret;
@@ -271,7 +273,7 @@ class [CLASS_PREFIX]TopicHandler extends \XoopsPersistableObjectHandler
     function getArticleCount($top_id, $criteria = null)
     {
         $sql = "SELECT COUNT(*) as count FROM " . art_DB_prefix("arttop");
-        if (is_array($top_id) && count($top_id) > 0) {
+        if ($top_id && is_array($top_id)) {
             $sql .= " WHERE top_id IN (" . implode(",", $top_id) . ")";
         } elseif ((int)($top_id)) {
             $sql .= " WHERE top_id = " . (int)($top_id);
@@ -297,7 +299,7 @@ class [CLASS_PREFIX]TopicHandler extends \XoopsPersistableObjectHandler
     function getArticleCounts($top_id, $criteria = null)
     {
         $sql = "SELECT top_id, COUNT(*) as count FROM " . art_DB_prefix("arttop");
-        if (is_array($top_id) && count($top_id) > 0) {
+        if ($top_id && is_array($top_id)) {
             $sql .= " WHERE top_id IN (" . implode(",", $top_id) . ")";
         } elseif ((int)($top_id)) {
             $sql .= " WHERE top_id = " . (int)($top_id);
@@ -329,7 +331,7 @@ class [CLASS_PREFIX]TopicHandler extends \XoopsPersistableObjectHandler
     function getPermission(&$topic, $type = "access")
     {
         if (!is_object($topic)) $topic=& $this->get((int)($topic));
-        $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+        $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
         $category_obj = categoryHandler->get($topic->getVar("cat_id"));
 
         return $categoryHandler->getPermission($category_obj, $type);

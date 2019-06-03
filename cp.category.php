@@ -18,14 +18,14 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
+/** @var \XoopsModules\Article\Helper $helper */
+$helper = \XoopsModules\Article\Helper::getInstance();
 
 $from = (!empty($_GET['from']) || !empty($_POST['from'])) ? 1 : 0;
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $isadmin         = art_isAdministrator();
 if (!$isadmin) {
     redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php', 2, art_constant('MD_NOACCESS'));
@@ -38,7 +38,7 @@ $xoopsOption['xoops_module_header'] = art_getModuleHeader($template);
 // Disable cache
 $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 // get Category Tree
 /*

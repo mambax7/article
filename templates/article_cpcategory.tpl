@@ -4,7 +4,7 @@
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/index.php"><{$modulename}></a>
 </div>
 
-<{if count($categories)>0}>
+<{if $categories|is_array && count($categories) > 0 }>
     <form action="am.category.php" method="POST">
         <{securityToken}><{*//mb*}>
         <div class="article-section article-categories">

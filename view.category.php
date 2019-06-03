@@ -18,17 +18,16 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
+/** @var \XoopsModules\Article\Helper $helper */
+$helper = \XoopsModules\Article\Helper::getInstance();
 
 /**
  * The notification detection scripts should be removed once absolute url is used in notification_select.php
- *
  */
 if (!empty($_POST['not_submit']) && preg_match("/\/notification_update\.php/i", $_SERVER['REQUEST_URI'], $matches)) {
-    include XOOPS_ROOT_PATH . '/include/notification_update.php';
+    require_once XOOPS_ROOT_PATH . '/include/notification_update.php';
     exit();
 }
 
@@ -44,15 +43,15 @@ $start       = (int)(empty($_GET['start']) ? @$args['start'] : $_GET['start']);
 $featured    = (int)(!isset($_GET['featured']) ? (empty($args['featured']) ? 0 : 1) : $_GET['featured']);
 $list        = (int)(!isset($_GET['list']) ? (empty($args['list']) ? $featured : 1) : $_GET['list']);
 
-$articleHandler  = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$articleHandler  = $helper->getHandler('Article', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($category_id);
 
 /*
  * Global Xoops Entity could be used by blocks or other add-ons
  * Designed by Skalpa for Xoops 2.3+
  */
-$xoopsEntity =& $category_obj;
+$xoopsEntity = &$category_obj;
 if (empty($category_id) || !$categoryHandler->getPermission($category_obj, 'access')) {
     redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php', 2, art_constant('MD_NOACCESS'));
 }
@@ -80,7 +79,8 @@ if (!empty($REQUEST_URI_parsed)) {
     if (!empty($list)) {
         $args_REQUEST_URI[] = 'list=1';
     }
-    $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '/modules/' . $GLOBALS['artdirname'] . '/view.category.php')) . '/modules/' . $GLOBALS['artdirname'] . '/view.category.php' . (empty($args_REQUEST_URI) ? '' : '?' . implode('&', $args_REQUEST_URI));
+    $_SERVER['REQUEST_URI'] = mb_substr($_SERVER['REQUEST_URI'], 0, mb_strpos($_SERVER['REQUEST_URI'], '/modules/' . $GLOBALS['artdirname'] . '/view.category.php')) . '/modules/' . $GLOBALS['artdirname'] . '/view.category.php' . (empty($args_REQUEST_URI) ? '' : '?' . implode('&',
+                                                                                                                                                                                                                                                                                    $args_REQUEST_URI));
 }
 
 // Disable cache for category moderators since we don't have proper cache handling way for them
@@ -96,21 +96,21 @@ $xoopsOption['xoops_module_header'] = art_getModuleHeader($template) . '
     <link rel="alternate" type="application/atom+xml" title="' . $xoopsModule->getVar('name') . ' category ' . $category_id . ' atom" href="' . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/xml.php' . URL_DELIMITER . 'atom/c' . $category_id . '">
     ';
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 $subcategories        = [];
 $articles_featured_id = [];
 if (empty($list) && empty($featured)) {
-    $categories      =& $categoryHandler->getChildCategories($category_id);
+    $categories      = &$categoryHandler->getChildCategories($category_id);
     $criteria        = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
-    $counts_article  =& $categoryHandler->getArticleCounts(array_keys($categories), $criteria);
-    $counts_category =& $categoryHandler->getCategoryCounts(array_keys($categories), 'access');
+    $counts_article  = &$categoryHandler->getArticleCounts(array_keys($categories), $criteria);
+    $counts_category = &$categoryHandler->getCategoryCounts(array_keys($categories), 'access');
     foreach ($categories as $id => $cat) {
         $subcategories[] = [
             'id'         => $cat->getVar('cat_id'),
             'title'      => $cat->getVar('cat_title'),
             'articles'   => @(int)$counts_article[$cat->getVar('cat_id')],
-            'categories' => @(int)$counts_category[$cat->getVar('cat_id')]
+            'categories' => @(int)$counts_category[$cat->getVar('cat_id')],
         ];
     }
     unset($criteria);
@@ -131,7 +131,7 @@ $articles_perpage = (empty($start)
                      && empty($list)) ? $helper->getConfig('articles_category') : $helper->getConfig('articles_perpage');
 $criteria->setSort($field_article_time);
 $criteria->setOrder('DESC');
-$articles_id =& $articleHandler->getIdsByCategory($category_obj, $articles_perpage, $start, $criteria);
+$articles_id = &$articleHandler->getIdsByCategory($category_obj, $articles_perpage, $start, $criteria);
 $art_ids     = array_merge($articles_featured_id, $articles_id);
 $art_ids     = array_unique($art_ids);
 if (count($art_ids) > 0) {
@@ -147,7 +147,7 @@ if (count($art_ids) > 0) {
         'art_time_publish',
         'art_counter',
         'art_comments',
-        'art_trackbacks'
+        'art_trackbacks',
     ];
     $articles_obj = $articleHandler->getAll($criteria, $tags);
 } else {
@@ -193,7 +193,7 @@ foreach ($articles_id as $id) {
         'image'      => $articles_obj[$id]->getImage(),
         'counter'    => $articles_obj[$id]->getVar('art_counter'),
         'comments'   => $articles_obj[$id]->getVar('art_comments'),
-        'trackbacks' => $articles_obj[$id]->getVar('art_trackbacks')
+        'trackbacks' => $articles_obj[$id]->getVar('art_trackbacks'),
     ];
     if (!empty($helper->getConfig('display_summary'))) {
         $_article['summary'] = $articles_obj[$id]->getSummary(true);
@@ -217,17 +217,17 @@ if (empty($list) && count($articles_featured_id) > 0) {
 $count_featured = 0;
 $topics         = [];
 if (empty($list) && empty($featured)) {
-    $topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+    $topicHandler = $helper->getHandler('Topic', $GLOBALS['artdirname']);
     $criteria     = new \CriteriaCompo(new \Criteria('top_expire', time(), '>'));
     $tags         = ['top_title'];
-    $topic_array  =& $topicHandler->getByCategory($category_obj->getVar('cat_id'), $helper->getConfig('topics_max'), 0, $criteria, $tags);
+    $topic_array  = &$topicHandler->getByCategory($category_obj->getVar('cat_id'), $helper->getConfig('topics_max'), 0, $criteria, $tags);
     if (count($topic_array) > 0) {
-        $counts =& $topicHandler->getArticleCounts(array_keys($topic_array));
+        $counts = &$topicHandler->getArticleCounts(array_keys($topic_array));
         foreach ($topic_array as $id => $topic) {
             $topics[] = [
                 'id'       => $id,
                 'title'    => $topic->getVar('top_title'),
-                'articles' => @(int)$counts[$id]
+                'articles' => @(int)$counts[$id],
             ];
         }
     }
@@ -244,7 +244,7 @@ $count_article    = $categoryHandler->getArticleCount($category_obj, $criteria);
 $articles_perpage = $helper->getConfig('articles_perpage');
 $pagenav          = '';
 if (!empty($list) && ($count_article > $articles_perpage)) {
-    include XOOPS_ROOT_PATH . '/class/pagenav.php';
+    require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
     $nav     = new \XoopsPageNav($count_article, $articles_perpage, $start, 'start', 'category=' . $category_obj->getVar('cat_id') . (empty($list) ? '' : '&amp;list=1') . (empty($featured) ? '' : '&amp;featured=1'));
     $pagenav = $nav->renderNav(4);
 } elseif (empty($list) && ($count_article > $helper->getConfig('articles_category'))) {
@@ -260,14 +260,14 @@ if (!$category_obj->isNew()) {
             'description' => $category_obj->getVar('cat_description'),
             'image'       => $category_obj->getImage(),
             'moderators'  => $category_moderators,
-            'articles'    => $count_article
+            'articles'    => $count_article,
         ];
     } else {
         $category_data = [
             'id'          => $category_obj->getVar('cat_id'),
             'title'       => $category_obj->getVar('cat_title'),
             'description' => $category_obj->getVar('cat_description'),
-            'articles'    => $count_article
+            'articles'    => $count_article,
         ];
     }
 }

@@ -18,7 +18,7 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include __DIR__ . '/vars.php';
+require_once __DIR__ . '/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 art_parse_function('
@@ -30,7 +30,7 @@ function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $ca
     art_define_url_delimiter();
 
     $uid = (is_object($xoopsUser) && $xoopsUser->isactive()) ? $xoopsUser->getVar("uid") : 0;
-    $permissionHandler = xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+    $permissionHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
     $allowed_ids = $permissionHandler->getCategories();
     if (count($categories) > 0) {
         $allowed_ids = array_intersect($allowed_ids, $categories);
@@ -71,7 +71,7 @@ function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $ca
             " AND ac.cat_id IN (" . implode(",", $allowed_ids) . ")" .
             " AND ac.ac_publish > 0";
 
-    if (is_array($userid) && count($userid) > 0) {
+    if ($userid && is_array($userid)) {
         $userid = array_map("intval", $userid);
         $sql .= " AND a.uid IN (" . implode(",", $userid) . ") ";
     } elseif ( is_numeric($userid) && $userid > 0 ) {
@@ -128,7 +128,7 @@ function &[VAR_PREFIX]_search($queryarray, $andor, $limit, $offset, $userid, $ca
     }
 
     if (!empty($isFulltext)):
-    $articleHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
+    $articleHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
     xoops_load("xoopslocal");
     foreach ($_ret as $myrow) {
         $article_obj = $articleHandler->create(false);

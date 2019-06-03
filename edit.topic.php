@@ -15,19 +15,19 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
+require_once __DIR__ . '/header.php';
 
-include __DIR__ . '/header.php';
-
+$helper      = \XoopsModules\Article\Helper::getInstance();
 $topic_id    = \Xmf\Request::getInt('topic', 0, 'GET');
 $category_id = \Xmf\Request::getInt('category', 0, 'GET');
 $from        = \Xmf\Request::getInt('from', 0, 'GET');
 
-$topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+$topicHandler = $helper->getHandler('Topic', $GLOBALS['artdirname']);
 $topic_obj    = $topicHandler->get($topic_id);
 
 $category_id = empty($category_id) ? $topic_obj->getVar('cat_id') : $category_id;
 /*
- $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+ $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
  $category_obj = $categoryHandler->get($category_id);
 
  if( !$categoryHandler->getPermission($category_obj, "moderate")
@@ -38,7 +38,7 @@ $category_id = empty($category_id) ? $topic_obj->getVar('cat_id') : $category_id
  */
 // Disable cache
 $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
-include XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
-include XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/form.topic.php';
-include XOOPS_ROOT_PATH . '/footer.php';
+require_once XOOPS_ROOT_PATH . '/header.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/form.topic.php';
+require_once XOOPS_ROOT_PATH . '/footer.php';

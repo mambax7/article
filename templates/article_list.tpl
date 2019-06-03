@@ -34,7 +34,7 @@
                             class="article-content"><{$profile.content}></span>
                 </div>
                 <{/foreach}>
-                <{if count($author.mods)>0}>
+                <{if $author.mods|is_array && count($author.mods) > 0 }>
                     <div>
                         <span class="article-label"><{php}>echo art_constant("MD_MODERATOR");<{/php}>:</span>
                         <{foreach item=mod from=$author.mods}>
@@ -84,7 +84,7 @@
 
 
 <!-- Recent articles -->
-<{if count($articles) gt 0}>
+<{if $articles|is_array && count($articles) > 0}>
     <div id="list-article" class="article-section list-article">
         <div class="article-section-title">
         <span class="subject">
@@ -126,7 +126,7 @@
                             | <{php}>echo art_constant("MD_RATE");<{/php}>: <{$article.rating}>
                         <{/if}>
                     </div>
-                    <{if count($article.categories)>0}>
+                    <{if $article.categories|is_array && count($article.categories) > 0 }>
                         <div class="article-list">
                             <span><{php}>echo art_constant("MD_CATEGORIES");<{/php}>:</span>
                             <{foreach item=category key=catid from=$article.categories}>

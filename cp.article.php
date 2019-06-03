@@ -18,7 +18,7 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
@@ -28,8 +28,8 @@ $topic_id    = \Xmf\Request::getInt('topic', 0, 'GET');
 $start       = \Xmf\Request::getInt('start', 0, 'GET');
 $from        = (!empty($_GET['from']) || !empty($_POST['from'])) ? 1 : 0;
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-$topicHandler    = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+$topicHandler    = $helper->getHandler('Topic', $GLOBALS['artdirname']);
 
 $isAdmin = art_isAdministrator();
 
@@ -63,7 +63,7 @@ $xoopsOption['xoops_module_header'] = art_getModuleHeader($template);
 // Disable cache
 $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 $type       = empty($_GET['type']) ? '' : (in_array($_GET['type'], $allowed_type) ? $_GET['type'] : '');
 $byCategory = true;
@@ -74,32 +74,28 @@ switch ($type) {
         $criteria->add(new \Criteria('art_time_submit', 0, '>'));
         $byCategory = false;
         break;
-
     case 'registered':
         $type_name = art_constant('MD_REGISTERED');
         $criteria  = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0));
         break;
-
     case 'featured':
         $type_name = art_constant('MD_FEATURED');
         $criteria  = new \CriteriaCompo(new \Criteria('ac.ac_feature', 0, '>'));
         break;
-
     case 'published':
         $type      = 'published';
         $type_name = art_constant('MD_PUBLISHED');
         $criteria  = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
         $criteria->add(new \Criteria('ac.ac_feature', 0));
         break;
-
     case 'all':
     default:
         $type_name = _ALL;
-        $criteria  = new \CriteriaCompo(new \Criteria('1', 1));
+        $criteria  = new \CriteriaCompo();
         break;
 }
 
-$articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+$articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
 
 if (!empty($topic_id)) {
     $articles_count = $topicHandler->getArticleCount($topic_id);
@@ -117,7 +113,7 @@ if (!empty($topic_id)) {
         'ac.cat_id',
         'ac.ac_register',
         'ac.ac_publish',
-        'ac.ac_feature'
+        'ac.ac_feature',
     ];
     $articles_array = $categoryHandler->getArticles($categories_id, $helper->getConfig('articles_perpage'), $start, $criteria, $tags, false);
 } else {
@@ -129,7 +125,7 @@ if (!empty($topic_id)) {
         'art_time_submit',
         'art_time_publish',
         'art_summary',
-        'uid'
+        'uid',
     ];
     $criteria->setStart($start);
     $criteria->setLimit($helper->getConfig('articles_perpage'));
@@ -160,7 +156,7 @@ if (count($articles_array) > 0) {
             'register_category' => art_formatTimestamp(@$article['ac_register']),
             'time_topic'        => art_formatTimestamp(@$article['at_time']),
             'summary'           => $article['art_summary'],
-            'author'            => $users[$article['uid']]
+            'author'            => $users[$article['uid']],
         ];
         if (!empty($article['ac_feature'])) {
             $_article['feature_category'] = art_formatTimestamp($article['ac_feature']);
@@ -174,7 +170,7 @@ if (count($articles_array) > 0) {
         } else {
             $_article['category'] = [
                 'id'    => $article['cat_id'],
-                'title' => $categories_obj[$article['cat_id']]->getVar('cat_title')
+                'title' => $categories_obj[$article['cat_id']]->getVar('cat_title'),
             ];
         }
         if ((!empty($category_obj) && $category_obj->getVar('cat_id') == @$article['cat_id']) || $isAdmin) {
@@ -186,7 +182,7 @@ if (count($articles_array) > 0) {
 }
 
 if ($articles_count > $helper->getConfig('articles_perpage')) {
-    include XOOPS_ROOT_PATH . '/class/pagenav.php';
+    require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
     $nav     = new \XoopsPageNav($articles_count, $helper->getConfig('articles_perpage'), $start, 'start', 'category=' . $category_id . '&amp;topic=' . $topic_id . '&amp;type=' . $type . '&amp;from=' . $from);
     $pagenav = $nav->renderNav(4);
 } else {
@@ -200,14 +196,14 @@ if (!empty($topic_obj)) {
         'id'          => $topic_id,
         'title'       => $topic_obj->getVar('top_title'),
         'description' => $topic_obj->getVar('top_description'),
-        'articles'    => $articles_count
+        'articles'    => $articles_count,
     ];
 } elseif (!empty($category_obj)) {
     $category_data = [
         'id'          => $category_obj->getVar('cat_id'),
         'title'       => $category_obj->getVar('cat_title'),
         'description' => $category_obj->getVar('cat_description'),
-        'articles'    => $articles_count
+        'articles'    => $articles_count,
     ];
 }
 
@@ -218,7 +214,7 @@ if (empty($topic_obj)) {
     foreach ($subCategories_obj as $id => $cat) {
         $categories[] = [
             'id'    => $id,
-            'title' => $cat->getVar('cat_title')
+            'title' => $cat->getVar('cat_title'),
         ];
     }
     unset($subCategories_obj);
@@ -228,7 +224,7 @@ if (empty($topic_obj)) {
         foreach ($topics_obj as $id => $topic) {
             $topics[] = [
                 'id'    => $id,
-                'title' => $topic->getVar('top_title')
+                'title' => $topic->getVar('top_title'),
             ];
         }
         unset($topics_obj);

@@ -1,4 +1,7 @@
 <?php
+
+namespace XoopsModules\Article;
+
 /**
  * Article module for XOOPS
  *
@@ -17,7 +20,7 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once  dirname(__DIR__) . '/include/vars.php';
+require_once dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 if (!class_exists('Xfile')) {
@@ -44,7 +47,7 @@ if (!class_exists('Xfile')) {
 art_parse_class('
 class [CLASS_PREFIX]FileHandler extends \XoopsPersistableObjectHandler
 {
-    function __construct(\XoopsDatabase $db)
+    function __construct(\XoopsDatabase $db = null)
     {
         parent::__construct($db, art_DB_prefix("file", true), "Xfile", "file_id", "file_name");
     }
@@ -60,7 +63,7 @@ class [CLASS_PREFIX]FileHandler extends \XoopsPersistableObjectHandler
 
     function &getOrpan($criteria = null, $tags = false)
     {
-        if (is_array($tags) && count($tags) > 0) {
+        if ($tags && is_array($tags)) {
             if(!in_array("file_id", $tags)) $tags[] = "file_id";
             $select = implode(",", $tags);
         } else $select = "*";

@@ -19,10 +19,11 @@
 // Where to locate the file? Member search should be restricted
 // Limitation: Only work with javascript enabled
 
-include  dirname(dirname(dirname(__DIR__))) . '/mainfile.php';
+require_once dirname(dirname(dirname(__DIR__))) . '/mainfile.php';
 
+$helper          = \XoopsModules\Article\Helper::getInstance();
 $category_id     = @\Xmf\Request::getInt('category', 0, 'GET');
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($category_id);
 if (empty($category_id) || !$categoryHandler->getPermission($category_obj, 'moderate')) {
     redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php', 2, _NOPERM);
@@ -71,7 +72,7 @@ echo $js_additem = '
 
 $form_article = new \XoopsThemeForm(art_constant('MD_ARTICLE_SELECT'), 'selectarticle', xoops_getenv('PHP_SELF'), 'GET', true);
 
-$articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+$articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
 $criteria       = new \CriteriaCompo(new \Criteria('cat_id', $category_id));
 $article_count  = $articleHandler->getCount($criteria);
 $criteria->setSort('art_id');
@@ -93,16 +94,16 @@ $add_button->setExtra('onclick="addItem();"');
 $close_button = new \XoopsFormButton('', '', _CLOSE, 'button');
 $close_button->setExtra('onclick="window.close()"');
 
-$button_tray = new \XoopsFormElementTray('');
-$button_tray->addElement($add_button);
-$button_tray->addElement(new \XoopsFormButton('', '', _CANCEL, 'reset'));
-$button_tray->addElement($close_button);
+$buttonTray = new \XoopsFormElementTray('');
+$buttonTray->addElement($add_button);
+$buttonTray->addElement(new \XoopsFormButton('', '', _CANCEL, 'reset'));
+$buttonTray->addElement($close_button);
 
 $form_article->addElement($select_tray);
 
 $form_article->addElement(new \XoopsFormHidden('target', $_REQUEST['target']));
 $form_article->addElement(new \XoopsFormHidden('category', $_REQUEST['category']));
-$form_article->addElement($button_tray);
+$form_article->addElement($buttonTray);
 $form_article->display();
 
 require_once XOOPS_ROOT_PATH . '/footer.php';

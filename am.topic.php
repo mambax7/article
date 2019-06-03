@@ -15,8 +15,7 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 $category_id = Xmf\Request::getInt('category', 0);
 $topic_id    = Xmf\Request::getInt('topic', 0);
@@ -25,19 +24,20 @@ $op          = \Xmf\Request::getCmd('op', '');
 $top_id      = \Xmf\Request::getInt('top_id', (empty($topic_id) ? false : [$topic_id]), 'POST');
 $top_order   = \Xmf\Request::getInt('top_order', false, 'POST');
 $from        = \Xmf\Request::hasVar('from', 'POST') ? 1 : 0;
+$helper      = \XoopsModules\Article\Helper::getInstance();
 
 if (empty($top_id) && empty($topic_id)) {
     $redirect = empty($from) ? XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php' : XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/admin/admin.topic.php';
     redirect_header($redirect, 2, art_constant('MD_INVALID'));
 }
 
-$topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+$topicHandler = $helper->getHandler('Topic', $GLOBALS['artdirname']);
 if (!empty($topic_id)) {
     $topic_obj   = $topicHandler->get($topic_id);
     $category_id = $topic_obj->getVar('cat_id');
 }
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($category_id);
 if (!$categoryHandler->getPermission($category_obj, 'moderate')) {
     $redirect = empty($from) ? XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/cp.topic.php?category=' . $category_id : XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/admin/admin.topic.php';
@@ -47,7 +47,7 @@ if (!$categoryHandler->getPermission($category_obj, 'moderate')) {
 $xoops_pagetitle                = $xoopsModule->getVar('name') . ' - ' . art_constant('MD_CPTOPIC');
 $xoopsOption['xoops_pagetitle'] = $xoops_pagetitle;
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 switch ($op) {
     case 'delete':
@@ -60,13 +60,13 @@ switch ($op) {
             $action              = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/am.topic.php';
             $msg                 = _DELETE . ': ' . $topic_obj->getVar('top_title');
             require_once XOOPS_ROOT_PATH . '/header.php';
-            include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+            require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
             xoops_confirm($hiddens, $action, $msg);
             require_once XOOPS_ROOT_PATH . '/footer.php';
             exit();
-        } else {
-            $topicHandler->delete($topic_obj);
         }
+        $topicHandler->delete($topic_obj);
+
         break;
     case 'order':
         for ($i = 0, $iMax = count($top_id); $i < $iMax; ++$i) {

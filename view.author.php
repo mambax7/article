@@ -15,8 +15,7 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 if (art_parse_args($args_num, $args, $args_str)) {
     $args['uid']  = !empty($args['uid']) ? $args['uid'] : @$args_num[0];

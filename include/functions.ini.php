@@ -28,11 +28,11 @@ if (!defined('ART_FUNCTIONS_INI')):
 
     function art_constant($name)
     {
-        if (defined($GLOBALS['ART_VAR_PREFIXU'] . '_' . strtoupper($name))) {
-            return constant($GLOBALS['ART_VAR_PREFIXU'] . '_' . strtoupper($name));
-        } else {
-            return strtolower($name);
+        if (defined($GLOBALS['ART_VAR_PREFIXU'] . '_' . mb_strtoupper($name))) {
+            return constant($GLOBALS['ART_VAR_PREFIXU'] . '_' . mb_strtoupper($name));
         }
+
+        return mb_strtolower($name);
     }
 
     function art_DB_prefix($name, $isRel = false)
@@ -68,7 +68,7 @@ if (!defined('ART_FUNCTIONS_INI')):
                 return null;
             }
         } else {
-            /** @var XoopsModuleHandler $moduleHandler */
+            /** @var \XoopsModuleHandler $moduleHandler */
             $moduleHandler = xoops_getHandler('module');
             $module        = $moduleHandler->getByDirname($GLOBALS['artdirname']);
 
@@ -80,7 +80,7 @@ if (!defined('ART_FUNCTIONS_INI')):
             }
             unset($configs);
         }
-        if ($customConfig = @include XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/plugin.php') {
+        if ($customConfig = @require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/plugin.php') {
             $moduleConfig[$GLOBALS['artdirname']] = array_merge($moduleConfig[$GLOBALS['artdirname']], $customConfig);
         }
 

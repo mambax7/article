@@ -15,8 +15,7 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/admin_header.php';
 /*
  * The feature is to be reactivated after article 1.0 release
  *
@@ -28,7 +27,7 @@ include __DIR__ . '/header.php';
  */
 
 xoops_cp_header();
-require XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 //loadModuleAdminMenu(8);
 
 echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . art_constant('AM_FILES') . '</legend>';

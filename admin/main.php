@@ -18,7 +18,7 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/admin_header.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
@@ -60,7 +60,7 @@ function art_admin_mkdir($strPath, $mode = 0777)
 {
     $strPath = str_replace('..', '', $strPath);
 
-    return is_dir($strPath) || (art_admin_mkdir(dirname($strPath), $mode) && @mkdir($strPath, $mode));
+    return is_dir($strPath) || (art_admin_mkdir(dirname($strPath), $mode) && !mkdir($strPath, $mode) && !is_dir($strPath));
 }
 
 function art_admin_chmod($target, $mode = 0777)
@@ -76,7 +76,7 @@ $op = \Xmf\Request::getString('op', '', 'GET');
 
 switch ($op) {
     case 'createdir':
-        if (isset($_GET['path'])) {
+        if (\Xmf\Request::hasVar('path', 'GET')) {
             $path = $_GET['path'];
         }
         $res = art_admin_mkdir($path);
@@ -84,9 +84,8 @@ switch ($op) {
         redirect_header('index.php', 2, $msg . ': ' . $path);
 
         break;
-
     case 'setperm':
-        if (isset($_GET['path'])) {
+        if (\Xmf\Request::hasVar('path', 'GET')) {
             $path = $_GET['path'];
         }
         $res = art_admin_chmod($path, 0777);
@@ -94,7 +93,6 @@ switch ($op) {
         redirect_header('index.php', 2, $msg . ': ' . $path);
 
         break;
-
     case 'default':
     default:
         break;
@@ -174,11 +172,11 @@ $form        .= '</fieldset><br>';
 
 $form              .= "<fieldset><legend style='font-weight: bold; color: #900;'>" . art_constant('AM_STATS') . '</legend>';
 $form              .= "<div style='padding: 8px;'>";
-$categoryHandler   = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler   = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_count    = $categoryHandler->getCount();
-$topicHandler      = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+$topicHandler      = $helper->getHandler('Topic', $GLOBALS['artdirname']);
 $topic_count       = $topicHandler->getCount();
-$articleHandler    = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+$articleHandler    = $helper->getHandler('Article', $GLOBALS['artdirname']);
 $article_count     = $articleHandler->getCount(new \Criteria('art_time_publish', 0, '>'));
 $category          = 0;
 $article_submitted = $categoryHandler->getArticleCountRegistered($category);

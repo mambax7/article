@@ -18,7 +18,7 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
@@ -30,7 +30,7 @@ xoops_loadLanguage('user');
 
 // Disable cache
 $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
-include XOOPS_ROOT_PATH . '/header.php';
+require_once XOOPS_ROOT_PATH . '/header.php';
 
 $writer_id         = \Xmf\Request::getInt('writer_id', 0, 'GET');
 $writer_id         = \Xmf\Request::getInt('writer_id', $writer_id, 'POST');
@@ -38,7 +38,7 @@ $start             = isset($_GET['start']) ? $_GET['start'] : 0;
 $_REQUEST['query'] = isset($_REQUEST['query']) ? trim($_REQUEST['query']) : '';
 $limit             = 200;
 
-$writerHandler = xoops_getModuleHandler('writer', $GLOBALS['artdirname']);
+$writerHandler = $helper->getHandler('Writer', $GLOBALS['artdirname']);
 
 if (!empty($_POST['submit_writer'])) {
     $writer_obj = $writerHandler->get($writer_id);
@@ -49,7 +49,7 @@ if (!empty($_POST['submit_writer'])) {
                 || $writer_obj->isNew()))) {
         foreach ([
                      'writer_name',
-                     'writer_profile'
+                     'writer_profile',
                  ] as $tag) {
             if (@$_POST[$tag] != $writer_obj->getVar($tag)) {
                 $writer_obj->setVar($tag, $_POST[$tag]);
@@ -60,7 +60,7 @@ if (!empty($_POST['submit_writer'])) {
             $error_upload  = '';
             $writer_avatar = '';
             require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/uploader.php';
-            $uploader = new art_uploader(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image'));
+            $uploader = new Article\Uploader(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image'));
             if ($uploader->fetchMedia($_POST['xoops_upload_file'][0])) {
                 if (!$uploader->upload()) {
                     $error_upload = $uploader->getErrors();
@@ -139,16 +139,16 @@ if (!empty($_REQUEST['search'])) {
     $close_button = new \XoopsFormButton('', '', _CLOSE, 'button');
     $close_button->setExtra('onclick="window.close()"');
 
-    $button_tray = new \XoopsFormElementTray('');
-    $button_tray->addElement($add_button);
-    $button_tray->addElement(new \XoopsFormButton('', 'edit', _EDIT, 'submit'));
-    $button_tray->addElement(new \XoopsFormButton('', '', _CANCEL, 'reset'));
-    $button_tray->addElement($close_button);
+    $buttonTray = new \XoopsFormElementTray('');
+    $buttonTray->addElement($add_button);
+    $buttonTray->addElement(new \XoopsFormButton('', 'edit', _EDIT, 'submit'));
+    $buttonTray->addElement(new \XoopsFormButton('', '', _CANCEL, 'reset'));
+    $buttonTray->addElement($close_button);
 
     $form_user->addElement($user_select_tray);
 
     //$form_user->addElement(new \XoopsFormHidden('target', $_REQUEST["target"]));
-    $form_user->addElement($button_tray);
+    $form_user->addElement($buttonTray);
     $form_user->display();
 }
 
@@ -161,12 +161,12 @@ $form_sel->addElement($searchtext);
 $close_button = new \XoopsFormButton('', '', _CLOSE, 'button');
 $close_button->setExtra('onclick="window.close()"');
 
-$button_tray = new \XoopsFormElementTray('');
-$button_tray->addElement(new \XoopsFormButton('', 'search', _SEARCH, 'submit'));
-$button_tray->addElement($close_button);
+$buttonTray = new \XoopsFormElementTray('');
+$buttonTray->addElement(new \XoopsFormButton('', 'search', _SEARCH, 'submit'));
+$buttonTray->addElement($close_button);
 
 //$form_sel->addElement(new \XoopsFormHidden('target', $_REQUEST["target"]));
-$form_sel->addElement($button_tray);
+$form_sel->addElement($buttonTray);
 $form_sel->display();
 
 if (!empty($_POST['edit']) && !empty($_POST[$name_current])) {
@@ -177,7 +177,7 @@ if (art_isAdministrator()
     || (is_object($xoopsUser)
         && ($writerHandler->getVar('uid') == $xoopsUser->getVar('uid')
             || $writer_obj->isNew()))) {
-    include XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/form.writer.php';
+    require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/form.writer.php';
 }
 $xoopsOption['output_type'] = 'plain';
-include __DIR__ . '/footer.php';
+require_once __DIR__ . '/footer.php';

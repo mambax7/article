@@ -18,10 +18,10 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
+/** @var \XoopsModules\Article\Helper $helper */
+$helper = \XoopsModules\Article\Helper::getInstance();
 
 // Set groups, template, header for cache purposes
 if (!empty($xoopsUser)) {
@@ -36,7 +36,7 @@ $xoops_module_header                     = art_getModuleHeader($helper->getConfi
 
 $xoopsOption['xoops_module_header'] = $xoops_module_header;
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 // Following part will not be executed if cache enabled
 
@@ -45,7 +45,7 @@ if (art_parse_args($args_num, $args, $args_str)) {
 }
 $category_id = (int)(empty($_GET['category']) ? @$args['category'] : $_GET['category']);
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($category_id);
 
 $category_depth = 2;
@@ -60,9 +60,9 @@ if (!$category_obj->isNew()) {
         'title'       => $category_obj->getVar('cat_title'),
         'description' => $category_obj->getVar('cat_description'),
         'image'       => $category_obj->getImage(),
-        'articles'    => (int)$counts_article[$category_id]
+        'articles'    => (int)$counts_article[$category_id],
     ];
-    $topicHandler                = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+    $topicHandler                = $helper->getHandler('Topic', $GLOBALS['artdirname']);
     $category_data['topics']     = $topicHandler->getCount(new \Criteria('cat_id', $category_id));
     $category_data['categories'] = count(@$data['child']);
     $tracks                      = $categoryHandler->getTrack($category_obj, true);

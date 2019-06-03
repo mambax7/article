@@ -15,6 +15,5 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include  dirname(dirname(__DIR__)) . '/mainfile.php';
-include XOOPS_ROOT_PATH . '/include/comment_delete.php';
+require_once dirname(dirname(__DIR__)) . '/mainfile.php';
+require_once XOOPS_ROOT_PATH . '/include/comment_delete.php';

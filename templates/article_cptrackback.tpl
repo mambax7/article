@@ -36,7 +36,7 @@
     </div>
 </div>
 
-<{if count($trackbacks)>0}>
+<{if $trackbacks|is_array && count($trackbacks) > 0 }>
     <div>
         <form name="form_tb_cpanel" action="am.trackback.php" method="POST">
             <{securityToken}><{*//mb*}>

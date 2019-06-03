@@ -20,7 +20,7 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include __DIR__ . '/vars.php';
+require_once __DIR__ . '/vars.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/functions.php';
 
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
@@ -32,7 +32,7 @@ function b_sitemap_[DIRNAME]()
     art_define_url_delimiter();
 
     $sitemap = array();
-    $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+    $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
 
     if (!empty($GLOBALS["xoopsModuleConfig"]["show_subcategoris"])):
     $category_depth = 3;

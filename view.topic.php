@@ -18,10 +18,10 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
+/** @var \XoopsModules\Article\Helper $helper */
+$helper = \XoopsModules\Article\Helper::getInstance();
 
 if (art_parse_args($args_num, $args, $args_str)) {
     $args['topic'] = !empty($args['topic']) ? $args['topic'] : @$args_num[0];
@@ -30,15 +30,15 @@ if (art_parse_args($args_num, $args, $args_str)) {
 $topic_id = (int)(empty($_GET['topic']) ? @$args['topic'] : $_GET['topic']);
 $start    = (int)(empty($_GET['start']) ? @$args['start'] : $_GET['start']);
 
-$topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+$topicHandler = $helper->getHandler('Topic', $GLOBALS['artdirname']);
 $topic_obj    = $topicHandler->get($topic_id);
 /*
  * Global Xoops Entity could be used by blocks or other add-ons
  * Designed by Skalpa for Xoops 2.3+
  */
-$xoopsEntity =& $topic_obj;
+$xoopsEntity = &$topic_obj;
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($topic_obj->getVar('cat_id'));
 if (!$categoryHandler->getPermission($category_obj, 'access')) {
     redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php', 2, art_constant('MD_NOACCESS'));
@@ -53,9 +53,9 @@ $template                           = $topic_obj->getVar('top_template');
 $xoopsOption['template_main']       = art_getTemplate('topic', $template);
 $xoopsOption['xoops_module_header'] = art_getModuleHeader($template);
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
-$articleHandler  = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+$articleHandler  = $helper->getHandler('Article', $GLOBALS['artdirname']);
 $articles_object = $topicHandler->getArticles($topic_obj, $helper->getConfig('articles_perpage'), $start);
 
 $articles = [];
@@ -69,19 +69,19 @@ $users        = art_getUnameFromId($author_array);
 
 $articles = [];
 foreach ($articles_object as $id => $article) {
-    $author         =& $article->getAuthor();
+    $author         = &$article->getAuthor();
     $author['name'] = $users[$article->getVar('uid')];
     $articles[]     = [
         'id'     => $id,
         'title'  => $article->getVar('art_title'),
         'author' => $author,
-        'time'   => $article->getTime($helper->getConfig('timeformat'))
+        'time'   => $article->getTime($helper->getConfig('timeformat')),
     ];
 }
 
 $count_article = $topicHandler->getArticleCount($topic_id);
 if ($count_article > $helper->getConfig('articles_perpage')) {
-    include XOOPS_ROOT_PATH . '/class/pagenav.php';
+    require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
     $nav     = new \XoopsPageNav($count_article, $helper->getConfig('articles_perpage'), $start, 'start', 'topic=' . $topic_id);
     $pagenav = $nav->renderNav(4);
 } else {
@@ -97,7 +97,7 @@ if (empty($start)) {
         'description' => $topic_obj->getVar('top_description'),
         'time'        => $topic_obj->getTime($helper->getConfig('timeformat')),
         'expire'      => $topic_obj->getExpire(),
-        'articles'    => $count_article
+        'articles'    => $count_article,
     ];
 }
 $xoopsTpl->assign('modulename', $xoopsModule->getVar('name'));

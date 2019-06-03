@@ -15,7 +15,6 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/admin_header.php';
 header('location: ' . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/cp.article.php?from=1');
 exit();

@@ -75,7 +75,7 @@
                     <!-- Way 1 -->
                     <{if $mode_tagbar eq 1}>
                         <div class="taglist" style="padding: 5px;">
-                            <{includeq file="tag_bar.tpl"}>
+                            <{include file="tag_bar.tpl"}>
                         </div>
                         <!-- Way 2 -->
                     <{else}>
@@ -265,7 +265,7 @@
         </div>
 
         <div class="article-section-container">
-            <{includeq file="db:`$xoops_dirname`_trackback.tpl"}>
+            <{include file="db:`$xoops_dirname`_trackback.tpl"}>
         </div>
     </div>
 <{/if}>
@@ -279,7 +279,7 @@
         </div>
 
         <div class="article-section-container">
-            <{includeq file="db:`$xoops_dirname`_inc_sponsor.tpl"}>
+            <{include file="db:`$xoops_dirname`_inc_sponsor.tpl"}>
         </div>
     </div>
 <{/if}>
@@ -358,17 +358,17 @@
     </div>
     <div id="comment" style="margin:3px; padding: 3px;">
         <{if $comment_mode == "flat"}>
-            <{includeq file="db:system_comments_flat.tpl"}>
+            <{include file="db:system_comments_flat.tpl"}>
         <{elseif $comment_mode == "thread"}>
-            <{includeq file="db:system_comments_thread.tpl"}>
+            <{include file="db:system_comments_thread.tpl"}>
         <{elseif $comment_mode == "nest"}>
-            <{includeq file="db:system_comments_nest.tpl"}>
+            <{include file="db:system_comments_nest.tpl"}>
         <{/if}>
     </div>
 <{/if}>
 
 <{if $xoops_notification}>
-    <{includeq file='db:system_notification_select.tpl'}>
+    <{include file='db:system_notification_select.tpl'}>
 <{/if}>
 
 <{if $do_counter>0}>

@@ -10,7 +10,7 @@
  * @since       1.00
  * @package     module::article
  */
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 xoops_cp_header();
 
@@ -45,7 +45,7 @@ if (empty($_GET['module']) || !isset($mods[$_GET['module']])) {
 
     echo $form;
 } else {
-    include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+    require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
     xoops_result('<h2>Data Import From ' . $_GET['module'] . '</h2>');
 
@@ -57,7 +57,7 @@ if (empty($_GET['module']) || !isset($mods[$_GET['module']])) {
         xoops_result("succeed with emptying TABLE {$table}");
     }
 
-    include $mods[$_GET['module']];
+    require_once $mods[$_GET['module']];
 
     $sql    = '   SELECT mid' . '   FROM ' . $GLOBALS['xoopsDB']->prefix('modules') . "   WHERE dirname = '" . $_GET['module'] . "'";
     $result = $xoopsDB->query($sql);

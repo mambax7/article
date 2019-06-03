@@ -29,12 +29,13 @@ ob_start();
  * </ul>
  */
 global $pdf_data;
+$helper = \XoopsModules\Article\Helper::getInstance();
 if (!empty($_POST['pdf_data'])) {
-    $pdf_data = unserialize(base64_decode($_POST['pdf_data']));
+    $pdf_data = unserialize(base64_decode($_POST['pdf_data'], true));
 } elseif (!empty($pdf_data)) {
 } else {
     error_reporting(0);
-    include __DIR__ . '/header.php';
+    require_once __DIR__ . '/header.php';
     error_reporting(0);
 
     if (art_parse_args($args_num, $args, $args_str)) {
@@ -45,12 +46,12 @@ if (!empty($_POST['pdf_data'])) {
     $category_id = (int)(empty($_GET['category']) ? @$args['category'] : $_GET['category']);
     $page        = (int)(empty($_GET['page']) ? @$args['page'] : $_GET['page']);
 
-    $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+    $articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
     $article_obj    = $articleHandler->get($article_id);
 
     $category_id = empty($category_id) ? $article_obj->getVar('cat_id') : $category_id;
 
-    $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+    $categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
     $category_obj    = $categoryHandler->get($category_id);
 
     if (empty($category_obj) || !$categoryHandler->getPermission($category_obj, 'view')) {
@@ -114,6 +115,6 @@ error_reporting(0);
 ob_end_clean();
 
 //$pdf = new xoopsPDF($xoopsConfig['language'], _CHARSET);
-$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, _CHARSET, false);
+$pdf = new \TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, _CHARSET, false);
 $pdf->initialize();
-$pdf->output($pdf_data);
+$pdf->Output($pdf_data);

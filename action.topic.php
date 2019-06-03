@@ -15,23 +15,23 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/uploader.php';
 
-include XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/header.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+$helper = \XoopsModules\Article\Helper::getInstance();
 
 $top_id       = \Xmf\Request::getInt('top_id', 0, 'POST');
-$topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+$topicHandler = $helper->getHandler('Topic', $GLOBALS['artdirname']);
 $topic        = $topicHandler->get($top_id);
 
 if (empty($_POST['submit'])) {
     redirect_header('index.php', 2, art_constant('MD_INVALID'));
 }
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-$category        =& $categoryHandler->get(\Xmf\Request::getInt('cat_id', 0, 'POST'));
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+$category        = &$categoryHandler->get(\Xmf\Request::getInt('cat_id', 0, 'POST'));
 if (!$categoryHandler->getPermission($category, 'moderate')) {
     redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/index.php', 2, art_constant('MD_NOACCESS'));
 }
@@ -43,13 +43,13 @@ foreach ([
              'top_title',
              'top_description',
              'top_template',
-             'top_sponsor'
+             'top_sponsor',
          ] as $tag) {
     if (@$_POST[$tag] != $topic->getVar($tag)) {
         $topic->setVar($tag, $_POST[$tag]);
     }
 }
-if (isset($_POST['top_expire'])) {
+if (\Xmf\Request::hasVar('top_expire', 'POST')) {
     $expire     = $_POST['top_expire'];
     $top_expire = strtotime($expire['date']) + $expire['time'];
     $offset     = $xoopsUser->timezone() - $xoopsConfig['server_TZ'];
@@ -75,4 +75,4 @@ if (empty($from)) {
 $message = $top_id_new ? art_constant('MD_SAVED') : art_constant('MD_INSERTERROR');
 redirect_header($redirect, 2, $message);
 
-include XOOPS_ROOT_PATH . '/footer.php';
+require_once XOOPS_ROOT_PATH . '/footer.php';

@@ -8,10 +8,10 @@
 
 $current_path = __FILE__;
 if (DIRECTORY_SEPARATOR !== '/') {
-    $current_path = str_replace(strpos($current_path, "\\\\", 2) ? "\\\\" : DIRECTORY_SEPARATOR, '/', $current_path);
+    $current_path = str_replace(mb_strpos($current_path, '\\\\', 2) ? '\\\\' : DIRECTORY_SEPARATOR, '/', $current_path);
 }
-$url_arr = explode('/', strstr($current_path, '/modules/'));
-include XOOPS_ROOT_PATH . '/modules/' . $url_arr[2] . '/include/vars.php';
+$url_arr = explode('/', mb_strstr($current_path, '/modules/'));
+require_once XOOPS_ROOT_PATH . '/modules/' . $url_arr[2] . '/include/vars.php';
 
 if (defined($GLOBALS['ART_VAR_PREFIXU'] . '_LANG_EN_MODINFO')) {
     return;
@@ -53,7 +53,7 @@ define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_BLOCK_TAG_TOP', 'Top Tags');
 
 define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_TIMEFORMAT', 'Time format for display');
 xoops_load('xoopslocal');
-define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_TIMEFORMAT_DESC', XoopsLocal::getTimeFormatDesc());
+define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_TIMEFORMAT_DESC', \XoopsLocal::getTimeFormatDesc());
 define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_TIMEFORMAT_CUSTOM', 'Custom');
 
 define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_CONFIGCAT_MODULE', 'General setting');
@@ -176,6 +176,8 @@ define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_ADMENU_FILE', 'File');
 define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_ADMENU_UTILITY', 'Utility');
 define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_ADMENU_ABOUT', 'About');
 define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_ADMENU_HOME', 'Home');
+define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_ADMENU_SYNC', 'Sync');
+
 
 define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_GLOBAL_NOTIFY', 'Global');
 define($GLOBALS['ART_VAR_PREFIXU'] . '_MI_GLOBAL_NOTIFYDSC', 'Global notification options');

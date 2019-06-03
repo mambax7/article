@@ -15,18 +15,18 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 $category_id = \Xmf\Request::getInt('category', 0); //empty($_GET['category']) ? (empty($_POST['category']) ? 0 : \Xmf\Request::getInt('category', 0, 'POST')) : \Xmf\Request::getInt('category', 0, 'GET');
 $topic_id    = \Xmf\Request::getInt('topic', 0); //empty($_GET['topic']) ? (empty($_POST['topic']) ? 0 : \Xmf\Request::getInt('topic', 0, 'POST')) : \Xmf\Request::getInt('topic', 0, 'GET');
-$article_id  = \Xmf\Request::getInt('article', 0);//empty($_GET['article']) ? (empty($_POST['article']) ? 0 : \Xmf\Request::getInt('article', 0, 'POST')) : \Xmf\Request::getInt('article', 0, 'GET');
-$start       = \Xmf\Request::getInt('start', 0);//empty($_GET['start']) ? (empty($_POST['start']) ? 0 : \Xmf\Request::getInt('start', 0, 'POST')) : \Xmf\Request::getInt('start', 0, 'GET');
-$type        = \Xmf\Request::getString('type', '');//empty($_GET['type']) ? (empty($_POST['type']) ? '' : $_POST['type']) : $_GET['type'];
+$article_id  = \Xmf\Request::getInt('article', 0); //empty($_GET['article']) ? (empty($_POST['article']) ? 0 : \Xmf\Request::getInt('article', 0, 'POST')) : \Xmf\Request::getInt('article', 0, 'GET');
+$start       = \Xmf\Request::getInt('start', 0); //empty($_GET['start']) ? (empty($_POST['start']) ? 0 : \Xmf\Request::getInt('start', 0, 'POST')) : \Xmf\Request::getInt('start', 0, 'GET');
+$type        = \Xmf\Request::getString('type', ''); //empty($_GET['type']) ? (empty($_POST['type']) ? '' : $_POST['type']) : $_GET['type'];
 $op          = \Xmf\Request::getCmd('op', 'default');
 $art_id_post = \Xmf\Request::getArray('art_id', [], 'POST');
 $top_id_post = \Xmf\Request::getInt('top_id', 0, 'POST');
 $from        = \Xmf\Request::getInt('from', 0, 'POST'); //(int)(@$_POST['from']);
+$helper      = \XoopsModules\Article\Helper::getInstance();
 
 if (!empty($article_id)) {
     $art_id[] = $article_id;
@@ -43,12 +43,12 @@ if (0 == $count_artid && empty($article_id)) {
 }
 
 if (!empty($topic_id)) {
-    $topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+    $topicHandler = $helper->getHandler('Topic', $GLOBALS['artdirname']);
     $topic_obj    = $topicHandler->get($topic_id);
     $category_id  = $topic_obj->getVar('cat_id');
 }
 
-$articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+$articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
 if (!empty($article_id)) {
     $criteria = null;
     if ('approve' !== $op && 'terminate' !== $op) {
@@ -60,7 +60,7 @@ if (!empty($article_id)) {
     }
 }
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($category_id);
 
 if (!$categoryHandler->getPermission($category_obj, 'moderate')) {
@@ -69,7 +69,7 @@ if (!$categoryHandler->getPermission($category_obj, 'moderate')) {
 
 $xoopsOption['xoops_pagetitle'] = $xoopsModule->getVar('name') . ' - ' . art_constant('MD_CPARTICLE');
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 $update_topic    = false;
 $update_category = false;
@@ -117,7 +117,7 @@ if (!empty($topic_id) && 'terminate' === $op) {
             break;
         case 'feature':
             foreach ($art_id as $id) {
-                $old_category =& $articleHandler->getCategoryArray($id);
+                $old_category = &$articleHandler->getCategoryArray($id);
                 if (isset($old_category[$category_id]) && 2 == $old_category[$category_id]) {
                     continue;
                 }
@@ -136,10 +136,10 @@ if (!empty($topic_id) && 'terminate' === $op) {
         case 'registertopic':
             $valid_id = [];
             $criteria = new \Criteria('art_id', '(' . implode(',', $art_id) . ')', 'IN');
-            $arts     =& $articleHandler->getAll($criteria, ['uid']);
-            $criteria = new \CriteriaCompo(new \Criteria('1', 1));
+            $arts     = &$articleHandler->getAll($criteria, ['uid']);
+            $criteria = new \CriteriaCompo();
             foreach (array_keys($arts) as $aid) {
-                $old_topic =& $articleHandler->getTopicIds($aid, $criteria);
+                $old_topic = &$articleHandler->getTopicIds($aid, $criteria);
                 if (in_array($top_id_post, $old_topic)) {
                     continue;
                 }
@@ -166,7 +166,7 @@ if ('rate' === $op) {
         }
     }
     if ($art_id_valid) {
-        $rateHandler = xoops_getModuleHandler('rate', $GLOBALS['artdirname']);
+        $rateHandler = $helper->getHandler('Rate', $GLOBALS['artdirname']);
         $rateHandler->deleteByArticle($art_id_valid);
         $articleHandler->updateAll('art_rating', 0, new \Criteria('art_id', '(' . implode(',', $art_id_valid) . ')', 'IN'), true);
         $articleHandler->updateAll('art_rates', 0, new \Criteria('art_id', '(' . implode(',', $art_id_valid) . ')', 'IN'), true);

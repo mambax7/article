@@ -44,7 +44,7 @@
 <{if $spotlight}>
     <{assign var="article" value=$spotlight}>
     <div class="article-section article-spotlight">
-        <{includeq file="db:`$xoops_dirname`_item_blog.tpl"}>
+        <{include file="db:`$xoops_dirname`_item_blog.tpl"}>
     </div>
     <br style="clear:both;">
 <{/if}>
@@ -52,7 +52,7 @@
 <{assign var="default_image" value="`$xoops_url`/modules/`$xoops_dirname`/assets/images/xoops.png"}>
 
 <!-- Featured articles -->
-<{if count($features) gt 0}>
+<{if $features|is_array && count($features) > 0 }>
     <div class="article-section article-feature">
         <div class="article-section-title">
             <span class="subject"><{php}>echo art_constant("MD_FEATURED");<{/php}></span>
@@ -63,7 +63,7 @@
         <div class="article-section-container">
             <{foreach item=article from=$features}>
             <div class="article-list">
-                <{includeq file="db:`$xoops_dirname`_item_blog.tpl"}>
+                <{include file="db:`$xoops_dirname`_item_blog.tpl"}>
             </div>
             <{/foreach}>
         </div>
@@ -71,7 +71,7 @@
 <{/if}>
 
 <!-- Recent articles -->
-<{if count($articles) gt 0}>
+<{if $articles|is_array && count($articles) > 0}>
     <div id="list-article" class="article-section list-article">
         <div class="article-section-title">
         <span class="subject">
@@ -85,7 +85,7 @@
         <div class="article-section-container">
             <{foreach item=article from=$articles}>
             <div class="article-list">
-                <{includeq file="db:`$xoops_dirname`_item_blog.tpl"}>
+                <{include file="db:`$xoops_dirname`_item_blog.tpl"}>
             </div>
             <{/foreach}>
         </div>
@@ -97,7 +97,7 @@
     <{$pagenav}>
 </div>
 
-<{if count($categories) gt 0}>
+<{if $categories|is_array && count($categories) > 0}>
     <div id="category" class="article-section article-category">
         <div class="article-section-title">
             <span class="subject"><{php}>echo art_constant("MD_CATEGORIES");<{/php}></span>
@@ -146,5 +146,5 @@
 </div>
 
 <{if $xoops_notification}>
-    <{includeq file='db:system_notification_select.tpl'}>
+    <{include file='db:system_notification_select.tpl'}>
 <{/if}>

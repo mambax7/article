@@ -15,13 +15,14 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
+error_reporting(0);
+require_once __DIR__ . '/header.php';
+error_reporting(0);
 
-error_reporting(0);
-include __DIR__ . '/header.php';
-error_reporting(0);
+$helper = \XoopsModules\Article\Helper::getInstance();
 
 if (!empty($_POST['print_data'])) {
-    $print_data = unserialize(base64_decode($_POST['print_data']));
+    $print_data = unserialize(base64_decode($_POST['print_data'], true));
 } elseif (!empty($print_data)) {
 } else {
     if (art_parse_args($args_num, $args, $args_str)) {
@@ -32,12 +33,12 @@ if (!empty($_POST['print_data'])) {
     $category_id = (int)(empty($_GET['category']) ? @$args['category'] : $_GET['category']);
     $page        = (int)(empty($_GET['page']) ? @$args['page'] : $_GET['page']);
 
-    $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+    $articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
     $article_obj    = $articleHandler->get($article_id);
 
     $category_id = empty($category_id) ? $article_obj->getVar('cat_id') : $category_id;
 
-    $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+    $categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
     $category_obj    = $categoryHandler->get($category_id);
 
     if (empty($category_obj) || !$categoryHandler->getPermission($category_obj, 'view')) {
@@ -49,7 +50,7 @@ if (!empty($_POST['print_data'])) {
     // title
     $article_data['title'] = $article_obj->getVar('art_title');
 
-    $article_data['author'] =& $article_obj->getAuthor(true);
+    $article_data['author'] = &$article_obj->getAuthor(true);
 
     // source
     $article_data['source'] = $article_obj->getVar('art_source');
@@ -64,7 +65,7 @@ if (!empty($_POST['print_data'])) {
     $article_data['keywords'] = $article_obj->getVar('art_keywords');
 
     // text of page
-    $article_data['text'] =& $article_obj->getText($page, 'raw');
+    $article_data['text'] = &$article_obj->getText($page, 'raw');
 
     $print_data['title']    = $article_data['title'];
     $print_data['subtitle'] = $category_obj->getVar('cat_title');

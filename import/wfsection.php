@@ -11,7 +11,6 @@
  * @since       1.00
  * @package     module::article
  */
-
 $sql = '   INSERT INTO ' . art_DB_prefix('category') . '       (cat_id,    cat_title,      cat_pid,    cat_description)' . '   SELECT ' . '       id,         title,          pid,        description' . '   FROM ' . $GLOBALS['xoopsDB']->prefix('wfs_category') . '       ORDER BY id ASC';
 
 $result = $xoopsDB->queryF($sql);

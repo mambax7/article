@@ -15,7 +15,6 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
 if (!defined('ARTICLE_INI')) {
     define('ARTICLE_INI', 1);
 }
@@ -40,7 +39,7 @@ $GLOBALS['ART_VAR_PREFIX'] = $GLOBALS['artdirname'];
  * The prefix for module language constants
  * You can chnage to any term but be capital and unique, no conflict with other modules
  */
-$GLOBALS['ART_VAR_PREFIXU'] = strtoupper($GLOBALS['artdirname']);
+$GLOBALS['ART_VAR_PREFIXU'] = mb_strtoupper($GLOBALS['artdirname']);
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/functions.ini.php';
 
 // include customized variables

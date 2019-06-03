@@ -18,7 +18,7 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
@@ -32,7 +32,7 @@ $uid               = \Xmf\Request::getInt('uid', 0, 'POST');
 $from              = \Xmf\Request::getString('from', '', 'POST');
 $update_time_value = 0;
 
-$articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+$articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
 $article_obj    = $art_id ? $articleHandler->get($art_id) : $articleHandler->create();
 
 $article_isNew = $article_obj->isNew();
@@ -43,7 +43,7 @@ if (!$isAuthor && !$article_obj->getVar('art_time_submit')) {
     redirect_header('index.php', 2, art_constant('MD_NOACCESS'));
 }
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($cat_id);
 $isModerator     = $categoryHandler->getPermission($category_obj, 'moderate');
 if (!$isModerator && (!$isAuthor || !$categoryHandler->getPermission($category_obj, 'submit'))) {
@@ -51,7 +51,7 @@ if (!$isModerator && (!$isAuthor || !$categoryHandler->getPermission($category_o
 }
 $canPublish = $categoryHandler->getPermission($category_obj, 'publish');
 
-$permissionHandler = xoops_getModuleHandler('permission', $xoopsModule->getVar('dirname'));
+$permissionHandler = $helper->getHandler('Permission', $xoopsModule->getVar('dirname'));
 $canhtml           = $permissionHandler->getPermission('html');
 $canupload         = $permissionHandler->getPermission('upload');
 if (!$canhtml) {
@@ -65,8 +65,8 @@ foreach (['editor', 'form_mode'] as $var) {
     }
 }
 
-include XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/header.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 // Article actions
 // "delete": delete one page
@@ -78,7 +78,7 @@ include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/incl
 
 $art_image_file_upload = '';
 if ($canupload && empty($_POST['del']) && empty($_POST['delete']) && !empty($_FILES['userfile']['name'])) {
-    $uploader = new art_uploader(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image'), ['jpg', 'png', 'gif', 'jpeg']);
+    $uploader = new Article\Uploader(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image'), ['jpg', 'png', 'gif', 'jpeg']);
     if ($uploader->fetchMedia($_POST['xoops_upload_file'][0])) {
         if (!$uploader->upload()) {
             xoops_error($uploader->getErrors());
@@ -89,7 +89,7 @@ if ($canupload && empty($_POST['del']) && empty($_POST['delete']) && !empty($_FI
         xoops_error($uploader->getErrors());
     }
 
-   if (\Xmf\Request::hasVar('art_image_file_tmp', 'POST')) {
+    if (\Xmf\Request::hasVar('art_image_file_tmp', 'POST')) {
         @unlink(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image') . '/' . $_POST['art_image_file_tmp']);
         unset($_POST['art_image_file_tmp']);
     }
@@ -99,7 +99,7 @@ if (!empty($_POST['del']) && isset($_POST['page']) && $art_id > 0) {
     if (count($article_obj->getPages()) <= 1) {
         $_POST['delart'] = 1;
     } elseif (empty($newpage)) {
-        $textHandler = xoops_getModuleHandler('text', $GLOBALS['artdirname']);
+        $textHandler = $helper->getHandler('Text', $GLOBALS['artdirname']);
         $page_id     = $article_obj->getPage($page, true);
         $text_obj    = $textHandler->get($page_id);
         $textHandler->delete($text_obj);
@@ -148,7 +148,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
                  'art_keywords',
                  'art_elinks',
                  'art_template',
-                 'art_summary'
+                 'art_summary',
              ] as $tag) {
         if (@$_POST[$tag] != $article_obj->getVar($tag)) {
             $article_obj->setVar($tag, @$_POST[$tag]);
@@ -173,8 +173,8 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
         $article_obj->setVar('art_time_publish', time());
     }
 
-   if (\Xmf\Request::hasVar('update_time', 'POST')) {
-        $update_time_value = (int)(strtotime(@$_POST['update_time_value']['date']) + @$_POST['update_time_value']['time']);
+    if (\Xmf\Request::hasVar('update_time', 'POST')) {
+        $update_time_value = (strtotime(@$_POST['update_time_value']['date']) + @$_POST['update_time_value']['time']);
         if ($isModerator) {
             $article_obj->setVar('art_time_publish', $update_time_value, true);
         }
@@ -183,10 +183,10 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
     // New uploaded
     if (!empty($art_image_file_upload)) {
         $art_image['file'] = $art_image_file_upload;
-    // Uploaded during preview
+        // Uploaded during preview
     } elseif (!empty($_POST['art_image_file_tmp'])) {
         $art_image['file'] = $_POST['art_image_file_tmp'];
-    // delete current image
+        // delete current image
     } elseif (!empty($_POST['image_del'])) {
         $art_image['file'] = '';
     }
@@ -250,7 +250,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
                 // New registered category, then register it
                 if (!isset($old_category[$id])) {
                     $cats_reg[$id] = 1;
-                // Existing category, then publish to it
+                    // Existing category, then publish to it
                 } elseif (empty($old_category[$id])) {
                     $cats_pub[] = $id;
                 }
@@ -282,7 +282,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
                 // If the user has publish/moderate right over the article, remove it from the category
                 if (($isAuthor && $categoryHandler->getPermission($id, 'publish')) || $isModerator) {
                     $cats_del[] = $id;
-                // If the user has submission right over the article, withdraw it
+                    // If the user has submission right over the article, withdraw it
                 } elseif ($isAuthor && $categoryHandler->getPermission($id, 'submit')) {
                     $cats_unpub[] = $id;
                 }
@@ -315,7 +315,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
 
         $tops_add     = @array_diff($topic, $old_topic);
         $tops_del     = @array_diff($old_topic, $topic);
-        $topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+        $topicHandler = $helper->getHandler('Topic', $GLOBALS['artdirname']);
         if (count($tops_add) > 0) {
             $tops = [];
             foreach ($tops_add as $id) {
@@ -343,7 +343,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
         $articleHandler->updateTopics($article_obj);
     }
 
-    $textHandler = xoops_getModuleHandler('text', $GLOBALS['artdirname']);
+    $textHandler = $helper->getHandler('Text', $GLOBALS['artdirname']);
     if (empty($newpage)) {
         $page_id  = $article_obj->getPage($page, true);
         $text_obj = $textHandler->get($page_id);
@@ -381,7 +381,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
         $data['summary']  = $article_obj->getSummary(true);
         $data['forum_id'] = $helper->getConfig('forum');
 
-        $transferHandler = xoops_getModuleHandler('transfer', $GLOBALS['artdirname']);
+        $transferHandler = $helper->getHandler('Transfer', $GLOBALS['artdirname']);
         $forum           = $transferHandler->do_transfer('newbb', $data);
     }
 
@@ -462,7 +462,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
          */
         // If notify checkbox is set, add subscription for approve; else unsubscribe
         if (is_object($xoopsUser)) {
-           if (\Xmf\Request::hasVar('notify', 'POST')) {
+            if (\Xmf\Request::hasVar('notify', 'POST')) {
                 $notificationHandler->subscribe('article', $article_obj->getVar('art_id'), 'article_approve');
             } else {
                 $notificationHandler->unsubscribe('article', $article_obj->getVar('art_id'), 'article_approve');
@@ -472,7 +472,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
 
     if ($isPublished && !empty($helper->getConfig('do_trackback')) && !empty($_POST['trackbacks'])) {
         $tbs          = array_map('trim', preg_split("/[\s,]+/", $_POST['trackbacks']));
-        $tb_old       =& $articleHandler->getTracked($article_obj);
+        $tb_old       = &$articleHandler->getTracked($article_obj);
         $tb_recorded  = [];
         $tb_untracked = [];
         $tb_new       = [];
@@ -515,7 +515,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
         art_ping($pings, $article_obj->getVar('art_id'));
     }
 
-   if (\Xmf\Request::hasVar('save', 'POST')) {
+    if (\Xmf\Request::hasVar('save', 'POST')) {
         if (empty($from)) {
             $redirect = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . URL_DELIMITER . 'c' . $cat_id . '/' . $article_obj->getVar('art_id') . '/p' . (empty($newpage) ? $page : ($newpage - 1));
         } else {
@@ -523,7 +523,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
         }
         $message = art_constant('MD_SAVED');
     }
-   if (\Xmf\Request::hasVar('save_edit', 'POST')) {
+    if (\Xmf\Request::hasVar('save_edit', 'POST')) {
         $redirect = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/edit.article.php?category=' . $cat_id . '&amp;article=' . $article_obj->getVar('art_id');
         $redirect .= '&amp;page=' . $page;
         if (!empty($from)) {
@@ -531,7 +531,7 @@ if (!empty($_POST['save']) || !empty($_POST['save_edit']) || !empty($_POST['publ
         }
         $message = art_constant('MD_SAVED');
     }
-   if (\Xmf\Request::hasVar('publish', 'POST')) {
+    if (\Xmf\Request::hasVar('publish', 'POST')) {
         if (empty($from)) {
             $redirect = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . URL_DELIMITER . 'c' . $cat_id . '/' . $article_obj->getVar('art_id') . '/p' . $page;
         } else {
@@ -583,7 +583,7 @@ if (!empty($_POST['preview'])) {
     $author_uid             = $article_isNew ? $user_id : $article_obj->getVar('uid');
     $authors                = art_getAuthorNameFromId($author_uid, false, true);
     $article_data['author'] = $authors[$author_uid];
-   if (\Xmf\Request::hasVar('writer_id', 'POST')) {
+    if (\Xmf\Request::hasVar('writer_id', 'POST')) {
         $article_obj->setVar('writer_id', $_POST['writer_id']);
         $article_data['writer'] = $article_obj->getWriter();
     }
@@ -651,7 +651,7 @@ foreach ([
              'dosmiley',
              'doxcode',
              'dobr',
-             'editor'
+             'editor',
          ] as $tag) {
     ${$tag} = $myts->htmlSpecialChars($myts->stripSlashesGPC(trim(@$_POST[$tag])));
 }
@@ -673,6 +673,6 @@ $topic    = array_map('intval', $topic);
 
 echo '<div class="clear"></div>';
 echo '<br>';
-include XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/form.article.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/form.article.php';
 
-include XOOPS_ROOT_PATH . '/footer.php';
+require_once XOOPS_ROOT_PATH . '/footer.php';

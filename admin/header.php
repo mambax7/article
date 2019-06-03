@@ -16,11 +16,27 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-require_once  dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
-require XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+include dirname(__DIR__) . '/preloads/autoloader.php';
+
+require dirname(dirname(dirname(__DIR__))) . '/include/cp_header.php';
+require dirname(__DIR__) . '/include/common.php';
+
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/functions.php';
 require_once XOOPS_ROOT_PATH . '/Frameworks/art/functions.admin.php';
 
-xoops_loadLanguage('main', $xoopsModule->getVar('dirname'));
+$moduleDirName = basename(dirname(__DIR__));
+
+/** @var \XoopsModules\Article\Helper $helper */
+$helper = \XoopsModules\Article\Helper::getInstance();
+
+/** @var \Xmf\Module\Admin $adminObject */
+$adminObject = \Xmf\Module\Admin::getInstance();
+
+// Load language files
+$helper->loadLanguage('admin');
+$helper->loadLanguage('modinfo');
+$helper->loadLanguage('common');
+
 art_define_url_delimiter();
 $myts = \MyTextSanitizer::getInstance();

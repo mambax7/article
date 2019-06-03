@@ -18,7 +18,7 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include __DIR__ . '/vars.php';
+require_once __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_USER_LOADED', true);
 
 if (!defined('ART_FUNCTIONS_USER')):
@@ -97,13 +97,14 @@ if (!defined('ART_FUNCTIONS_USER')):
     function art_isModerator(&$category, $user = -1)
     {
         global $xoopsUser;
+        $helper = \XoopsModules\Article\Helper::getInstance();
 
         if (!is_object($category)) {
             $cat_id = (int)$category;
             if (0 == $cat_id) {
                 return false;
             }
-            $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+            $categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
             $category        = $categoryHandler->get($cat_id);
         }
 

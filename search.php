@@ -19,10 +19,10 @@
 use XoopsModules\Article;
 
 $xoopsOption['pagetype'] = 'search';
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
+/** @var \XoopsModules\Article\Helper $helper */
+$helper = \XoopsModules\Article\Helper::getInstance();
 
 //$xoopsModule->loadLanguage("main");
 art_load_lang_file('main');
@@ -35,8 +35,8 @@ if (empty($xoopsConfigSearch['enable_search'])) {
 $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
 $xoopsOption['template_main']                             = art_getTemplate('search', $helper->getConfig('template'));
 $xoopsOption['xoops_module_header']                       = art_getModuleHeader($helper->getConfig('template'));
-include XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/header.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 $module_info_search = $xoopsModule->getInfo('search');
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/' . $module_info_search['file'];
@@ -59,13 +59,13 @@ if (empty($category) || (is_array($category) && in_array('all', $category))) {
     $category = array_map('intval', $category);
 }
 
-$andor  = in_array(strtoupper($andor), ['OR', 'AND', 'EXACT']) ? strtoupper($andor) : 'OR';
-$sortby = in_array(strtolower($sortby), [
+$andor  = in_array(mb_strtoupper($andor), ['OR', 'AND', 'EXACT']) ? mb_strtoupper($andor) : 'OR';
+$sortby = in_array(mb_strtolower($sortby), [
     'a.art_id desc',
     'a.art_time_publish desc',
     'a.art_title',
-    'ac.cat_id'
-]) ? strtolower($sortby) : 'a.art_id DESC';
+    'ac.cat_id',
+], true) ? mb_strtolower($sortby) : 'a.art_id DESC';
 
 if (!(empty($_POST['submit']) && empty($_GET['term']))) {
     $next_search['category'] = implode(',', $category);
@@ -79,7 +79,7 @@ if (!(empty($_POST['submit']) && empty($_GET['term']))) {
         $temp_queries    = preg_split("/[\s,]+/", $query);
         foreach ($temp_queries as $q) {
             $q = trim($q);
-            if (strlen($q) >= $xoopsConfigSearch['keyword_min']) {
+            if (mb_strlen($q) >= $xoopsConfigSearch['keyword_min']) {
                 $queries[] = $myts->addSlashes($q);
             } else {
                 $ignored_queries[] = $myts->addSlashes($q);
@@ -89,7 +89,7 @@ if (!(empty($_POST['submit']) && empty($_GET['term']))) {
             redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/search.php', 2, sprintf(_SR_KEYTOOSHORT, $xoopsConfigSearch['keyword_min']));
         }
     } else {
-        if (strlen($query) < $xoopsConfigSearch['keyword_min']) {
+        if (mb_strlen($query) < $xoopsConfigSearch['keyword_min']) {
             redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/search.php', 2, sprintf(_SR_KEYTOOSHORT, $xoopsConfigSearch['keyword_min']));
         }
         $queries = [$myts->addSlashes($query)];
@@ -183,7 +183,7 @@ if (!(empty($_POST['submit']) && empty($_GET['term']))) {
 }
 
 /*
- $permissionHandler = xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+ $permissionHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
  $allowed_ids = $permissionHandler->getCategories();
  */
 
@@ -207,8 +207,8 @@ $type_select .= '>' . _SR_EXACT . '</option>';
 $type_select .= '</select>';
 
 /* category */
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-$categories      =& $categoryHandler->getTree(0, 'access', '----');
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+$categories      = &$categoryHandler->getTree(0, 'access', '----');
 $select_category = '<select name="category[]" size="5" multiple="multiple">';
 $select_category .= '<option value="all"';
 if (empty($category) || 0 == count($category)) {
@@ -302,4 +302,4 @@ if ($xoopsConfigSearch['keyword_min'] > 0) {
 // Loading module meta data, NOT THE RIGHT WAY DOING IT
 $xoopsTpl->assign('xoops_module_header', $xoopsOption['xoops_module_header']);
 
-include XOOPS_ROOT_PATH . '/footer.php';
+require_once XOOPS_ROOT_PATH . '/footer.php';

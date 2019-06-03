@@ -16,16 +16,25 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
-// defined('XOOPS_ROOT_PATH') || die('Restricted access');
-
 use XoopsModules\Article;
 
-// require_once  dirname(__DIR__) . '/class/Helper.php';
+// defined('XOOPS_ROOT_PATH') || die('Restricted access');
+
+include dirname(__DIR__) . '/preloads/autoloader.php';
+
+$moduleDirName      = basename(dirname(__DIR__));
+$moduleDirNameUpper = mb_strtoupper($moduleDirName);
+
 //require_once  dirname(__DIR__) . '/include/common.php';
-$helper = Article\Helper::getInstance();
+/** @var \XoopsModules\Article\Helper $helper */
+$helper = \XoopsModules\Article\Helper::getInstance();
+$helper->loadLanguage('common');
+$helper->loadLanguage('feedback');
 
 $pathIcon32 = \Xmf\Module\Admin::menuIconPath('');
-$pathModIcon32 = $helper->getModule()->getInfo('modicons32');
+if (is_object($helper->getModule())) {
+    $pathModIcon32 = $helper->getModule()->getInfo('modicons32');
+}
 
 $adminmenu[] = [
     'title' => art_constant('MI_ADMENU_HOME'),
@@ -48,7 +57,7 @@ $adminmenu[] = [
 $adminmenu[] = [
     'title' => art_constant('MI_ADMENU_TOPIC'), //_MI_ADMENU_TOPIC,
     'link'  => 'admin/admin.topic.php',
-    'icon'  => $pathIcon32 . '/category.png',
+    'icon'  => $pathIcon32 . '/folder1_html.png',
 ];
 
 $adminmenu[] = [
@@ -72,20 +81,42 @@ $adminmenu[] = [
 $adminmenu[] = [
     'title' => art_constant('MI_ADMENU_TRACKBACK'),
     'link'  => 'admin/admin.trackback.php',
-    'icon'  => $pathIcon32 . '/category.png',
+    'icon'  => $pathIcon32 . '/export.png',
 ];
 
 $adminmenu[] = [
     'title' => art_constant('MI_ADMENU_FILE'),
     'link'  => 'admin/admin.file.php',
-    'icon'  => $pathIcon32 . '/home.png',
+    'icon'  => $pathIcon32 . '/content.png',
 ];
 
 $adminmenu[] = [
-    'title' => art_constant('MI_ADMENU_UTILITY'),
+    'title' => art_constant('MI_ADMENU_SYNC'),
     'link'  => 'admin/admin.synchronization.php',
-    'icon'  => $pathIcon32 . '/home.png',
+    'icon'  => $pathIcon32 . '/synchronized.png',
 ];
+
+// Blocks Admin
+$adminmenu[] = [
+    'title' => constant('CO_' . $moduleDirNameUpper . '_' . 'BLOCKS'),
+    'link'  => 'admin/blocksadmin.php',
+    'icon'  => $pathIcon32 . '/block.png',
+];
+
+//Feedback
+$adminmenu[] = [
+    'title' => constant('CO_' . $moduleDirNameUpper . '_' . 'ADMENU_FEEDBACK'),
+    'link'  => 'admin/feedback.php',
+    'icon'  => $pathIcon32 . '/mail_foward.png',
+];
+
+if ($helper->getConfig('displayDeveloperTools')) {
+    $adminmenu[] = [
+        'title' => constant('CO_' . $moduleDirNameUpper . '_' . 'ADMENU_MIGRATE'),
+        'link'  => 'admin/migrate.php',
+        'icon'  => $pathIcon32 . '/database_go.png',
+    ];
+}
 
 $adminmenu[] = [
     'title' => art_constant('MI_ADMENU_ABOUT'),

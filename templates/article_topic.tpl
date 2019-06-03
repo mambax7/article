@@ -21,7 +21,7 @@
     </div>
 </div>
 
-<{if count($articles)>0}>
+<{if $articles|is_array && count($articles) > 0 }>
     <div id="article">
         <div class="title"><{php}>echo art_constant("MD_ARTICLES");<{/php}></div>
         <{foreach item=article from=$articles}>
@@ -46,7 +46,7 @@
     <{$pagenav}>
 </div>
 
-<{if count($sponsors)>0}>
+<{if $sponsors|is_array && count($sponsors) > 0 }>
     <div id="sponsor">
         <div class="title"><{php}>echo art_constant("MD_SPONSOR");<{/php}></div>
         <{foreach item=sponsor from=$sponsors}>

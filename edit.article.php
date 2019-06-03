@@ -18,10 +18,10 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
-/** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
+/** @var \XoopsModules\Article\Helper $helper */
+$helper = \XoopsModules\Article\Helper::getInstance();
 
 $category_id = (int)(@$_GET['category']);
 $art_id      = (int)(@$_GET['article']);
@@ -29,7 +29,7 @@ $page        = (int)(@$_GET['page']);
 $newpage     = (int)(@$_GET['newpage']);
 $from        = @$_GET['from'];
 
-$articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+$articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
 if (!empty($helper->getConfig('article_expire'))) {
     $articleHandler->cleanExpires($helper->getConfig('article_expire') * 24 * 3600);
 }
@@ -49,12 +49,12 @@ if ($article_obj->isNew()) {
     $article_isNew = true;
 }
 $isAuthor        = ($user_id == $article_obj->getVar('uid'));
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($cat_id);
 $isModerator     = $categoryHandler->getPermission($category_obj, 'moderate');
 $canPublish      = $categoryHandler->getPermission($category_obj, 'publish');
 
-$permissionHandler = xoops_getModuleHandler('permission', $GLOBALS['artdirname']);
+$permissionHandler = $helper->getHandler('Permission', $GLOBALS['artdirname']);
 $canhtml           = $permissionHandler->getPermission('html');
 $canupload         = $permissionHandler->getPermission('upload');
 
@@ -122,7 +122,7 @@ $dobr     = $article_obj->isNew() || $newpage;
 if ($article_obj->getVar('art_id') && empty($newpage)) {
     $page_id = $article_obj->getPage($page, true);
     if ($page_id) {
-        $textHandler = xoops_getModuleHandler('text', $GLOBALS['artdirname']);
+        $textHandler = $helper->getHandler('Text', $GLOBALS['artdirname']);
         $text_obj    = $textHandler->get($page_id);
         // Text title
         $subtitle = $text_obj->getVar('text_title', 'E');
@@ -143,8 +143,8 @@ if (!empty($newpage)) {
 
 // Disable cache
 $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
-include XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/header.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 // Disclaimer
 if (!empty($helper->getConfig('disclaimer')) /*&& !$isModerator*/) {
@@ -170,5 +170,5 @@ if ($user_id > 0) {
     }
 }
 
-include XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/form.article.php';
-include XOOPS_ROOT_PATH . '/footer.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/form.article.php';
+require_once XOOPS_ROOT_PATH . '/footer.php';

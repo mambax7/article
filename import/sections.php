@@ -11,7 +11,6 @@
  * @since       1.00
  * @package     module::article
  */
-
 $sql = '   INSERT INTO ' . art_DB_prefix('category') . '       (cat_id,    cat_title)' . '   SELECT ' . '       secid,  secname' . '   FROM ' . $GLOBALS['xoopsDB']->prefix('sections') . '       ORDER BY secid ASC';
 
 $result = $xoopsDB->queryF($sql);

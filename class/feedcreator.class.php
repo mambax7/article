@@ -1,4 +1,7 @@
 <?php
+
+//namespace XoopsModules\Article;
+
 //
 // ------------------------------------------------------------------------ //
 // This program is free software; you can redistribute it and/or modify     //
@@ -121,7 +124,7 @@
 
 /*** GENERAL USAGE *********************************************************
  *
- * include __DIR__ . '/feedcreator.class.php';
+ * require_once __DIR__   . '/feedcreator.class.php';
  *
  * $rss = new UniversalFeedCreator();
  * $rss->useCached(); // use cached version if age<1 hour
@@ -135,7 +138,7 @@
  * $rss->link = "http://www.dailyphp.net/news";
  * $rss->syndicationURL = "http://www.dailyphp.net/".$_SERVER["PHP_SELF"];
  *
- * $image = new FeedImage();
+ * $image = new \FeedImage();
  * $image->title = "dailyphp.net logo";
  * $image->url = "http://www.dailyphp.net/images/logo.gif";
  * $image->link = "http://www.dailyphp.net";
@@ -150,8 +153,8 @@
  * // get your news items from somewhere, e.g. your database:
  * mysqli_select_db($dbHost, $dbUser, $dbPass);
  * $res = mysqli_query("SELECT * FROM news ORDER BY newsdate DESC");
- * while ($data = mysqli_fetch_object($res)) {
- * $item = new FeedItem();
+ * while (false !== ($data = mysqli_fetch_object($res))) {
+ * $item = new \FeedItem();
  * $item->title = $data->title;
  * $item->link = $data->url;
  * $item->description = $data->short;
@@ -283,7 +286,7 @@ class HtmlDescribable
      */
     public function getDescription()
     {
-        $descriptionField                = new FeedHtmlField($this->description);
+        $descriptionField                = new \FeedHtmlField($this->description);
         $descriptionField->syndicateHtml = $this->descriptionHtmlSyndicated;
         $descriptionField->truncSize     = $this->descriptionTruncSize;
 
@@ -306,7 +309,6 @@ class FeedHtmlField
 
     /**
      * Optional attributes of a FeedHtmlField.
-     *
      */
     public $truncSize;
     public $syndicateHtml;
@@ -363,55 +365,45 @@ class UniversalFeedCreator extends FeedCreator
 
     public function _setFormat($format)
     {
-        switch (strtoupper($format)) {
-
+        switch (mb_strtoupper($format)) {
             case '2.0':
                 // fall through
             case 'RSS2.0':
                 $this->_feed = new RSSCreator20();
                 break;
-
             case '1.0':
                 // fall through
             case 'RSS1.0':
                 $this->_feed = new RSSCreator10();
                 break;
-
             case '0.91':
                 // fall through
             case 'RSS0.91':
                 $this->_feed = new RSSCreator091();
                 break;
-
             case 'PIE0.1':
                 $this->_feed = new PIECreator01();
                 break;
-
             case 'MBOX':
                 $this->_feed = new MBOXCreator();
                 break;
-
             case 'OPML':
                 $this->_feed = new OPMLCreator();
                 break;
-
             case 'ATOM':
                 // fall through: always the latest ATOM version
 
             case 'ATOM0.3':
                 $this->_feed = new AtomCreator03();
                 break;
-
             case 'HTML':
                 $this->_feed = new HTMLCreator();
                 break;
-
             case 'JS':
                 // fall through
             case 'JAVASCRIPT':
                 $this->_feed = new JSCreator();
                 break;
-
             default:
                 $this->_feed = new RSSCreator091();
                 break;
@@ -429,10 +421,10 @@ class UniversalFeedCreator extends FeedCreator
     /**
      * Creates a syndication feed based on the items previously added.
      *
-     * @see        FeedCreator::addItem()
-     * @param    string    format    format the feed should comply to. Valid values are:
+     * @param mixed    $format    format the feed should comply to. Valid values are:
      *                     "PIE0.1", "mbox", "RSS0.91", "RSS1.0", "RSS2.0", "OPML", "ATOM0.3", "HTML", "JS"
      * @return string the contents of the feed.
+     * @see        FeedCreator::addItem()
      */
     public function createFeed($format = 'RSS0.91')
     {
@@ -444,11 +436,11 @@ class UniversalFeedCreator extends FeedCreator
     /**
      * Saves this feed as a file on the local disk. After the file is saved, an HTTP redirect
      * header may be sent to redirect the use to the newly created file.
-     * @since    1.4
-     *
      * @param string $format
      * @param string $filename
      * @param bool   $displayContents displayContents optional    send the content of the file or not. If true, the file will be sent in the body of the response.
+     * @since    1.4
+     *
      * @internal param format $string format the feed should comply to. Valid values are:
      *                                "PIE0.1" (deprecated), "mbox", "RSS0.91", "RSS1.0", "RSS2.0", "OPML", "ATOM", "ATOM0.3", "HTML", "JS"
      * @internal param filename $string optional    the filename where a recent version of the feed is saved. If not specified, the filename is $_SERVER["PHP_SELF"] with the extension changed to .xml (see _generateFilename()).
@@ -573,35 +565,35 @@ class FeedCreator extends HtmlDescribable
      * If the string is already shorter than $length, it is returned unchanged.
      *
      * @static
-     * @param string     string A string to be truncated.
-     * @param int        length the maximum length the string should be truncated to
+     * @param mixed     $string A string to be truncated.
+     * @param mixed     $length the maximum length the string should be truncated to
      * @return string the truncated string
      */
     public function iTrunc($string, $length)
     {
-        if (strlen($string) <= $length) {
+        if (mb_strlen($string) <= $length) {
             return $string;
         }
 
-        $pos = strrpos($string, '.');
+        $pos = mb_strrpos($string, '.');
         if ($pos >= $length - 4) {
-            $string = substr($string, 0, $length - 4);
-            $pos    = strrpos($string, '.');
+            $string = mb_substr($string, 0, $length - 4);
+            $pos    = mb_strrpos($string, '.');
         }
         if ($pos >= $length * 0.4) {
-            return substr($string, 0, $pos + 1) . ' ...';
+            return mb_substr($string, 0, $pos + 1) . ' ...';
         }
 
-        $pos = strrpos($string, ' ');
+        $pos = mb_strrpos($string, ' ');
         if ($pos >= $length - 4) {
-            $string = substr($string, 0, $length - 4);
-            $pos    = strrpos($string, ' ');
+            $string = mb_substr($string, 0, $length - 4);
+            $pos    = mb_strrpos($string, ' ');
         }
         if ($pos >= $length * 0.4) {
-            return substr($string, 0, $pos) . ' ...';
+            return mb_substr($string, 0, $pos) . ' ...';
         }
 
-        return substr($string, 0, $length - 4) . ' ...';
+        return mb_substr($string, 0, $length - 4) . ' ...';
     }
 
     /**
@@ -677,13 +669,13 @@ class FeedCreator extends HtmlDescribable
     {
         $fileInfo = pathinfo($_SERVER['PHP_SELF']);
 
-        return substr($fileInfo['basename'], 0, -(strlen($fileInfo['extension']) + 1)) . '.xml';
+        return mb_substr($fileInfo['basename'], 0, -(mb_strlen($fileInfo['extension']) + 1)) . '.xml';
     }
 
     /**
+     * @param $filename
      * @since  1.4
      * @access private
-     * @param $filename
      */
     public function _redirect($filename)
     {
@@ -712,9 +704,9 @@ class FeedCreator extends HtmlDescribable
      * To effectively use caching, you should create the FeedCreator object and call this method
      * before anything else, especially before you do the time consuming task to build the feed
      * (web fetching, for example).
-     * @since    1.4
      * @param string $filename
      * @param int    $timeout
+     * @since    1.4
      * @internal param int $timeout optional    the timeout in seconds before a cached version is refreshed (defaults to 3600 = 1 hour)
      */
     public function useCached($filename = '', $timeout = 3600)
@@ -731,10 +723,10 @@ class FeedCreator extends HtmlDescribable
     /**
      * Saves this feed as a file on the local disk. After the file is saved, a redirect
      * header may be sent to redirect the user to the newly created file.
-     * @since    1.4
-     *
      * @param string $filename
      * @param bool   $displayContents
+     * @since    1.4
+     *
      * @internal param bool $redirect optional    send an HTTP redirect header or not. If true, the user will be automatically redirected to the created file.
      */
     public function saveFeed($filename = '', $displayContents = true)
@@ -742,7 +734,7 @@ class FeedCreator extends HtmlDescribable
         if ('' == $filename) {
             $filename = $this->_generateFilename();
         }
-        $feedFile = fopen($filename, 'w+');
+        $feedFile = fopen($filename, 'w+b');
         if ($feedFile) {
             fwrite($feedFile, $this->createFeed());
             fclose($feedFile);
@@ -781,7 +773,7 @@ class FeedDate
 
             return;
         }
-        if (preg_match("~(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\\s+)?(\\d{1,2})\\s+([a-zA-Z]{3})\\s+(\\d{4})\\s+(\\d{2}):(\\d{2}):(\\d{2})\\s+(.*)~", $dateString, $matches)) {
+        if (preg_match('~(?:(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\\s+)?(\\d{1,2})\\s+([a-zA-Z]{3})\\s+(\\d{4})\\s+(\\d{2}):(\\d{2}):(\\d{2})\\s+(.*)~', $dateString, $matches)) {
             $months     = [
                 'Jan' => 1,
                 'Feb' => 2,
@@ -794,13 +786,13 @@ class FeedDate
                 'Sep' => 9,
                 'Oct' => 10,
                 'Nov' => 11,
-                'Dec' => 12
+                'Dec' => 12,
             ];
             $this->unix = mktime($matches[4], $matches[5], $matches[6], $months[$matches[2]], $matches[1], $matches[3]);
-            if ('+' == substr($matches[7], 0, 1) or '-' == substr($matches[7], 0, 1)) {
-                $tzOffset = (substr($matches[7], 0, 3) * 60 + substr($matches[7], -2)) * 60;
+            if ('+' == mb_substr($matches[7], 0, 1) or '-' == mb_substr($matches[7], 0, 1)) {
+                $tzOffset = (mb_substr($matches[7], 0, 3) * 60 + mb_substr($matches[7], -2)) * 60;
             } else {
-                if (1 == strlen($matches[7])) {
+                if (1 == mb_strlen($matches[7])) {
                     $oneHour = 3600;
                     $ord     = ord($matches[7]);
                     if ($ord < ord('M')) {
@@ -821,10 +813,10 @@ class FeedDate
 
             return;
         }
-        if (preg_match("~(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})(.*)~", $dateString, $matches)) {
+        if (preg_match('~(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})(.*)~', $dateString, $matches)) {
             $this->unix = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1]);
-            if ('+' == substr($matches[7], 0, 1) or '-' == substr($matches[7], 0, 1)) {
-                $tzOffset = (substr($matches[7], 0, 3) * 60 + substr($matches[7], -2)) * 60;
+            if ('+' == mb_substr($matches[7], 0, 1) or '-' == mb_substr($matches[7], 0, 1)) {
+                $tzOffset = (mb_substr($matches[7], 0, 3) * 60 + mb_substr($matches[7], -2)) * 60;
             } else {
                 if ('Z' === $matches[7]) {
                     $tzOffset = 0;
@@ -861,7 +853,7 @@ class FeedDate
     public function iso8601()
     {
         $date = gmdate("Y-m-d\TH:i:sO", $this->unix);
-        $date = substr($date, 0, 22) . ':' . substr($date, -2);
+        $date = mb_substr($date, 0, 22) . ':' . mb_substr($date, -2);
         if (TIME_ZONE != '') {
             $date = str_replace('+00:00', TIME_ZONE, $date);
         }
@@ -911,10 +903,10 @@ class RSSCreator10 extends FeedCreator
         $feed .= '        <title>' . htmlspecialchars($this->title, ENT_QUOTES | ENT_HTML5) . "</title>\n";
         $feed .= '        <description>' . htmlspecialchars($this->description, ENT_QUOTES | ENT_HTML5) . "</description>\n";
         $feed .= '        <link>' . $this->link . "</link>\n";
-        if (null != $this->image) {
+        if (null !== $this->image) {
             $feed .= '        <image rdf:resource="' . $this->image->url . "\">\n";
         }
-        $now  = new FeedDate();
+        $now  = new \FeedDate();
         $feed .= '       <dc:date>' . htmlspecialchars($now->iso8601(), ENT_QUOTES | ENT_HTML5) . "</dc:date>\n";
         $feed .= "        <items>\n";
         $feed .= "            <rdf:Seq>\n";
@@ -924,7 +916,7 @@ class RSSCreator10 extends FeedCreator
         $feed .= "            </rdf:Seq>\n";
         $feed .= "        </items>\n";
         $feed .= "    </channel>\n";
-        if (null != $this->image) {
+        if (null !== $this->image) {
             $feed .= '    <image rdf:about="' . $this->image->url . "\">\n";
             $feed .= '        <title>' . $this->image->title . "</title>\n";
             $feed .= '        <link>' . $this->image->link . "</link>\n";
@@ -937,8 +929,8 @@ class RSSCreator10 extends FeedCreator
             $feed .= '    <item rdf:about="' . htmlspecialchars($this->items[$i]->link, ENT_QUOTES | ENT_HTML5) . "\">\n";
             //$feed.= "        <dc:type>Posting</dc:type>\n";
             $feed .= "        <dc:format>text/html</dc:format>\n";
-            if (null != $this->items[$i]->date) {
-                $itemDate = new FeedDate($this->items[$i]->date);
+            if (null !== $this->items[$i]->date) {
+                $itemDate = new \FeedDate($this->items[$i]->date);
                 $feed     .= '        <dc:date>' . htmlspecialchars($itemDate->iso8601(), ENT_QUOTES | ENT_HTML5) . "</dc:date>\n";
             }
             if ('' != $this->items[$i]->source) {
@@ -1006,11 +998,11 @@ class RSSCreator091 extends FeedCreator
         $this->descriptionTruncSize = 500;
         $feed                       .= '        <description>' . $this->getDescription() . "</description>\n";
         $feed                       .= '        <link>' . $this->link . "</link>\n";
-        $now                        = new FeedDate();
+        $now                        = new \FeedDate();
         $feed                       .= '        <lastBuildDate>' . htmlspecialchars($now->rfc822(), ENT_QUOTES | ENT_HTML5) . "</lastBuildDate>\n";
         $feed                       .= '        <generator>' . FEEDCREATOR_VERSION . "</generator>\n";
 
-        if (null != $this->image) {
+        if (null !== $this->image) {
             $feed .= "        <image>\n";
             $feed .= '            <url>' . $this->image->url . "</url>\n";
             $feed .= '            <title>' . FeedCreator::iTrunc(htmlspecialchars($this->image->title, ENT_QUOTES | ENT_HTML5), 100) . "</title>\n";
@@ -1039,7 +1031,7 @@ class RSSCreator091 extends FeedCreator
             $feed .= '        <webMaster>' . FeedCreator::iTrunc(htmlspecialchars($this->webmaster, ENT_QUOTES | ENT_HTML5), 100) . "</webMaster>\n";
         }
         if ('' != $this->pubDate) {
-            $pubDate = new FeedDate($this->pubDate);
+            $pubDate = new \FeedDate($this->pubDate);
             $feed    .= '        <pubDate>' . htmlspecialchars($pubDate->rfc822(), ENT_QUOTES | ENT_HTML5) . "</pubDate>\n";
         }
         if ('' != $this->category) {
@@ -1084,7 +1076,7 @@ class RSSCreator091 extends FeedCreator
                 $feed .= '            <comments>' . htmlspecialchars($this->items[$i]->comments, ENT_QUOTES | ENT_HTML5) . "</comments>\n";
             }
             if ('' != $this->items[$i]->date) {
-                $itemDate = new FeedDate($this->items[$i]->date);
+                $itemDate = new \FeedDate($this->items[$i]->date);
                 $feed     .= '            <pubDate>' . htmlspecialchars($itemDate->rfc822(), ENT_QUOTES | ENT_HTML5) . "</pubDate>\n";
             }
             if ('' != $this->items[$i]->guid) {
@@ -1143,7 +1135,7 @@ class PIECreator01 extends FeedCreator
             $feed     .= "    <entry>\n";
             $feed     .= '        <title>' . FeedCreator::iTrunc(htmlspecialchars(strip_tags($this->items[$i]->title), ENT_QUOTES | ENT_HTML5), 100) . "</title>\n";
             $feed     .= '        <link>' . htmlspecialchars($this->items[$i]->link, ENT_QUOTES | ENT_HTML5) . "</link>\n";
-            $itemDate = new FeedDate($this->items[$i]->date);
+            $itemDate = new \FeedDate($this->items[$i]->date);
             $feed     .= '        <created>' . htmlspecialchars($itemDate->iso8601(), ENT_QUOTES | ENT_HTML5) . "</created>\n";
             $feed     .= '        <issued>' . htmlspecialchars($itemDate->iso8601(), ENT_QUOTES | ENT_HTML5) . "</issued>\n";
             $feed     .= '        <modified>' . htmlspecialchars($itemDate->iso8601(), ENT_QUOTES | ENT_HTML5) . "</modified>\n";
@@ -1205,7 +1197,7 @@ class AtomCreator03 extends FeedCreator
         $feed .= '    <tagline>' . htmlspecialchars($this->description, ENT_QUOTES | ENT_HTML5) . "</tagline>\n";
         $feed .= '    <link rel="alternate" type="text/html" href="' . htmlspecialchars($this->link, ENT_QUOTES | ENT_HTML5) . "\">\n";
         $feed .= '    <id>' . htmlspecialchars($this->link, ENT_QUOTES | ENT_HTML5) . "</id>\n";
-        $now  = new FeedDate();
+        $now  = new \FeedDate();
         $feed .= '    <modified>' . htmlspecialchars($now->iso8601(), ENT_QUOTES | ENT_HTML5) . "</modified>\n";
         if ('' != $this->editor) {
             $feed .= "    <author>\n";
@@ -1224,7 +1216,7 @@ class AtomCreator03 extends FeedCreator
             if ('' == $this->items[$i]->date) {
                 $this->items[$i]->date = time();
             }
-            $itemDate = new FeedDate($this->items[$i]->date);
+            $itemDate = new \FeedDate($this->items[$i]->date);
             $feed     .= '        <created>' . htmlspecialchars($itemDate->iso8601(), ENT_QUOTES | ENT_HTML5) . "</created>\n";
             $feed     .= '        <issued>' . htmlspecialchars($itemDate->iso8601(), ENT_QUOTES | ENT_HTML5) . "</issued>\n";
             $feed     .= '        <modified>' . htmlspecialchars($itemDate->iso8601(), ENT_QUOTES | ENT_HTML5) . "</modified>\n";
@@ -1271,10 +1263,10 @@ class MBOXCreator extends FeedCreator
         //        while (list($key, $line) = each($lines)) {
         foreach ($lines as $key => $line) {
             //$line = rtrim($line); // remove trailing white space -> no =20\r\n necessary
-            $linlen  = strlen($line);
+            $linlen  = mb_strlen($line);
             $newline = '';
             for ($i = 0; $i < $linlen; ++$i) {
-                $c   = substr($line, $i, 1);
+                $c   = mb_substr($line, $i, 1);
                 $dec = ord($c);
                 if ((32 == $dec) && ($i == ($linlen - 1))) { // convert space at eol only
                     $c = '=20';
@@ -1283,7 +1275,7 @@ class MBOXCreator extends FeedCreator
                     $h1 = floor($dec % 16);
                     $c  = $escape . $hex[(string)$h2] . $hex[(string)$h1];
                 }
-                if ((strlen($newline) + strlen($c)) >= $line_max) { // CRLF is not counted
+                if ((mb_strlen($newline) + mb_strlen($c)) >= $line_max) { // CRLF is not counted
                     $output  .= $newline . $escape . $eol; // soft line break; " =\r\n" is okay
                     $newline = '';
                 }
@@ -1307,17 +1299,17 @@ class MBOXCreator extends FeedCreator
             } else {
                 $from = $this->title;
             }
-            $itemDate = new FeedDate($this->items[$i]->date);
-            $feed     .= 'From ' . strtr(self::qp_enc($from), ' ', '_') . ' ' . date('D M d H:i:s Y', $itemDate->unix()) . "\n";
+            $itemDate = new \FeedDate($this->items[$i]->date);
+            $feed     .= 'From ' . strtr($this->qp_enc($from), ' ', '_') . ' ' . date('D M d H:i:s Y', $itemDate->unix()) . "\n";
             $feed     .= "Content-Type: text/plain;\n";
             $feed     .= '   charset="' . $this->encoding . "\"\n";
             $feed     .= "Content-Transfer-Encoding: quoted-printable\n";
             $feed     .= "Content-Type: text/plain\n";
-            $feed     .= 'From: "' . self::qp_enc($from) . "\"\n";
+            $feed     .= 'From: "' . $this->qp_enc($from) . "\"\n";
             $feed     .= 'Date: ' . $itemDate->rfc822() . "\n";
-            $feed     .= 'Subject: ' . self::qp_enc(FeedCreator::iTrunc($this->items[$i]->title, 100)) . "\n";
+            $feed     .= 'Subject: ' . $this->qp_enc(FeedCreator::iTrunc($this->items[$i]->title, 100)) . "\n";
             $feed     .= "\n";
-            $body     = chunk_split(self::qp_enc($this->items[$i]->description));
+            $body     = chunk_split($this->qp_enc($this->items[$i]->description));
             $feed     .= preg_replace("~\nFrom ([^\n]*)(\n?)~", "\n>From $1$2\n", $body);
             $feed     .= "\n";
             $feed     .= "\n";
@@ -1336,7 +1328,7 @@ class MBOXCreator extends FeedCreator
     {
         $fileInfo = pathinfo($_SERVER['PHP_SELF']);
 
-        return substr($fileInfo['basename'], 0, -(strlen($fileInfo['extension']) + 1)) . '.mbox';
+        return mb_substr($fileInfo['basename'], 0, -(mb_strlen($fileInfo['extension']) + 1)) . '.mbox';
     }
 }
 
@@ -1363,11 +1355,11 @@ class OPMLCreator extends FeedCreator
         $feed .= "    <head>\n";
         $feed .= '        <title>' . htmlspecialchars($this->title, ENT_QUOTES | ENT_HTML5) . "</title>\n";
         if ('' != $this->pubDate) {
-            $date = new FeedDate($this->pubDate);
+            $date = new \FeedDate($this->pubDate);
             $feed .= '         <dateCreated>' . $date->rfc822() . "</dateCreated>\n";
         }
         if ('' != $this->lastBuildDate) {
-            $date = new FeedDate($this->lastBuildDate);
+            $date = new \FeedDate($this->lastBuildDate);
             $feed .= '         <dateModified>' . $date->rfc822() . "</dateModified>\n";
         }
         if ('' != $this->editor) {
@@ -1470,7 +1462,7 @@ class HTMLCreator extends FeedCreator
 
         // use this array to put the lines in and implode later with "document.write" javascript
         $feedArray = [];
-        if (null != $this->image) {
+        if (null !== $this->image) {
             $imageStr = "<a href='" . $this->image->link . "'" . $targetInsert . '>' . "<img src='" . $this->image->url . "' border='0' alt='" . FeedCreator::iTrunc(htmlspecialchars($this->image->title, ENT_QUOTES | ENT_HTML5), 100) . "' align='" . $this->imageAlign . "' ";
             if ($this->image->width) {
                 $imageStr .= " width='" . $this->image->width . "' ";
@@ -1500,7 +1492,17 @@ class HTMLCreator extends FeedCreator
 
             if ($this->items[$i]->title) {
                 if ($this->items[$i]->link) {
-                    $feedArray[] = "<div class='" . $this->stylePrefix . "item_title'><a href='" . $this->items[$i]->link . "' class='" . $this->stylePrefix . "item_title'" . $targetInsert . '>' . FeedCreator::iTrunc(htmlspecialchars(strip_tags($this->items[$i]->title), ENT_QUOTES | ENT_HTML5), 100) . '</a></div>';
+                    $feedArray[] = "<div class='"
+                                   . $this->stylePrefix
+                                   . "item_title'><a href='"
+                                   . $this->items[$i]->link
+                                   . "' class='"
+                                   . $this->stylePrefix
+                                   . "item_title'"
+                                   . $targetInsert
+                                   . '>'
+                                   . FeedCreator::iTrunc(htmlspecialchars(strip_tags($this->items[$i]->title), ENT_QUOTES | ENT_HTML5), 100)
+                                   . '</a></div>';
                 } else {
                     $feedArray[] = "<div class='" . $this->stylePrefix . "item_title'>" . FeedCreator::iTrunc(htmlspecialchars(strip_tags($this->items[$i]->title), ENT_QUOTES | ENT_HTML5), 100) . '</div>';
                 }
@@ -1513,7 +1515,7 @@ class HTMLCreator extends FeedCreator
             $feedArray[] = "<div class='" . $this->stylePrefix . "footer'>" . $this->footer . '</div>';
         }
 
-        $feed = '' . implode($feedArray, "\r\n");
+        $feed = '' . implode("\r\n", $feedArray);
 
         return $feed;
     }
@@ -1529,7 +1531,7 @@ class HTMLCreator extends FeedCreator
     {
         $fileInfo = pathinfo($_SERVER['PHP_SELF']);
 
-        return substr($fileInfo['basename'], 0, -(strlen($fileInfo['extension']) + 1)) . '.html';
+        return mb_substr($fileInfo['basename'], 0, -(mb_strlen($fileInfo['extension']) + 1)) . '.html';
     }
 }
 
@@ -1571,7 +1573,7 @@ class JSCreator extends HTMLCreator
     {
         $fileInfo = pathinfo($_SERVER['PHP_SELF']);
 
-        return substr($fileInfo['basename'], 0, -(strlen($fileInfo['extension']) + 1)) . '.js';
+        return mb_substr($fileInfo['basename'], 0, -(mb_strlen($fileInfo['extension']) + 1)) . '.js';
     }
 }
 
@@ -1592,7 +1594,7 @@ class JSCreator extends HTMLCreator
  * $rss->link = "http://www.dailyphp.net/news";
  * $rss->feedURL = "http://www.dailyphp.net/".$PHP_SELF;
  *
- * $image = new FeedImage();
+ * $image = new \FeedImage();
  * $image->title = "dailyphp.net logo";
  * $image->url = "http://www.dailyphp.net/images/logo.gif";
  * $image->link = "http://www.dailyphp.net";
@@ -1607,8 +1609,8 @@ class JSCreator extends HTMLCreator
  * // get your news items from somewhere, e.g. your database:
  * //mysqli_select_db($dbHost, $dbUser, $dbPass);
  * //$res = mysqli_query("SELECT * FROM news ORDER BY newsdate DESC");
- * //while ($data = mysqli_fetch_object($res)) {
- * $item = new FeedItem();
+ * //while (false !== ($data = mysqli_fetch_object($res))) {
+ * $item = new \FeedItem();
  * $item->title = "This is an the test title of an item";
  * $item->link = "http://localhost/item/";
  * $item->description = "<b>description in </b><b>HTML";

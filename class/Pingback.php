@@ -1,4 +1,7 @@
 <?php
+
+namespace XoopsModules\Article;
+
 /**
  * Article module for XOOPS
  *
@@ -17,7 +20,7 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once  dirname(__DIR__) . '/include/vars.php';
+require_once dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 if (!class_exists('Pingback')) {
@@ -39,50 +42,3 @@ if (!class_exists('Pingback')) {
         }
     }
 }
-
-art_parse_class('
-class [CLASS_PREFIX]PingbackHandler extends \XoopsPersistableObjectHandler
-{
-    function __construct(\XoopsDatabase $db)
-    {
-        parent::__construct($db, art_DB_prefix("pingback", true), "Pingback", "pb_id", "pb_url");
-    }
-
-    function &getByArticle($art_id)
-    {
-        $sql = "SELECT * FROM " . art_DB_prefix("pingback") . " WHERE art_id = ". (int)($art_id);
-        $result = $this->db->query($sql);
-        $ret = array();
-       while (false !== ($myrow = $this->db->fetchArray($result))) {
-            $pingback = $this->create(false);
-            $pingback->assignVars($myrow);
-            $ret[$myrow["pb_id"]] = $pingback;
-            unset($pingback);
-        }
-
-        return $ret;
-    }
-
-    function deleteByArticle($art_id)
-    {
-        $pingbacks = $this->getByArticle($art_id);
-        if (count($pingbacks)>0) {
-            foreach ($pingbacks as $pb_id => $pingback) {
-                $this->delete($pingback);
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * clean orphan items from database
-     *
-     * @return bool true on success
-     */
-    function cleanOrphan($table_link = null, $field_link = null, $field_object =null)
-    {
-        return parent::cleanOrphan(art_DB_prefix("article"), "art_id");
-    }
-}
-');

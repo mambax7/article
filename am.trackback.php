@@ -18,7 +18,7 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
@@ -35,12 +35,12 @@ if (empty($tb_id)) {
     redirect_header($redirect, 2, art_constant('MD_INVALID'));
 }
 
-$trackbackHandler = xoops_getModuleHandler('trackback', $GLOBALS['artdirname']);
+$trackbackHandler = $helper->getHandler('Trackback', $GLOBALS['artdirname']);
 if (!empty($trackback_id)) {
     $trackback_obj = $trackbackHandler->get($trackback_id);
 }
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($category_id);
 
 if (!$categoryHandler->getPermission($category_obj, 'moderate')) {
@@ -50,7 +50,7 @@ if (!$categoryHandler->getPermission($category_obj, 'moderate')) {
 $xoops_pagetitle                = $xoopsModule->getVar('name') . ' - ' . art_constant('MD_CPTRACKBACK');
 $xoopsOption['xoops_pagetitle'] = $xoops_pagetitle;
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 switch ($op) {
     case 'approve':
@@ -61,7 +61,7 @@ switch ($op) {
         break;
 }
 
-$articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+$articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
 foreach ($tb_id as $id) {
     $tb_obj   = $trackbackHandler->get($id);
     $criteria = new \CriteriaCompo(new \Criteria('art_id', $tb_obj->getVar('art_id')));

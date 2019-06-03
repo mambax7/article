@@ -18,7 +18,7 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include __DIR__ . '/vars.php';
+require_once __DIR__ . '/vars.php';
 
 function xoops_module_update_art_v097(\XoopsModule $module)
 {

@@ -18,7 +18,7 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 /*
  * Set groups for cache purposes
@@ -26,13 +26,10 @@ include __DIR__ . '/header.php';
  * Will be re-implemented in 2.30+
  */
 
-
-
-
 if (!empty($xoopsUser)) {
     $xoopsOption['cache_group'] = implode(',', $xoopsUser->groups());
 }
-
+$helper                                  = \XoopsModules\Article\Helper::getInstance();
 $GLOBALS['xoopsOption']['template_main'] = art_getTemplate('index', $helper->getConfig('template'));
 $xoops_module_header                     = art_getModuleHeader($helper->getConfig('template')) . '
     <link rel="alternate" type="application/rss+xml" title="' . $xoopsModule->getVar('name') . ' rss" href="' . XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/xml.php' . URL_DELIMITER . 'rss">
@@ -42,12 +39,12 @@ $xoops_module_header                     = art_getModuleHeader($helper->getConfi
 
 $xoopsOption['xoops_module_header'] = $xoops_module_header;
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 // Dispatch upon templates
 if (!empty($helper->getConfig('template')) && 'default' !== $helper->getConfig('template')) {
-    if (@include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/index.' . $helper->getConfig('template') . '.php') {
-        include __DIR__ . '/footer.php';
+    if (@require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/index.' . $helper->getConfig('template') . '.php') {
+        require_once __DIR__ . '/footer.php';
 
         return;
     }
@@ -56,8 +53,8 @@ if (!empty($helper->getConfig('template')) && 'default' !== $helper->getConfig('
 // Following part will not be executed if cache enabled
 
 // Instantiate the handlers
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-$articleHandler  = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+$articleHandler  = $helper->getHandler('Article', $GLOBALS['artdirname']);
 
 $articles_index_id    = [];
 $articles_category_id = [];
@@ -75,7 +72,7 @@ endif;
 
 // Get spotlight if enabled && isFirstPage
 if (!empty($helper->getConfig('do_spotlight'))) {
-    $spotlightHandler     = xoops_getModuleHandler('spotlight', $GLOBALS['artdirname']);
+    $spotlightHandler     = $helper->getHandler('Spotlight', $GLOBALS['artdirname']);
     $sp_data              = $spotlightHandler->getContent();
     $article_spotlight_id = $sp_data['art_id'];
     //$article_spotlight_image = $sp_data["sp_image"];
@@ -117,7 +114,7 @@ if (count($art_ids) > 0) {
         'art_categories',
         'art_time_publish',
         'art_counter',
-        'art_comments'
+        'art_comments',
     ];
     $articles_obj = $articleHandler->getAll($criteria, $tags);
 } else {
@@ -152,7 +149,7 @@ foreach (array_keys($articles_obj) as $id) {
         'time'    => $articles_obj[$id]->getTime($helper->getConfig('timeformat')),
         'image'   => $articles_obj[$id]->getImage(),
         'counter' => $articles_obj[$id]->getVar('art_counter'),
-        'summary' => $articles_obj[$id]->getSummary(!empty($helper->getConfig('display_summary')))
+        'summary' => $articles_obj[$id]->getSummary(!empty($helper->getConfig('display_summary'))),
     ];
     $cats     = $articles_obj[$id]->getCategories();
     foreach ($cats as $catid) {
@@ -161,7 +158,7 @@ foreach (array_keys($articles_obj) as $id) {
         }
         $_article['categories'][$catid] = [
             'id'    => $catid,
-            'title' => $categories_obj[$catid]->getVar('cat_title')
+            'title' => $categories_obj[$catid]->getVar('cat_title'),
         ];
     }
     $articles[$id] = $_article;
@@ -216,13 +213,13 @@ if (count($categories_obj) > 0) {
             'title'          => $category->getVar('cat_title'),
             'image'          => $category->getImage(),
             'count_article'  => @(int)$counts_article[$id],
-            'count_category' => @(int)$counts_category[$id]
+            'count_category' => @(int)$counts_category[$id],
         ];
         $articles_category_id = [];
         if (!empty($helper->getConfig('articles_index'))) {
             $articles_category_id = $categoryHandler->getLastArticleIds($category, $helper->getConfig('articles_index'));
         }
-        if (is_array($articles_category_id) && count($articles_category_id) > 0) {
+        if ($articles_category_id && is_array($articles_category_id)) {
             foreach ($articles_category_id as $art_id) {
                 if (!isset($articles[$art_id])) {
                     continue;
@@ -231,15 +228,15 @@ if (count($categories_obj) > 0) {
                 if (!empty($helper->getConfig('display_summary')) && empty($_article['summary'])) {
                     $_article['summary'] = $articles_obj[$art_id]->getSummary(true);
                 }
-                $cat['articles'][] =& $_article;
+                $cat['articles'][] = &$_article;
                 unset($_article);
             }
         }
-        $categories[] =& $cat;
+        $categories[] = &$cat;
         unset($cat);
     }
 
-    $topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+    $topicHandler = $helper->getHandler('Topic', $GLOBALS['artdirname']);
     $criteria     = new \CriteriaCompo(new \Criteria('top_expire', time(), '>'));
     $criteria->setSort('top_time');
     $criteria->setOrder('DESC');
@@ -248,7 +245,7 @@ if (count($categories_obj) > 0) {
     foreach ($topics_obj as $topic) {
         $topics[] = [
             'id'    => $topic->getVar('top_id'),
-            'title' => $topic->getVar('top_title')//"description" =>  $topic->getVar("top_description")
+            'title' => $topic->getVar('top_title'), //"description" =>  $topic->getVar("top_description")
         ];
     }
     unset($topics_obj);

@@ -18,19 +18,19 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/uploader.php';
 
 $cat_id = \Xmf\Request::getInt('cat_id', 0, 'POST');
 $from   = empty($_POST['from']) ? 0 : 1;
 
-include XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/header.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category        = $categoryHandler->get($cat_id);
 
 if (empty($_POST['submit'])) {
@@ -45,7 +45,7 @@ foreach ([
              'cat_description',
              'cat_template',
              'cat_entry',
-             'cat_sponsor'
+             'cat_sponsor',
          ] as $tag) {
     if (@$_POST[$tag] != $category->getVar($tag)) {
         $category->setVar($tag, $_POST[$tag]);
@@ -74,7 +74,7 @@ if (art_isAdministrator()) {
 $error_upload = '';
 $cat_image    = '';
 if (!empty($_FILES['userfile']['name'])) {
-    $uploader = new art_uploader(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image'));
+    $uploader = new Article\Uploader(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image'));
     if ($uploader->fetchMedia($_POST['xoops_upload_file'][0])) {
         if (!$uploader->upload()) {
             $error_upload = $uploader->getErrors();
@@ -100,4 +100,4 @@ if (empty($from)) {
 $message = $cat_id_new ? art_constant('MD_SAVED') : art_constant('MD_INSERTERROR');
 redirect_header($redirect, 2, $message);
 
-include XOOPS_ROOT_PATH . '/footer.php';
+require_once XOOPS_ROOT_PATH . '/footer.php';

@@ -18,16 +18,15 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/xoopsformloader.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
 
-
 $start            = (int)(@$_GET['start']);
-$articleHandler   = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
-$spotlightHandler = xoops_getModuleHandler('spotlight', $GLOBALS['artdirname']);
+$articleHandler   = $helper->getHandler('Article', $GLOBALS['artdirname']);
+$spotlightHandler = $helper->getHandler('Spotlight', $GLOBALS['artdirname']);
 
 if (!empty($_POST['submit'])) {
     $spotlight_current = $spotlightHandler->get();
@@ -52,7 +51,7 @@ if (!empty($_POST['submit'])) {
     $sp_image_file = '';
     if (!empty($_FILES['userfile']['name'])) {
         require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/uploader.php';
-        $uploader = new art_uploader(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image'));
+        $uploader = new Article\Uploader(XOOPS_ROOT_PATH . '/' . $helper->getConfig('path_image'));
         if ($uploader->fetchMedia($_POST['xoops_upload_file'][0])) {
             if (!$uploader->upload()) {
                 $error_upload = $uploader->getErrors();
@@ -106,7 +105,7 @@ if (!empty($_POST['submit'])) {
 }
 
 xoops_cp_header();
-require XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 //loadModuleAdminMenu(6);
 
 $spotlight_obj = $spotlightHandler->get();
@@ -172,8 +171,8 @@ $option_select->addOptionArray($spot_options);
 $form_sp->addElement($option_select);
 
 // CATEGORIES
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-$categories      =& $categoryHandler->getTree(0, 'all');
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+$categories      = &$categoryHandler->getTree(0, 'all');
 $cat_option      = [];
 $cat_option[0]   = _ALL;
 foreach ($categories as $id => $cat) {
@@ -228,7 +227,7 @@ if ($articles_count > 0) {
     }
     $article_table .= "\n</table><br>\n";
     if ($articles_count > $helper->getConfig('articles_perpage')) {
-        include XOOPS_ROOT_PATH . '/class/pagenav.php';
+        require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
         $nav           = new \XoopsPageNav($articles_count, $helper->getConfig('articles_perpage'), $start, 'start');
         $article_table .= $nav->renderNav(4);
     }
@@ -237,10 +236,10 @@ if ($articles_count > 0) {
     $form_sp->addElement($article_table);
 }
 
-$button_tray = new \XoopsFormElementTray('', '');
-$button_tray->addElement(new \XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
-$button_tray->addElement(new \XoopsFormButton('', '', _CANCEL, 'button'));
-$form_sp->addElement($button_tray);
+$buttonTray = new \XoopsFormElementTray('', '');
+$buttonTray->addElement(new \XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+$buttonTray->addElement(new \XoopsFormButton('', '', _CANCEL, 'button'));
+$form_sp->addElement($buttonTray);
 
 $form_sp->display();
 

@@ -22,7 +22,7 @@
     <{foreach item=profile from=$author.profiles}>
     <div class="item"><span class="title"><{$profile.title}>:</span><span class="item"><{$profile.content}></span></div>
     <{/foreach}>
-    <{if count($author.mods)>0}>
+    <{if $author.mods|is_array && count($author.mods) > 0 }>
         <div class="item">
             <span class="title"><{php}>echo art_constant("MD_MODERATOR");<{/php}>:</span>
             <{foreach item=mod from=$author.mods}><span class="item"><a href="<{$mod.url}>"><{$mod.title}></a></span>
@@ -62,7 +62,7 @@
                 href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.author.php<{$smarty.const.URL_DELIMITER}><{$author.uid}>/featured"><{php}>echo art_constant("MD_FEATURED");<{/php}></a></span>
 </div>
 
-<{if count($articles)>0}>
+<{if $articles|is_array && count($articles) > 0 }>
     <div id="article">
         <div class="title"><{php}>echo art_constant("MD_ARTICLES");<{/php}></div>
         <{foreach item=article from=$articles}>
@@ -80,7 +80,7 @@
                         href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}>c<{$article.category.id}>/<{$article.id}>"><{$article.category.title}></a>
                 </span>
             <{/if}>
-            <{if count($article.categories)>0}>
+            <{if $article.categories|is_array && count($article.categories) > 0 }>
                 <{foreach item=category key=catid from=$article.categories}>
                 <span class="item"><a
                             href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}>c<{$category.id}>/<{$article.id}>"><{$category.title}></a></span>

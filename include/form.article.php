@@ -35,7 +35,7 @@ if (!empty($_POST['form_mode'])) {
     $form_mode = @$helper->getConfig('form_mode');
 }
 
-include __DIR__ . '/form.article.elements.php';
+require_once __DIR__ . '/form.article.elements.php';
 require_once __DIR__ . '/form.article.config.php';
 
 $elements_active = empty($form_art_elements[$form_mode]) ? $form_art_elements['full'] : $form_art_elements[$form_mode];
@@ -77,8 +77,8 @@ $form_art->addElement(new \XoopsFormHidden('from', $from));
 // "save_edit": save and continue to edit
 // "publish": regular submission
 // "preview": preview and continue to edit
-$button_tray = new \XoopsFormElementTray('');
-$help_btn    = [];
+$buttonTray = new \XoopsFormElementTray('');
+$help_btn   = [];
 
 $i     = 0;
 $i_tab = 3; //?
@@ -159,9 +159,9 @@ $button[$i]->setExtra("onclick=\"
 \"");
 
 foreach (array_keys($button) as $btn) {
-    $button_tray->addElement($button[$btn]);
+    $buttonTray->addElement($button[$btn]);
 }
-$form_art->addElement($button_tray);
+$form_art->addElement($buttonTray);
 
 // Display the form
 $form_art->display();

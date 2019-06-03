@@ -28,14 +28,13 @@
  * uname
  * tags
  *
+ * @return bool
  * @var array $items associative array of items: [modid][catid][itemid]
- *
- * @return boolean
  *
  */
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include __DIR__ . '/vars.php';
+require_once __DIR__ . '/vars.php';
 
 if (!function_exists($GLOBALS['artdirname'] . '_tag_iteminfo')):
 
@@ -57,7 +56,7 @@ function [DIRNAME]_tag_iteminfo(&$items)
             $items_id[] = (int)($item_id);
         }
     }
-    $itemHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
+    $itemHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
     $items_obj = $itemHandler->getObjects(new \Criteria("art_id", "(" . implode(", ", $items_id) . ")", "IN"), true);
     art_define_url_delimiter();
 
@@ -87,8 +86,8 @@ function [DIRNAME]_tag_iteminfo(&$items)
  */
 function [DIRNAME]_tag_synchronization($mid)
 {
-    $itemHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
-    $linkHandler = xoops_getModuleHandler("link", "tag");
+    $itemHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
+    $linkHandler = \XoopsModules\Tag\Helper::getInstance()->getHandler(("Link", "tag");
 
     /* clear tag-item links */
     if (version_compare( mysqli_get_server_info(), "4.1.0", "ge" )):

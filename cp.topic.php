@@ -18,7 +18,7 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
@@ -26,10 +26,10 @@ $helper = Article\Helper::getInstance();
 $category_id = \Xmf\Request::getInt('category', 0, 'GET');
 $start       = \Xmf\Request::getInt('start', 0, 'GET');
 $from        = (!empty($_GET['from']) || !empty($_POST['from'])) ? 1 : 0;
-$type        = empty($_GET['type']) ? '' : strtolower($_GET['type']);
+$type        = empty($_GET['type']) ? '' : mb_strtolower($_GET['type']);
 
 $isAdmin         = art_isAdministrator();
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($category_id);
 if ((!empty($category_id) && !$categoryHandler->getPermission($category_obj, 'moderate'))
     || (empty($category_id)
@@ -44,9 +44,9 @@ $xoopsOption['xoops_module_header'] = art_getModuleHeader($template);
 // Disable cache
 $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
-$topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+$topicHandler = $helper->getHandler('Topic', $GLOBALS['artdirname']);
 $tags         = ['top_id', 'top_title', 'top_order', 'top_time', 'top_expire'];
 switch ($type) {
     case 'expired':
@@ -69,7 +69,7 @@ $topics_count = $topicHandler->getCountByCategory($category_id, $criteria);
 $topics_obj   = $topicHandler->getByCategory($category_id, $helper->getConfig('topics_max'), $start, $criteria, $tags);
 $pagenav      = '';
 if ($topics_count > $helper->getConfig('articles_perpage')) {
-    include XOOPS_ROOT_PATH . '/class/pagenav.php';
+    require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
     $nav     = new \XoopsPageNav($topics_count, $helper->getConfig('topics_max'), $start, 'start', 'category=' . $category_id . '&amp;from=' . $from . '&amp;type=' . $type);
     $pagenav = $nav->renderNav(4);
 }
@@ -81,7 +81,7 @@ foreach ($topics_obj as $id => $topic) {
         'title'  => $topic->getVar('top_title'),
         'order'  => $topic->getVar('top_order'),
         'time'   => $topic->getTime($helper->getConfig('timeformat')),
-        'expire' => $topic->getExpire()
+        'expire' => $topic->getExpire(),
     ];
 }
 
@@ -89,7 +89,7 @@ $category_data = [];
 if (!empty($category_id)) {
     $category_data = [
         'id'    => $category_obj->getVar('cat_id'),
-        'title' => $category_obj->getVar('cat_title')
+        'title' => $category_obj->getVar('cat_title'),
     ];
 }
 

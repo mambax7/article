@@ -18,7 +18,7 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include __DIR__ . '/vars.php';
+require_once __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_RECON_LOADED', true);
 
 if (!defined('ART_FUNCTIONS_RECON')):
@@ -26,6 +26,7 @@ if (!defined('ART_FUNCTIONS_RECON')):
 
     function art_synchronization($type = '')
     {
+        $helper = \XoopsModules\Article\Helper::getInstance();
         switch ($type) {
             case 'article':
             case 'topic':
@@ -39,21 +40,21 @@ if (!defined('ART_FUNCTIONS_RECON')):
                 break;
         }
         foreach ($clean as $item) {
-            $handler = xoops_getModuleHandler($item, $GLOBALS['artdirname']);
+            $handler = \XoopsModules\Article\Helper::getInstance()->getHandler($item, $GLOBALS['artdirname']);
             $handler->cleanOrphan();
             unset($handler);
         }
         /*
          if(empty($type) || in_array("category", $type)):
-         $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+         $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
          $categoryHandler->setLastArticleIds();
          $categoryHandler->updateTrack();
          endif;
          */
         if (empty($type) || in_array('article', $type)):
-            $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
-        $artConfig      = art_load_config();
-        $articleHandler->cleanExpires($artConfig['article_expire'] * 24 * 3600);
+            $articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
+            $artConfig      = art_load_config();
+            $articleHandler->cleanExpires($artConfig['article_expire'] * 24 * 3600);
         endif;
 
         return true;

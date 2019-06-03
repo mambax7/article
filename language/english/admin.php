@@ -8,10 +8,10 @@
 
 $current_path = __FILE__;
 if (DIRECTORY_SEPARATOR !== '/') {
-    $current_path = str_replace(strpos($current_path, "\\\\", 2) ? "\\\\" : DIRECTORY_SEPARATOR, '/', $current_path);
+    $current_path = str_replace(mb_strpos($current_path, '\\\\', 2) ? '\\\\' : DIRECTORY_SEPARATOR, '/', $current_path);
 }
-$url_arr = explode('/', strstr($current_path, '/modules/'));
-include XOOPS_ROOT_PATH . '/modules/' . $url_arr[2] . '/include/vars.php';
+$url_arr = explode('/', mb_strstr($current_path, '/modules/'));
+require_once XOOPS_ROOT_PATH . '/modules/' . $url_arr[2] . '/include/vars.php';
 
 if (defined($GLOBALS['ART_VAR_PREFIXU'] . '_LANG_EN_ADMIN')) {
     return;

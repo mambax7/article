@@ -115,7 +115,7 @@ if (art_isAdministrator()) {
 // Entry article
 $limit_article = 100;
 if ($category_obj->getVar('cat_id')) {
-    $articleHandler   = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+    $articleHandler   = $helper->getHandler('Article', $GLOBALS['artdirname']);
     $criteria_article = new \Criteria('cat_id', $category_obj->getVar('cat_id'));
     $article_count    = $articleHandler->getCount($criteria_article);
     if ($article_count > 0) {
@@ -128,27 +128,25 @@ if ($category_obj->getVar('cat_id')) {
             $article_select      = new \XoopsFormSelect('', $name, $category_obj->getVar('cat_entry'));
             $article_select->addOptionArray($article_list);
             $article_option_tray->addElement($article_select);
-            $article_more = new \XoopsFormLabel(
-                '',
-                "<a href='###' onclick='return openWithSelfMain(\""
-                                                   . XOOPS_URL
-                                                   . '/modules/'
-                                                   . $GLOBALS['artdirname']
-                                                   . '/include/select.article.php?target='
-                                                   . $name
-                                                   . '&amp;category='
-                                                   . $category_obj->getVar('cat_id')
-                                                   . "\", \"articleselect\", 800, 500, null);' >"
-                                                   . _MORE
-                                                   . '</a>'
-                . '<script type="text/javascript">
+            $article_more = new \XoopsFormLabel('', "<a href='###' onclick='return openWithSelfMain(\""
+                                                    . XOOPS_URL
+                                                    . '/modules/'
+                                                    . $GLOBALS['artdirname']
+                                                    . '/include/select.article.php?target='
+                                                    . $name
+                                                    . '&amp;category='
+                                                    . $category_obj->getVar('cat_id')
+                                                    . "\", \"articleselect\", 800, 500, null);' >"
+                                                    . _MORE
+                                                    . '</a>'
+                                                    . '<script type="text/javascript">
                 function addItem(opts)
                 {
                     var num = opts.substring(0, opts.indexOf(":"));
                     opts = opts.substring(opts.indexOf(":")+1, opts.length);
                     var sel = xoopsGetElementById("'
-                                                   . $name
-                . '");
+                                                    . $name
+                                                    . '");
                     var arr = new Array(num);
                     for (var n=0; n<num; n++) {
                         var nm = opts.substring(0, opts.indexOf(":"));
@@ -172,9 +170,7 @@ if ($category_obj->getVar('cat_id')) {
 
                     return true;
                 }
-                </script>'
-
-            );
+                </script>');
             $article_option_tray->addElement($article_more);
             $form_art->addElement($article_option_tray);
         } else {
@@ -196,8 +192,8 @@ $form_art->addElement(new \XoopsFormTextArea(art_constant('MD_SPONSOR'), 'cat_sp
 $form_art->addElement(new \XoopsFormHidden('cat_id', $category_obj->getVar('cat_id')));
 $form_art->addElement(new \XoopsFormHidden('from', $from));
 
-$button_tray = new \XoopsFormElementTray('', '');
-$button_tray->addElement(new \XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+$buttonTray = new \XoopsFormElementTray('', '');
+$buttonTray->addElement(new \XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
 $cancel_button = new \XoopsFormButton('', 'cancel', _CANCEL, 'button');
 if (!empty($from)) {
     $extra = 'admin/admin.category.php';
@@ -209,7 +205,7 @@ if (!empty($from)) {
     $extra = 'index.php';
 }
 $cancel_button->setExtra("onclick='window.document.location=\"" . $extra . "\"'");
-$button_tray->addElement($cancel_button);
-$form_art->addElement($button_tray);
+$buttonTray->addElement($cancel_button);
+$form_art->addElement($buttonTray);
 
 $form_art->display();

@@ -59,7 +59,7 @@
     </ul>
 </div>
 
-<{if count($trackbacks)>0}>
+<{if $trackbacks|is_array && count($trackbacks) > 0 }>
     <div class="article-title"><{php}>echo art_constant("MD_TRACKBACKS");<{/php}></div>
     <div class="article-list">
         <ol>

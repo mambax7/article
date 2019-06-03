@@ -18,7 +18,7 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
@@ -28,7 +28,6 @@ $helper = Article\Helper::getInstance();
 /**
  * The comment detection scripts should be removed once absolute url is used in comment_view.php
  * The notification detection scripts should be removed once absolute url is used in notification_select.php
- *
  */
 //if (preg_match("/(\/comment_[^\.]*\.php\?com_[a-z]*=.*)/i", $_SERVER["REQUEST_URI"], $matches)) {
 if (preg_match("/(\/comment_[^\.]*\.php\?.*=.*)/i", $_SERVER['REQUEST_URI'], $matches)) {
@@ -36,7 +35,7 @@ if (preg_match("/(\/comment_[^\.]*\.php\?.*=.*)/i", $_SERVER['REQUEST_URI'], $ma
     exit();
 }
 if (!empty($_POST['not_submit']) && preg_match("/\/notification_update\.php/i", $_SERVER['REQUEST_URI'], $matches)) {
-    include XOOPS_ROOT_PATH . '/include/notification_update.php';
+    require_once XOOPS_ROOT_PATH . '/include/notification_update.php';
     exit();
 }
 
@@ -52,16 +51,16 @@ $page        = (int)(!isset($_GET['page']) ? @$args['page'] : $_GET['page']);
 
 $idCategorized = $category_id;
 
-$articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+$articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
 $article_obj    = $articleHandler->get($article_id);
 /*
  * Global Xoops Entity could be used by blocks or other add-ons
  * Designed by Skalpa for Xoops 2.3+
  */
-$xoopsEntity =& $article_obj;
+$xoopsEntity = &$article_obj;
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-$criteria        = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+$criteria        = new CriteriaCompo(new Criteria('ac.ac_publish', 0, '>'));
 $categories_obj  = $categoryHandler->getByArticle($article_id, $criteria);
 if (0 == count($categories_obj) || !in_array($category_id, array_keys($categories_obj))) {
     $category_id = 0;
@@ -75,7 +74,7 @@ foreach ($categories_obj as $id => $category) {
     }
     $categories[] = [
         'id'    => $id,
-        'title' => $category->getVar('cat_title')
+        'title' => $category->getVar('cat_title'),
     ];
 }
 unset($categories_obj);
@@ -107,7 +106,7 @@ if (!empty($REQUEST_URI_parsed)) {
     if (!empty($category_id)) {
         $args_REQUEST_URI[] = 'category=' . $category_id;
     }
-    $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '/modules/' . $GLOBALS['artdirname'] . '/view.article.php')) . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . (empty($args_REQUEST_URI) ? '' : '?' . implode('&', $args_REQUEST_URI));
+    $_SERVER['REQUEST_URI'] = mb_substr($_SERVER['REQUEST_URI'], 0, mb_strpos($_SERVER['REQUEST_URI'], '/modules/' . $GLOBALS['artdirname'] . '/view.article.php')) . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . (empty($args_REQUEST_URI) ? '' : '?' . implode('&', $args_REQUEST_URI));
 }
 
 $xoopsOption['xoops_pagetitle'] = $xoopsModule->getVar('name') . ' - ' . $article_obj->getVar('art_title');
@@ -124,18 +123,18 @@ $xoopsOption['xoops_module_header'] = art_getModuleHeader($template) . '
     ';
 // To enable image auto-resize by js
 //$xoopsOption["xoops_module_header"] .= '<script src="' . XOOPS_URL . '/Frameworks/textsanitizer/xoops.js" type="text/javascript"></script>';
-include XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/header.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 // Topics
-$topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
-$criteria     = new \CriteriaCompo(new \Criteria('t.top_expire', time(), '>'));
+$topicHandler = $helper->getHandler('Topic', $GLOBALS['artdirname']);
+$criteria     = new CriteriaCompo(new Criteria('t.top_expire', time(), '>'));
 $topics_obj   = $topicHandler->getByArticle($article_id, $criteria);
 $topics       = [];
 foreach ($topics_obj as $id => $topic) {
     $topics[] = [
         'id'    => $id,
-        'title' => $topic->getVar('top_title')
+        'title' => $topic->getVar('top_title'),
     ];
 }
 
@@ -199,21 +198,22 @@ $article_data['category'] = $category_id;
 $text                 = $article_obj->getText($page);
 $article_data['text'] = $text;
 if (!empty($helper->getConfig('do_keywords'))) {
-    $keywordsHandler = xoops_getModuleHandler('keywords', $GLOBALS['artdirname'], true);
+//    $keywordsHandler = $helper->getHandler('Keywords', $GLOBALS['artdirname'], true);
+    $keywordsHandler = new Article\KeywordsHandler();
     if ($keywordsHandler->init()) {
         $article_data['text']['body'] = $keywordsHandler->process($article_data['text']['body']);
     }
 }
 
-$article_data['headings'] =& $article_obj->headings;
-$article_data['notes']    =& $article_obj->notes;
+$article_data['headings'] = &$article_obj->headings;
+$article_data['notes']    = &$article_obj->notes;
 
 // pages
 $count_page = count($article_obj->getPages(false));
 if ($count_page > 1) {
     $pages = $article_obj->getPages(true);
     require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
-    $nav = new \XoopsPageNav($count_page, 1, $page, 'page', 'category=' . $category_id . '&amp;article=' . $article_id);
+    $nav = new XoopsPageNav($count_page, 1, $page, 'page', 'category=' . $category_id . '&amp;article=' . $article_id);
     //$nav = new \XoopsPageNav($count_page, 1, $page, "page");
     $article_data['pages'] = $nav->renderNav(5);
     if ($helper->getConfig('do_subtitle')) {
@@ -227,7 +227,7 @@ if ($count_page > 1) {
             }
             $article_data['subtitles'][] = [
                 'url'   => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . URL_DELIMITER . 'c' . $category_id . '/' . $article_id . '/p' . $ipage,
-                'title' => $title
+                'title' => $title,
             ];
         }
     }
@@ -237,9 +237,9 @@ if ($count_page > 1) {
 /* trackback.title
  * trackback.url
  */
-if (2 != $helper->getConfig('trackback_option')) { // trackback open
-    $trackbackHandler = xoops_getModuleHandler('trackback', $GLOBALS['artdirname']);
-    $trackback_array  =& $trackbackHandler->getByArticle($article_obj->getVar('art_id'));
+if (2 !== $helper->getConfig('trackback_option')) { // trackback open
+    $trackbackHandler = $helper->getHandler('Trackback', $GLOBALS['artdirname']);
+    $trackback_array  = &$trackbackHandler->getByArticle($article_obj->getVar('art_id'));
     $trackbacks       = [];
     foreach ($trackback_array as $id => $trackback) {
         $trackbacks[] = [
@@ -260,7 +260,7 @@ if (!empty($helper->getConfig('do_sibling'))) {
     } else {
         $cats = [$idCategorized];
     }
-    $articles_sibling =& $articleHandler->getSibling($article_obj, $cats);
+    $articles_sibling = &$articleHandler->getSibling($article_obj, $cats);
     if (!empty($articles_sibling['previous'])) {
         $articles_sibling['previous']['url']   = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . URL_DELIMITER . $articles_sibling['previous']['id'] . '/c' . $idCategorized;
         $articles_sibling['previous']['title'] = $myts->htmlSpecialChars($articles_sibling['previous']['title']);
@@ -300,13 +300,15 @@ $xoopsTpl->assign('page', $page);
 
 $xoopsTpl->assign('sponsors', $category_obj->getSponsor());
 
-if (@require_once XOOPS_ROOT_PATH . '/modules/tag/include/tagbar.php') {
+//if (@require_once XOOPS_ROOT_PATH . '/modules/tag/include/tagbar.php') {
+if (in_array('tag', xoops_getActiveModules()) && @file_exists(XOOPS_ROOT_PATH . '/modules/tag/include/tagbar.php')) {
+    require_once XOOPS_ROOT_PATH . '/modules/tag/include/tagbar.php';
     $xoopsTpl->assign('tagbar', tagBar($article_obj->getVar('art_keywords', 'n')));
 }
 
-if ($transferbar = @include XOOPS_ROOT_PATH . '/Frameworks/transfer/bar.transfer.php') {
-    $xoopsTpl->assign('transfer', $transferbar);
-}
+//if ($transferbar = @require_once XOOPS_ROOT_PATH . '/Frameworks/transfer/bar.transfer.php') {
+//    $xoopsTpl->assign('transfer', $transferbar);
+//}
 
 // Loading module meta data, NOT THE RIGHT WAY DOING IT
 $xoopsTpl->assign('xoops_module_header', $xoopsOption['xoops_module_header']);
@@ -318,6 +320,6 @@ $_GET['article'] = $article_obj->getVar('art_id');
 
 // for comment
 $category = $category_id; // The $comment_config["extraParams"]
-include XOOPS_ROOT_PATH . '/include/comment_view.php';
+require_once XOOPS_ROOT_PATH . '/include/comment_view.php';
 
 require_once __DIR__ . '/footer.php';

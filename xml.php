@@ -19,7 +19,7 @@
 use XoopsModules\Article;
 
 ob_start();
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
@@ -32,15 +32,15 @@ if (art_parse_args($args_num, $args, $args_str)) {
     $args['type']    = @$args_str[0];
 }
 
-$article_id = \Xmf\Request::getInt('article', @$args['article'], 'GET');
-$category_id    = \Xmf\Request::getInt('category', @$args['category'], 'GET');
+$article_id  = \Xmf\Request::getInt('article', @$args['article'], 'GET');
+$category_id = \Xmf\Request::getInt('category', @$args['category'], 'GET');
 $start       = \Xmf\Request::getInt('page', @$args['page'], 'GET');
 $uid         = \Xmf\Request::getInt('uid', @$args['uid'], 'GET');
 $type        = \Xmf\Request::getString('type', \Xmf\Request::getString('op', @$args['type'], 'GET'), 'GET');
-$type        = strtoupper($type);
+$type        = mb_strtoupper($type);
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-$articleHandler  = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+$articleHandler  = $helper->getHandler('Article', $GLOBALS['artdirname']);
 $article_obj     = $articleHandler->get($article_id);
 if ($article_id > 0) {
     $criteria       = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
@@ -147,12 +147,11 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
                 'descriptionHtmlSyndicated' => true,
                 'date'                      => $article_obj->getTime('rss'),
                 'source'                    => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/',
-                'author'                    => $author['name']
+                'author'                    => $author['name'],
             ];
             $xml_link = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . URL_DELIMITER . $article_obj->getVar('art_id') . '/c' . $category_id;
 
             break;
-
         case 'category':
             $category_obj = $categoryHandler->get($category_id);
 
@@ -169,7 +168,7 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
                 'a.art_keywords',
                 'a.art_summary',
                 'a.uid',
-                'a.art_source'
+                'a.art_source',
             ]);
 
             foreach ($articles_obj as $id => $article) {
@@ -187,12 +186,11 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
                     'descriptionHtmlSyndicated' => true,
                     'date'                      => $article->getTime('rss'),
                     'source'                    => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/',
-                    'author'                    => $users[$article->getVar('uid')]
+                    'author'                    => $users[$article->getVar('uid')],
                 ];
             }
             $xml_link = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.category.php' . URL_DELIMITER . $category_id;
             break;
-
         case 'author':
             $author_name = \XoopsUser::getUnameFromId($uid);
             $pagetitle   = art_constant('MD_AUTHOR');
@@ -212,7 +210,7 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
                 'a.art_time_publish',
                 'a.art_keywords',
                 'a.art_summary',
-                'a.art_source'
+                'a.art_source',
             ]);
             foreach ($articles_obj as $id => $article) {
                 $content = art_constant('MD_CATEGORY') . ': ' . $categories_obj[$article->getVar('cat_id')]->getVar('cat_title') . '<br>';
@@ -225,12 +223,11 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
                     'descriptionHtmlSyndicated' => true,
                     'date'                      => $article->getTime('rss'),
                     'source'                    => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/',
-                    'author'                    => $author_name
+                    'author'                    => $author_name,
                 ];
             }
             $xml_link = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.author.php' . URL_DELIMITER . $uid;
             break;
-
         case 'index':
         default:
             $pagetitle = art_constant('MD_INDEX');
@@ -252,7 +249,7 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
                 'art_time_publish',
                 'art_keywords',
                 'art_summary',
-                'art_source'
+                'art_source',
             ]);
             /*
              $articles_obj = $articleHandler->getPublished(
@@ -278,7 +275,7 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
                     'descriptionHtmlSyndicated' => true,
                     'date'                      => $article->getTime('rss'),
                     'source'                    => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/',
-                    'author'                    => $users[$article->getVar('uid')]
+                    'author'                    => $users[$article->getVar('uid')],
                 ];
             }
             $xml_link = XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/';
@@ -287,7 +284,7 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
 
     $xml_charset = empty($helper->getConfig('do_rssutf8')) ? _CHARSET : 'UTF-8';
 
-    $xmlHandler = xoops_getModuleHandler('xml', $GLOBALS['artdirname']);
+    $xmlHandler = $helper->getHandler('xml', $GLOBALS['artdirname']);
     $xml        = $xmlHandler->create($type);
     $xml->setVar('encoding', $xml_charset);
     $xml->setVar('title', $xoopsConfig['sitename'] . ' :: ' . $pagetitle, 'UTF-8', $xml_charset, true);
@@ -308,7 +305,7 @@ if (!$tpl->is_cached('db:system_dummy.tpl', $xoopsCachedTemplateId)) {
         'title'       => $xoopsConfig['sitename'] . ' :: ' . $pagetitle,
         'url'         => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/' . $xoopsModule->getInfo('image'),
         'link'        => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/',
-        'description' => $rssdesc
+        'description' => $rssdesc,
     ];
     $xml->setImage($image);
 

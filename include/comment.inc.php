@@ -20,16 +20,16 @@
 
 $current_path = __FILE__;
 if (DIRECTORY_SEPARATOR !== '/') {
-    $current_path = str_replace(strpos($current_path, "\\\\", 2) ? "\\\\" : DIRECTORY_SEPARATOR, '/', $current_path);
+    $current_path = str_replace(mb_strpos($current_path, '\\\\', 2) ? '\\\\' : DIRECTORY_SEPARATOR, '/', $current_path);
 }
-$url_arr = explode('/', strstr($current_path, '/modules/'));
-include XOOPS_ROOT_PATH . '/modules/' . $url_arr[2] . '/include/vars.php';
+$url_arr = explode('/', mb_strstr($current_path, '/modules/'));
+require_once XOOPS_ROOT_PATH . '/modules/' . $url_arr[2] . '/include/vars.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/functions.php';
 
 art_parse_function('
 function [VAR_PREFIX]_com_update($art_id, $count)
 {
-    $articleHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
+    $articleHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
     $article_obj = articleHandler->get($art_id);
     $article_obj->setVar( "art_comments", $count, true );
 
@@ -40,7 +40,7 @@ function [VAR_PREFIX]_com_approve(&$comment)
 {
     art_define_url_delimiter();
     if (!empty($GLOBALS["xoopsModuleConfig"]["notification_enabled"])) {
-        $articleHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
+        $articleHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
         $article_obj = articleHandler->get($comment->getVar("com_itemid"));
         $notificationHandler = xoops_getHandler("notification");
         $tags = array();

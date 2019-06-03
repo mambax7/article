@@ -42,7 +42,7 @@
 <{assign var="default_image" value="`$xoops_url`/modules/`$xoops_dirname`/assets/images/xoops.png"}>
 
 <!-- Featured articles -->
-<{if count($features) gt 0}>
+<{if $features|is_array && count($features) > 0 }>
     <div class="article-section article-feature">
         <div class="article-section-title">
             <span class="subject"><{php}>echo art_constant("MD_ARTICLES");<{/php}></span>
@@ -85,14 +85,14 @@
     </div>
 
     <div class="article-section-container" style="width: 100%;">
-        <{includeq file="db:`$xoops_dirname`_inc_category.tpl"}>
+        <{include file="db:`$xoops_dirname`_inc_category.tpl"}>
     </div>
 
 </div>
 <br style="clear:both;">
 
 <!-- Topic -->
-<{if count($topics) gt 0}>
+<{if $topics|is_array && count($topics) > 0}>
     <div class="article-section article-topic">
         <div class="article-section-title">
             <span class="subject"><{php}>echo art_constant("MD_TOPICS");<{/php}></span>
@@ -102,7 +102,7 @@
         </div>
 
         <div class="article-section-container">
-            <{includeq file="db:`$xoops_dirname`_inc_topic.tpl"}>
+            <{include file="db:`$xoops_dirname`_inc_topic.tpl"}>
         </div>
 
     </div>
@@ -110,14 +110,14 @@
 <{/if}>
 
 <!-- Sponsors -->
-<{if count($sponsors) gt 0}>
+<{if $sponsors|is_array && count($sponsors) > 0 }>
     <div class="article-section article-sponsor">
         <div class="article-section-title">
             <span class="subject"><{php}>echo art_constant("MD_SPONSORS");<{/php}></span>
             <span class="navigation"></span>
         </div>
         <div class="article-section-container">
-            <{includeq file="db:`$xoops_dirname`_inc_sponsor.tpl"}>
+            <{include file="db:`$xoops_dirname`_inc_sponsor.tpl"}>
         </div>
         <br style="clear:both;">
     </div>
@@ -151,5 +151,5 @@
 </div>
 
 <{if $xoops_notification}>
-    <{includeq file='db:system_notification_select.tpl'}>
+    <{include file='db:system_notification_select.tpl'}>
 <{/if}>

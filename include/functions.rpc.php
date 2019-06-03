@@ -20,7 +20,7 @@ use XoopsModules\Article;
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include __DIR__ . '/vars.php';
+require_once __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_RPC_LOADED', true);
 
 if (!defined('ART_FUNCTIONS_RPC')):
@@ -36,6 +36,7 @@ if (!defined('ART_FUNCTIONS_RPC')):
     function art_trackback($trackback_url, &$article)
     {
         global $myts, $xoopsConfig, $xoopsModule, $xoopsModuleConfig;
+        $helper = \XoopsModules\Article\Helper::getInstance();
 
         $myts      = \MyTextSanitizer::getInstance();
         $title     = $article->getVar('art_title');
@@ -59,7 +60,7 @@ if (!defined('ART_FUNCTIONS_RPC')):
         $http_request = 'POST ' . $trackback_url['path'] . ($trackback_url['query'] ? '?' . $trackback_url['query'] : '') . " HTTP/1.0\r\n";
         $http_request .= 'Host: ' . $trackback_url['host'] . "\r\n";
         $http_request .= 'Content-Type: application/x-www-form-urlencoded; charset=' . $charset . "\r\n";
-        $http_request .= 'Content-Length: ' . strlen($query_string) . "\r\n";
+        $http_request .= 'Content-Length: ' . mb_strlen($query_string) . "\r\n";
         $http_request .= 'User-Agent: XOOPS Article/' . XOOPS_VERSION;
         $http_request .= "\r\n\r\n";
         $http_request .= $query_string;
@@ -80,10 +81,9 @@ if (!defined('ART_FUNCTIONS_RPC')):
             }
             $fr .= "\n\n";
 
-            if ($fp = fopen($debug_file, 'a')) {
+            if ($fp = fopen($debug_file, 'ab')) {
                 fwrite($fp, $fr);
                 fclose($fp);
-            } else {
             }
         }
         @fclose($fs);
@@ -145,11 +145,10 @@ if (!defined('ART_FUNCTIONS_RPC')):
             echo "<message>$error_message</message>\n";
             echo '</response>';
             die();
-        } else {
-            echo '<?xml version="1.0" encoding="' . $charset . '"?' . ">\n";
-            echo "<response>\n";
-            echo "<error>0</error>\n";
-            echo '</response>';
         }
+        echo '<?xml version="1.0" encoding="' . $charset . '"?' . ">\n";
+        echo "<response>\n";
+        echo "<error>0</error>\n";
+        echo '</response>';
     }
 endif;

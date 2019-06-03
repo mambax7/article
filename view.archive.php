@@ -18,7 +18,7 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
@@ -37,8 +37,8 @@ $start       = (int)(empty($_GET['start']) ? @$args['start'] : $_GET['start']);
 
 $page['title'] = art_constant('MD_ACHIVE');
 
-$articleHandler  = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$articleHandler  = $helper->getHandler('Article', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $categories_obj  = $categoryHandler->getAllByPermission('access', ['cat_title', 'cat_moderator']);
 $categories_id   = array_keys($categories_obj);
 if (0 == count($categories_id)) {
@@ -62,7 +62,7 @@ $xoopsOption['xoops_pagetitle']     = $xoopsModule->getVar('name') . ' - ' . art
 $xoopsOption['template_main']       = art_getTemplate('archive', $helper->getConfig('template'));
 $xoopsOption['xoops_module_header'] = art_getModuleHeader($helper->getConfig('template'));
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
 $year = empty($year) ? date('Y') : $year;
 if ($month < 1) {
@@ -102,7 +102,7 @@ $articles_obj = $articleHandler->getByCategory($categories, $helper->getConfig('
     'a.cat_id',
     'a.art_categories',
     'a.art_summary',
-    'a.art_counter'
+    'a.art_counter',
 ]);
 
 $author_array = [];
@@ -127,10 +127,10 @@ if (!empty($writer_array)) {
 $articles = [];
 $users_id = [];
 foreach (array_keys($articles_obj) as $id) {
-    $article   =& $articles_obj[$id];
+    $article   = &$articles_obj[$id];
     $_category = $article->getVar('cat_id') ? [
         'id'    => $article->getVar('cat_id'),
-        'title' => $categories_obj[$article->getVar('cat_id')]->getVar('cat_title')
+        'title' => $categories_obj[$article->getVar('cat_id')]->getVar('cat_title'),
     ] : [];
     $_article  = [
         'id'       => $id,
@@ -141,7 +141,7 @@ foreach (array_keys($articles_obj) as $id) {
         'time'     => $article->getTime($helper->getConfig('timeformat')),
         'counter'  => $article->getVar('art_counter'),
         'category' => $_category,
-        'summary'  => $article->getSummary(true)
+        'summary'  => $article->getSummary(true),
     ];
 
     $cats = @array_diff($article->getCategories(), [$article->getVar('cat_id')]);
@@ -151,7 +151,7 @@ foreach (array_keys($articles_obj) as $id) {
         }
         $_article['categories'][$catid] = [
             'id'    => $catid,
-            'title' => $categories_obj[$catid]->getVar('cat_title')
+            'title' => $categories_obj[$catid]->getVar('cat_title'),
         ];
     }
     $articles[] = $_article;
@@ -204,7 +204,7 @@ if (empty($start)) {
             // url of the current category
             'url'   => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.archive.php' . URL_DELIMITER . 'c' . $id . '/' . $year,
             // title of the current category
-            'title' => $cat['prefix'] . $cat['cat_title'] . ' (' . @(int)$cats_counts[$id] . ')'
+            'title' => $cat['prefix'] . $cat['cat_title'] . ' (' . @(int)$cats_counts[$id] . ')',
         ];
 
         if ($cat['cat_pid'] == $cat_top) {
@@ -242,12 +242,12 @@ if (empty($start)) {
         }
         $timenav['prev'] = [
             'url'   => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.archive.php' . URL_DELIMITER . ($year - 1),
-            'title' => sprintf(art_constant('MD_TIME_Y'), $year - 1)
+            'title' => sprintf(art_constant('MD_TIME_Y'), $year - 1),
         ];
         if ($year < date('Y')) {
             $timenav['next'] = [
                 'url'   => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.archive.php' . URL_DELIMITER . ($year + 1),
-                'title' => sprintf(art_constant('MD_TIME_Y'), $year + 1)
+                'title' => sprintf(art_constant('MD_TIME_Y'), $year + 1),
             ];
         }
         // Get monthly list
@@ -276,7 +276,7 @@ if (empty($start)) {
             }
             $days[$i] = [
                 'title' => $days[$i]['count'],
-                'url'   => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.archive.php' . URL_DELIMITER . $year . '/' . $month . '/' . $i
+                'url'   => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.archive.php' . URL_DELIMITER . $year . '/' . $month . '/' . $i,
             ];
         }
         $calendar   = art_getCalendar($year, $month, $days);
@@ -293,12 +293,12 @@ if (empty($start)) {
         }
         $timenav['prev'] = [
             'url'   => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.archive.php' . URL_DELIMITER . $year_prev . '/' . $month_prev,
-            'title' => art_constant('MD_MONTH_' . $month_prev)
+            'title' => art_constant('MD_MONTH_' . $month_prev),
         ];
         if ($year < date('Y') || $month < date('n')) {
             $timenav['next'] = [
                 'url'   => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.archive.php' . URL_DELIMITER . $year_next . '/' . $month_next,
-                'title' => art_constant('MD_MONTH_' . $month_next)
+                'title' => art_constant('MD_MONTH_' . $month_next),
             ];
         }
     }

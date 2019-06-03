@@ -1,4 +1,7 @@
 <?php
+
+namespace XoopsModules\Article;
+
 /**
  * Article module for XOOPS
  *
@@ -17,72 +20,53 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once  dirname(__DIR__) . '/include/vars.php';
+require_once dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
-if (!class_exists('Text')) {
-    class Text extends \XoopsObject
-    {
-        public function __construct($id = null)
-        {
-            //$this->ArtObject();
-            //$this->table = art_DB_prefix("text");
-            $this->initVar('text_id', XOBJ_DTYPE_INT, null, false);
-            $this->initVar('art_id', XOBJ_DTYPE_INT, 0, true);
-            $this->initVar('text_title', XOBJ_DTYPE_TXTBOX, '');
-            $this->initVar('text_body', XOBJ_DTYPE_TXTAREA, '', true);
-
-            $this->initVar('dohtml', XOBJ_DTYPE_INT, 1);
-            $this->initVar('dosmiley', XOBJ_DTYPE_INT, 1);
-            $this->initVar('doxcode', XOBJ_DTYPE_INT, 1);
-            $this->initVar('doimage', XOBJ_DTYPE_INT, 1);
-            $this->initVar('dobr', XOBJ_DTYPE_INT, 0);        // Concerning html tags, the dobr is set to 0 by default
-        }
-    }
-}
-
-art_parse_class('
-class [CLASS_PREFIX]TextHandler extends \XoopsPersistableObjectHandler
+//art_parse_class('
+class TextHandler extends \XoopsPersistableObjectHandler
 {
-    function __construct(\XoopsDatabase $db)
+    public function __construct(\XoopsDatabase $db = null)
     {
-        parent::__construct($db, art_DB_prefix("text", true), "Text", "text_id", "text_title");
+        parent::__construct($db, art_DB_prefix('text', true), Text::class, 'text_id', 'text_title');
     }
 
-    function &getByArticle($art_id, $page = 0, $tags = null)
+    public function &getByArticle($art_id, $page = 0, $tags = null)
     {
         $text = false;
-        $page = (int)($page);
-        if (is_array($tags) && count($tags) > 0) {
-            if (!in_array("text_id",$tags)) $tags[] = "text_id";
-            $select = implode(",", $tags);
-        } else $select = "*";
+        $page = (int)$page;
+        if ($tags && is_array($tags)) {
+            if (!in_array('text_id', $tags)) {
+                $tags[] = 'text_id';
+            }
+            $select = implode(',', $tags);
+        } else {
+            $select = '*';
+        }
 
         if ($page) {
-            $sql = "SELECT $select FROM " . art_DB_prefix("text") . " WHERE art_id = " . (int)($art_id) . " ORDER BY text_id";
-            $result = $this->db->query($sql, 1, $page-1);
+            $sql    = "SELECT $select FROM " . art_DB_prefix('text') . ' WHERE art_id = ' . (int)$art_id . ' ORDER BY text_id';
+            $result = $this->db->query($sql, 1, $page - 1);
             if ($result && $myrow = $this->db->fetchArray($result)) {
                 $text = $this->create(false);
                 $text->assignVars($myrow);
 
                 return $text;
-            } else {
-                //xoops_error($this->db->error());
-                return $text;
             }
-        } else {
-            $sql = "SELECT $select FROM " . art_DB_prefix("text") . " WHERE art_id = " . (int)($art_id) . " ORDER BY text_id";
-            $result = $this->db->query($sql);
-            $ret = array();
-           while (false !== ($myrow = $this->db->fetchArray($result))) {
-                $text = $this->create(false);
-                $text->assignVars($myrow);
-                $ret[$myrow["text_id"]] = $text;
-                unset($text);
-            }
-
-            return $ret;
+            //xoops_error($this->db->error());
+            return $text;
         }
+        $sql    = "SELECT $select FROM " . art_DB_prefix('text') . ' WHERE art_id = ' . (int)$art_id . ' ORDER BY text_id';
+        $result = $this->db->query($sql);
+        $ret    = [];
+        while (false !== ($myrow = $this->db->fetchArray($result))) {
+            $text = $this->create(false);
+            $text->assignVars($myrow);
+            $ret[$myrow['text_id']] = $text;
+            unset($text);
+        }
+
+        return $ret;
     }
 
     /*
@@ -138,11 +122,14 @@ class [CLASS_PREFIX]TextHandler extends \XoopsPersistableObjectHandler
     /**
      * clean orphan text from database
      *
+     * @param null|mixed $table_link
+     * @param null|mixed $field_link
+     * @param null|mixed $field_object
      * @return bool true on success
      */
-    function cleanOrphan($table_link = null, $field_link = null, $field_object =null)
+    public function cleanOrphan($table_link = null, $field_link = null, $field_object = null)
     {
-        return parent::cleanOrphan(art_DB_prefix("article"), "art_id");
+        return parent::cleanOrphan(art_DB_prefix('article'), 'art_id');
     }
 }
-');
+//');

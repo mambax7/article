@@ -15,11 +15,10 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 $com_itemid = \Xmf\Request::getInt('com_itemid', 0, 'GET');
 if ($com_itemid > 0) {
-    $articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+    $articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
     $article_obj    = $articleHandler->get($com_itemid);
     $com_replytitle = $article_obj->getVar('art_title');
     require_once XOOPS_ROOT_PATH . '/include/comment_new.php';

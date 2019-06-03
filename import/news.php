@@ -10,7 +10,6 @@
  * @since       1.00
  * @package     module::article
  */
-
 $sql = '   INSERT INTO '
        . art_DB_prefix('category')
        . '       (cat_id,    cat_title,      cat_pid,    cat_image,      cat_description)'

@@ -4,11 +4,11 @@
 <div class="article-breadcrumbs head">
     <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/"><{$modulename}></a>
     <{foreach item=track from=$tracks}>
-    ::
-    <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$track.id}>"><{$track.title}></a>
-    <{if $featured}>
-        (<{php}>echo art_constant("MD_FEATURED");<{/php}>)
-    <{/if}>
+        ::
+        <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$track.id}>"><{$track.title}></a>
+        <{if $featured}>
+            (<{php}>echo art_constant("MD_FEATURED");<{/php}>)
+        <{/if}>
     <{/foreach}>
 </div>
 
@@ -38,24 +38,24 @@
             : <{$count_featured}>)
         <{/if}>
 
-        <{if count($categories)>0}>
+        <{if $categories|is_array && count($categories) > 0 }>
             |
             <a href="#category"><{php}>echo art_constant("MD_CATEGORIES");<{/php}></a>
             : <{$categories|@count}>
         <{/if}>
 
-        <{if count($topics)>0}>
+        <{if $topics|is_array && count($topics) > 0}>
             |
             <a href="#topic"><{php}>echo art_constant("MD_TOPICS");<{/php}></a>
             : <{$topics|@count}>
         <{/if}>
 
-        <{if count($category.moderators)>0}>
+        <{if $category.moderators|is_array && count($category.moderators) > 0 }>
             <br>
             <{php}>echo art_constant("MD_MODERATOR");<{/php}>:
             <{foreach item=moderator key=muid from=$category.moderators}>
-            <span><{$moderator}></span>
-        <{/foreach}>
+                <span><{$moderator}></span>
+            <{/foreach}>
         <{/if}>
 
     </div>
@@ -67,7 +67,7 @@
 <{assign var="default_image" value="`$xoops_url`/modules/`$xoops_dirname`/assets/images/xoops.png"}>
 
 <!-- Featured articles -->
-<{if count($features) gt 0}>
+<{if $features|is_array && count($features) > 0 }>
 <div class="article-section article-feature">
     <div class="article-section-title">
         <span class="subject"><{php}>echo art_constant("MD_FEATURED");<{/php}></span>
@@ -77,26 +77,26 @@
 
     <div class="article-section-container">
         <{foreach item=article from=$features}>
-        <div class="article-list">
-            <div class="article-header-image"><img src="<{$article.image.url|default:$default_image}>"
-                                                   alt="<{$article.title}>"><br><{$article.image.caption}></div>
+            <div class="article-list">
+                <div class="article-header-image"><img src="<{$article.image.url|default:$default_image}>"
+                                                       alt="<{$article.title}>"><br><{$article.image.caption}></div>
 
-            <div class="article-title">
-                <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}><{$article.id}>"><{$article.title}></a>
+                <div class="article-title">
+                    <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}><{$article.id}>"><{$article.title}></a>
+                </div>
+                <div class="article-meta">
+                    <{$article.writer|default:$article.author}>
+                    <{$article.time}>
+                </div>
+                <div class="article-summary"><{$article.summary}></div>
             </div>
-            <div class="article-meta">
-                <{$article.writer|default:$article.author}>
-                <{$article.time}>
-            </div>
-            <div class="article-summary"><{$article.summary}></div>
-        </div>
         <{/foreach}>
         <div class="article-section-container">
         </div>
         <{/if}>
 
         <!-- Recent articles -->
-        <{if count($articles) gt 0}>
+        <{if $articles|is_array && count($articles) > 0}>
             <div id="article" class="article-section article-article">
                 <div class="article-section-title">
         <span class="subject">
@@ -108,17 +108,7 @@
                     <span class="navigation">
             <{if $featured}>
                 <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.list.php<{$smarty.const.URL_DELIMITER}>c<{$category.id}>/f"><{$smarty.const._MORE}></a>
-
-
-
-
-
-                                                                                                                <{else}>
-
-
-
-
-
+            <{else}>
                 <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.list.php<{$smarty.const.URL_DELIMITER}>c<{$category.id}>"><{$smarty.const._MORE}></a>
             <{/if}>
         </span>
@@ -127,19 +117,19 @@
                 <div class="article-section-container">
                     <ol>
                         <{foreach item=article from=$articles}>
-                        <li>
-                            <div class="article-title">
-                                <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}><{$article.id}>"><{$article.title}></a>
-                                <{if $article.image}><img
-                                    src="<{$xoops_url}>/modules/<{$xoops_dirname}>/assets/images/image.gif" width="12px"
-                                    alt=""><{/if}>
-                            </div>
-                            <div class="article-meta">
-                                <{$article.writer|default:$article.author}>
-                                <{$article.time}>
-                            </div>
-                            <div class="article-summary"><{$article.summary}></div>
-                        </li>
+                            <li>
+                                <div class="article-title">
+                                    <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.article.php<{$smarty.const.URL_DELIMITER}><{$article.id}>"><{$article.title}></a>
+                                    <{if $article.image}><img
+                                        src="<{$xoops_url}>/modules/<{$xoops_dirname}>/assets/images/image.gif" width="12px"
+                                        alt=""><{/if}>
+                                </div>
+                                <div class="article-meta">
+                                    <{$article.writer|default:$article.author}>
+                                    <{$article.time}>
+                                </div>
+                                <div class="article-summary"><{$article.summary}></div>
+                            </li>
                         <{/foreach}>
                         <ol>
                 </div>
@@ -152,7 +142,7 @@
         </div>
 
 
-        <{if count($categories) gt 0}>
+        <{if $categories|is_array && count($categories) > 0}>
             <div id="category" class="article-section article-category">
                 <div class="article-section-title">
                     <span class="subject"><{php}>echo art_constant("MD_CATEGORIES");<{/php}></span>
@@ -163,17 +153,17 @@
 
                 <div class="article-section-container">
                     <{foreach item=cat name=cat from=$categories}>
-                    <span class="article-term">
+                        <span class="article-term">
             <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/view.category.php<{$smarty.const.URL_DELIMITER}><{$cat.id}>"><{$cat.title}></a>
             (<acronym title='<{php}>echo art_constant("MD_SUBCATEGORIES");<{/php}>'><{$cat.categories}></acronym>|<acronym
-                                title='<{php}>echo art_constant("MD_ARTICLES");<{/php}>'><{$cat.articles}></acronym>)
+                                    title='<{php}>echo art_constant("MD_ARTICLES");<{/php}>'><{$cat.articles}></acronym>)
         </span>
                     <{/foreach}>
                 </div>
             </div>
         <{/if}>
 
-        <{if count($topics) gt 0}>
+        <{if $topics|is_array && count($topics) > 0}>
             <div class="article-section article-topic">
                 <div class="article-section-title">
                     <span class="subject"><{php}>echo art_constant("MD_TOPICS");<{/php}></span>
@@ -183,21 +173,21 @@
                 </div>
 
                 <div class="article-section-container">
-                    <{includeq file="db:`$xoops_dirname`_inc_topic.tpl"}>
+                    <{include file="db:`$xoops_dirname`_inc_topic.tpl"}>
                 </div>
 
             </div>
         <{/if}>
 
         <!-- Sponsors -->
-        <{if count($sponsors) gt 0}>
+        <{if $sponsors|is_array && count($sponsors) > 0 }>
             <div class="article-section article-sponsor">
                 <div class="article-section-title">
                     <span class="subject"><{php}>echo art_constant("MD_SPONSORS");<{/php}></span>
                     <span class="navigation"></span>
                 </div>
                 <div class="article-section-container">
-                    <{includeq file="db:`$xoops_dirname`_inc_sponsor.tpl"}>
+                    <{include file="db:`$xoops_dirname`_inc_sponsor.tpl"}>
                 </div>
             </div>
         <{/if}>
@@ -231,5 +221,5 @@
 
 
         <{if $xoops_notification}>
-            <{includeq file='db:system_notification_select.tpl'}>
+            <{include file='db:system_notification_select.tpl'}>
         <{/if}>

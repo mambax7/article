@@ -18,19 +18,18 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include  dirname(__DIR__) . '/include/vars.php';
+require_once dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 /**
  * Functions handling module blocks
- * @package   module::article
- *
+ * @param VAR_PREFIX variable prefix for the function name
  * @author    D.J. (phppp)
  * @copyright copyright &copy; 2000 XOOPS Project
  *
- * @param VAR_PREFIX variable prefix for the function name
+ * @package   module::article
+ *
  */
-
 art_parse_function('
 
 /**#@+
@@ -53,7 +52,7 @@ function [VAR_PREFIX]_block_news_show( $options )
     $block = array();
 
     if (!isset($access_cats)) {
-        $permissionHandler = xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+        $permissionHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
         $access_cats = $permissionHandler->getCategories("access");
     }
     if (!empty($options[4])) {
@@ -69,7 +68,7 @@ function [VAR_PREFIX]_block_news_show( $options )
 
     mod_loadFunctions("url", $GLOBALS["artdirname"]);
 
-    $spotlightHandler = xoops_getModuleHandler("spotlight", $GLOBALS["artdirname"]);
+    $spotlightHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Spotlight", $GLOBALS["artdirname"]);
     $sp_data = $spotlightHandler->getContent(false);
     foreach ($sp_data as $key => $val) {
         $block["spotlight"][$key] = $val;
@@ -84,7 +83,7 @@ function [VAR_PREFIX]_block_news_show( $options )
         $block["spotlight"]["writer"] = $writers[$sp_data["writer_id"]] ;
     }
 
-    $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+    $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
 
     if (empty($options[0])):
 
@@ -219,9 +218,9 @@ function [VAR_PREFIX]_block_news_edit($options)
     $form .= art_constant("MB_TIMEFORMAT")."&nbsp;&nbsp;<input type=\"text\" name=\"options[3]\" value=\"" . $options[3] . "\">";
 
     xoops_load("xoopslocal");
-    $form .= "<p style=\"font-size: small; padding-left: 10px;\">" . XoopsLocal::getTimeFormatDesc() . "</p>";
+    $form .= "<p style=\"font-size: small; padding-left: 10px;\">" . \XoopsLocal::getTimeFormatDesc() . "</p>";
 
-    $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+    $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
     $isAll = empty($options[4]);
     $options_cat = array_slice($options, 4); // get allowed categories
 

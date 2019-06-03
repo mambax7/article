@@ -37,10 +37,10 @@ class ModuleTransferHandler extends TransferHandler
     /**
      * Get valid addon list
      *
-     * @param array   $skip Addons to skip
-     * @param boolean $sort To sort the list upon 'level'
+     * @param array $skip   Addons to skip
+     * @param bool  $sort   To sort the list upon 'level'
      *                      return    array    $list
-     * @return
+     * @return mixed|null
      */
     public function &getList($skip = [], $sort = true)
     {
@@ -56,14 +56,15 @@ class ModuleTransferHandler extends TransferHandler
      * 3 $this->do_transfer
      * @param $item
      * @param $data
-     * @return
+     * @return bool
      */
     public function do_transfer($item, &$data)
     {
         $ret = parent::do_transfer($item, $data);
 
         if ('newbb' === $item && !empty($ret['data']['topic_id'])) {
-            $articleHandler = xoops_getModuleHandler('article', $GLOBALS['xoopsModule']->getVar('dirname'));
+            $helper         = \XoopsModules\Article\Helper::getInstance();
+            $articleHandler = $helper->getHandler('Article', $GLOBALS['xoopsModule']->getVar('dirname'));
             $article_obj    = $articleHandler->get($data['id']);
             $article_obj->setVar('art_forum', $ret['data']['topic_id']);
             $articleHandler->insert($article_obj, true);

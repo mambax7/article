@@ -15,12 +15,13 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
+
 use XoopsModules\Article;
 
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 if (empty($helper->getConfig('do_counter'))) {
     return;
@@ -33,7 +34,7 @@ if (art_getcookie('art_' . $article_id) > 0) {
     return;
 }
 
-$articleHandler = xoops_getModuleHandler('article', $xoopsModule->getVar('dirname'));
+$articleHandler = $helper->getHandler('Article', $xoopsModule->getVar('dirname'));
 $article_obj    = $articleHandler->get($article_id);
 $article_obj->setVar('art_counter', $article_obj->getVar('art_counter') + 1, true);
 $articleHandler->insert($article_obj, true);

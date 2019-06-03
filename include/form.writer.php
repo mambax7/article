@@ -43,8 +43,7 @@ $form_art->addElement(new \XoopsFormTextArea(art_constant('MD_PROFILE'), 'writer
 
 // Avatar
 if (art_isAdministrator() && !empty($helper->getConfig('path_image'))) {
-
-    //require_once(XOOPS_ROOT_PATH . "/class/xoopstree.php");
+    //require(XOOPS_ROOT_PATH . "/class/xoopstree.php");
 
     $writer_avatar     = $writer_obj->getVar('writer_avatar');
     $image_option_tray = new \XoopsFormElementTray(art_constant('MD_IMAGE_UPLOAD'), '<br>');
@@ -74,9 +73,9 @@ if (art_isAdministrator() && !empty($helper->getConfig('path_image'))) {
 $form_art->addElement(new \XoopsFormHidden('writer_id', $writer_obj->getVar('writer_id')));
 //$form_art->addElement(new \XoopsFormHidden("target", $name_parent));
 
-$button_tray = new \XoopsFormElementTray('', '');
-$button_tray->addElement(new \XoopsFormButton('', 'submit_writer', _SUBMIT, 'submit'));
-$button_tray->addElement(new \XoopsFormButton('', '', _CANCEL, 'reset'));
-$form_art->addElement($button_tray);
+$buttonTray = new \XoopsFormElementTray('', '');
+$buttonTray->addElement(new \XoopsFormButton('', 'submit_writer', _SUBMIT, 'submit'));
+$buttonTray->addElement(new \XoopsFormButton('', '', _CANCEL, 'reset'));
+$form_art->addElement($buttonTray);
 
 $form_art->display();

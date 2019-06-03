@@ -18,19 +18,18 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include  dirname(__DIR__) . '/include/vars.php';
+require_once dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 /**
  * Functions handling module blocks
- * @package   module::article
- *
+ * @param VAR_PREFIX variable prefix for the function name
  * @author    D.J. (phppp)
  * @copyright copyright &copy; 2000 XOOPS Project
  *
- * @param VAR_PREFIX variable prefix for the function name
+ * @package   module::article
+ *
  */
-
 art_parse_function('
 /**#@+
  * Function to display articles
@@ -98,7 +97,7 @@ function [VAR_PREFIX]_article_show($options)
         if ($options[2] == 2) $select .= ", art_image";
     }
     if (!isset($access_cats)) {
-        $permissionHandler = xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+        $permissionHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
         $access_cats = $permissionHandler->getCategories("access");
     }
     if (!empty($options[5])) {
@@ -145,7 +144,7 @@ function [VAR_PREFIX]_article_show($options)
     $arts = array();
     $uids = array();
     $cids = array();
-    $articleHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
+    $articleHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
     foreach ($rows as $row) {
         if (!empty($row["ave_rating"])) {
             $row["ave_rating"] = number_format($row["ave_rating"], 1);
@@ -175,7 +174,7 @@ function [VAR_PREFIX]_article_show($options)
         $cids[$row["cat_id"]] = 1;
     }
 
-    $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+    $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
     $criteria = new \Criteria("cat_id", "(" . implode(",",array_keys($cids)) . ")", "IN");
     $cats = $categoryHandler->getList($criteria);
 
@@ -225,9 +224,9 @@ function [VAR_PREFIX]_article_edit($options)
     $form .= art_constant("MB_TIMEFORMAT") . "&nbsp;&nbsp;<input type=\"text\" name=\"options[4]\" value=\"" . $options[4] . "\"><br>";
 
     xoops_load("xoopslocal");
-    $form .= "<p style=\"font-size: small; padding-left: 10px;\">" . XoopsLocal::getTimeFormatDesc() . "</p>";
+    $form .= "<p style=\"font-size: small; padding-left: 10px;\">" . \XoopsLocal::getTimeFormatDesc() . "</p>";
 
-    $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+    $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
     $isAll = empty($options[5]) ? true : false;
     $options_cat = array_slice($options, 5); // get allowed categories
 

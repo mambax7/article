@@ -1,7 +1,7 @@
 <!-- phppp (D.J.): http://xoopsforge.com; https://xoops.org.cn -->
 
 <div class="article-breadcrumbs head">
-    <{if count($tracks)>0}>
+    <{if $tracks|is_array && count($tracks) > 0 }>
         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/cp.topic.php?from=<{$from}>"><{$modulename}> <{php}>echo art_constant("MD_CPTOPIC");<{/php}></a>
         </a>
         <{foreach item=track from=$tracks}>
@@ -35,7 +35,7 @@
 </div>
 
 
-<{if count($topics)>0}>
+<{if $topics|is_array && count($topics) > 0}>
     <form action="am.topic.php" method="POST">
         <{securityToken}><{*//mb*}>
         <div class="article-section article-topics">

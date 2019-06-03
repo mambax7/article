@@ -1,7 +1,7 @@
 <!-- phppp (D.J.): http://xoopsforge.com; https://xoops.org.cn -->
 
 <div class="article-breadcrumbs head">
-    <{if count($tracks)>0}>
+    <{if $tracks|is_array && count($tracks) > 0 }>
         <a href="<{$xoops_url}>/modules/<{$xoops_dirname}>/cp.article.php?from=<{$from}>"><{$modulename}> <{php}>echo art_constant("MD_CPARTICLE");<{/php}></a>
         </a>
         <{foreach item=track from=$tracks}>
@@ -63,7 +63,7 @@
     </div>
 </div>
 
-<{if count($articles)>0}>
+<{if $articles|is_array && count($articles) > 0 }>
     <div>
         <form name="form_article_cpanel" action="am.article.php" method="POST">
             <{securityToken}><{*//mb*}>
@@ -180,7 +180,7 @@
                                 <option value="unfeature"><{php}>echo art_constant("MD_UNFEATUREIT");<{/php}></option>
                                 <option value="update_time"><{php}>echo art_constant("MD_UPDATE_TIME");<{/php}></option>
                             <{/if}>
-                            <{if count($topics)>0}>
+                            <{if $topics|is_array && count($topics) > 0}>
                                 <option value="registertopic"><{php}>echo art_constant("MD_REGISTERTOPIC");<{/php}></option>
                             <{/if}>
                         <{/if}>

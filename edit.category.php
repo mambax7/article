@@ -15,13 +15,13 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 $category_id = \Xmf\Request::getInt('category', 0, 'GET');
 $from        = empty($_GET['from']) ? 0 : 1;
+$helper      = \XoopsModules\Article\Helper::getInstance();
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $category_obj    = $categoryHandler->get($category_id);
 if ((!empty($category_id) && !$categoryHandler->getPermission($category_obj, 'moderate'))
     || (empty($category_id)
@@ -30,7 +30,7 @@ if ((!empty($category_id) && !$categoryHandler->getPermission($category_obj, 'mo
 }
 // Disable cache
 $xoopsConfig['module_cache'][$xoopsModule->getVar('mid')] = 0;
-include XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
-include XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/form.category.php';
-include XOOPS_ROOT_PATH . '/footer.php';
+require_once XOOPS_ROOT_PATH . '/header.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/include/form.category.php';
+require_once XOOPS_ROOT_PATH . '/footer.php';

@@ -18,7 +18,7 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include __DIR__ . '/vars.php';
+require_once __DIR__ . '/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 art_parse_function('
@@ -31,7 +31,7 @@ function [VAR_PREFIX]_notify_iteminfo($category, $item_id)
 
     switch ($category) {
     case "category":
-        $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+        $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
         $category_obj = categoryHandler->get($item_id);
         if (!is_object($category_obj)) {
             redirect_header(XOOPS_URL . "/modules/" . $GLOBALS["artdirname"] . "/index.php", 2, art_constant("MD_NOACCESS"));
@@ -41,7 +41,7 @@ function [VAR_PREFIX]_notify_iteminfo($category, $item_id)
         $item["url"] = XOOPS_URL . "/modules/" . $GLOBALS["artdirname"] . "/view.category.php" . URL_DELIMITER . $item_id;
         break;
     case "article":
-        $articleHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
+        $articleHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
         $article_obj = articleHandler->get($item_id);
         if (!is_object($article_obj)) {
             redirect_header(XOOPS_URL . "/modules/" . $GLOBALS["artdirname"] . "/index.php", 2, art_constant("MD_NOACCESS"));

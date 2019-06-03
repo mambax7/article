@@ -18,19 +18,18 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include  dirname(__DIR__) . '/include/vars.php';
+require_once dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 /**
  * Functions handling module blocks
- * @package   module::article
- *
+ * @param VAR_PREFIX variable prefix for the function name
  * @author    D.J. (phppp)
  * @copyright copyright &copy; 2000 XOOPS Project
  *
- * @param VAR_PREFIX variable prefix for the function name
+ * @package   module::article
+ *
  */
-
 art_parse_function('
 
 /**#@-*/
@@ -53,7 +52,7 @@ function [VAR_PREFIX]_spotlight_show( $options )
     $artConfig = art_load_config();
     art_define_url_delimiter();
 
-    $spotlightHandler = xoops_getModuleHandler("spotlight", $GLOBALS["artdirname"]);
+    $spotlightHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Spotlight", $GLOBALS["artdirname"]);
     $sp_data = $spotlightHandler->getContent(false, $options[0]);
     if (empty($sp_data)) return $block;
     foreach ($sp_data as $key => $val) {
@@ -111,7 +110,7 @@ function [VAR_PREFIX]_category_show($options)
     art_define_url_delimiter();
 
     $block = array();
-    $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+    $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
     $categories = $categoryHandler->getTree();
     $cats_counts = $categoryHandler->getArticleCounts(array_keys($categories));
     foreach ($categories as $id => $cat) {
@@ -148,7 +147,7 @@ function [VAR_PREFIX]_topic_show($options)
 
     $block = array();
     if (!isset($access_cats)) {
-        $permissionHandler = xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+        $permissionHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
         $access_cats = $permissionHandler->getCategories("access"); // get all accessible categories
     }
     if (!empty($options[1])) {
@@ -169,7 +168,7 @@ function [VAR_PREFIX]_topic_show($options)
     }
     $tops = array();
     $cids = array();
-    $topicHandler = xoops_getModuleHandler("topic", $GLOBALS["artdirname"]);
+    $topicHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Topic", $GLOBALS["artdirname"]);
     while (false !== ($row = $xoopsDB->fetchArray($result))) {
         $topic = $topicHandler->create(false);
         $topic->assignVars($row);
@@ -183,7 +182,7 @@ function [VAR_PREFIX]_topic_show($options)
         $cids[$row["cat_id"]] = 1;
     }
 
-    $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+    $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
     $criteria = new \Criteria("cat_id", "(" . implode(",", array_keys($cids)) . ")", "IN");
     $cats = $categoryHandler->getList($criteria);
 
@@ -202,7 +201,7 @@ function [VAR_PREFIX]_topic_edit($options)
 {
     $form = art_constant("MB_ITEMS") . "&nbsp;&nbsp;<input type=\"text\" name=\"options[0]\" value=\"" . $options[0] . "\"><br><br>";
 
-    $categoryHandler = xoops_getModuleHandler("category", $GLOBALS["artdirname"]);
+    $categoryHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Category", $GLOBALS["artdirname"]);
     $isAll = empty($options[1]);
     $options_cat = array_slice($options, 1); // get allowed categories
 

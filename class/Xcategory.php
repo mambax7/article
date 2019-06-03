@@ -1,4 +1,7 @@
 <?php
+
+namespace XoopsModules\Article;
+
 /**
  * Article module for XOOPS
  *
@@ -17,7 +20,7 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once  dirname(__DIR__) . '/include/vars.php';
+require_once dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
 /**
@@ -84,16 +87,15 @@ if (!class_exists('Xcategory')) {
 
 /**
  * Category object handler class.
- * @package   module::article
- *
+ * @param CLASS_PREFIX variable prefix for the class name
  * @author    D.J. (phppp)
  * @copyright copyright &copy; 2005 XOOPS Project
  *
- * {@link XoopsPersistableObjectHandler}
+ * {@link \XoopsPersistableObjectHandler}
  *
- * @param CLASS_PREFIX variable prefix for the class name
+ * @package   module::article
+ *
  */
-
 art_parse_class('
 class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
 {
@@ -102,7 +104,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
      *
      * @param object $db reference to the {@link XoopsDatabase} object
      **/
-    function __construct(\XoopsDatabase $db)
+    function __construct(\XoopsDatabase $db = null)
     {
         parent::__construct($db, art_DB_prefix("category", true), "Xcategory", "cat_id", "cat_title");
     }
@@ -131,7 +133,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
      */
     function setLastArticleIds($cat_id = null)
     {
-        if (is_array($cat_id) && count($cat_id) > 0) {
+        if ($cat_id && is_array($cat_id)) {
             foreach ($cat_id as $id) {
                 $cat =& $this->get($id);
                 $this->_setLastArticleIds($cat);
@@ -160,7 +162,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
         $criteria->setOrder("DESC");
         $artConfig = art_load_config();
         $limit = MAX($artConfig["articles_perpage"], 10);
-        $articleHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
+        $articleHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
         $articleIds = $articleHandler->getIdsByCategory($category, $limit, 0, $criteria);
         $category->setVar("cat_lastarticles", $articleIds);
         unset($articleIds);
@@ -201,7 +203,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
     function delete(\XoopsObject $category, $force = true, $forceDelete = false)
     {
         $des_cat = ($category->getVar("cat_pid")) ? $category->getVar("cat_pid") : 0; // move to parent category
-        $articleHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
+        $articleHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
         $articles = $articleHandler->getByCategory($category);
 
         if (!empty($forceDelete) || empty($des_cat)) {
@@ -241,7 +243,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
         $sql = "DELETE FROM " . art_DB_prefix("artcat") . " WHERE cat_id = " . $category->getVar("cat_id");
         $result = $this->db->{$queryFunc}($sql);
 
-        $topicHandler = xoops_getModuleHandler("topic", $GLOBALS["artdirname"]);
+        $topicHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Topic", $GLOBALS["artdirname"]);
         $topicHandler->deleteAll(new \Criteria("cat_id", $category->getVar("cat_id")));
 
         xoops_notification_deletebyitem($GLOBALS["xoopsModule"]->getVar("mid"), "category", $category->getVar("cat_id"));
@@ -249,7 +251,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
         $sql = "DELETE FROM " . $category->table . " WHERE cat_id = " . $category->getVar("cat_id");
         if ($result = $this->db->{$queryFunc}($sql)) {
 
-            $permissionHandler = xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+            $permissionHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
             $permissionHandler->deleteByCategory($category->getVar("cat_id"));
 
             return true;
@@ -278,7 +280,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
 
         $sql = "SELECT c.cat_id, c.cat_title FROM " . art_DB_prefix("category") . " AS c";
         $sql .= " LEFT JOIN " . art_DB_prefix("artcat") . " AS ac ON ac.cat_id=c.cat_id";
-        if (is_array($art_id) && count($art_id) > 0) {
+        if ($art_id && is_array($art_id)) {
             $sql .= " WHERE ac.art_id IN (" . implode(",", $art_id) . ")";
         } elseif ((int)($art_id)) {
             $sql .= " WHERE ac.art_id = " . (int)($art_id);
@@ -288,7 +290,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
 
         mod_loadFunctions("user", $GLOBALS["artdirname"]);
         if (!art_isAdministrator()) {
-            $permissionHandler = xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+            $permissionHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
             $allowed_cats =& $permissionHandler->getCategories();
             if (count($allowed_cats) == 0) return $ret;
             $sql .= " AND c.cat_id IN (" . implode(",", $allowed_cats) . ")";
@@ -328,7 +330,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
 
         mod_loadFunctions("user", $GLOBALS["artdirname"]);
         if (!art_isAdministrator()) {
-            $permissionHandler =  xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+            $permissionHandler =  \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
             $allowed_cats =& $permissionHandler->getCategories($permission);
             if ( count($allowed_cats) == 0 ) return $ret;
             $criteria = new \Criteria("cat_id", "(" . implode(",", $allowed_cats) . ")", "IN");
@@ -359,7 +361,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
         $criteria->setSort("cat_order");
         mod_loadFunctions("user", $GLOBALS["artdirname"]);
         if (!art_isAdministrator()) {
-            $permissionHandler =  xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+            $permissionHandler =  \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
             $allowed_cats =& $permissionHandler->getCategories($permission);
             if (count($allowed_cats) == 0) return $ret;
             $criteria->add(new \Criteria("cat_id", "(" . implode(", ", $allowed_cats) . ")", "IN"));
@@ -565,7 +567,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
      */
        function &getArticles(&$category, $limit = 0, $start = 0, $criteria = null, $tags = null, $asObject = true)
        {
-        if (is_array($tags) && count($tags) > 0) {
+        if ($tags && is_array($tags)) {
             $key_artid = array_search("art_id", $tags);
             if (is_numeric($key_artid)) {
                 $tags[$key_artid] = "a.art_id";
@@ -581,7 +583,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
         $sql .= " LEFT JOIN " . art_DB_prefix("artcat") . " AS ac ON ac.art_id=a.art_id";
         $sql .= " WHERE a.art_time_submit > 0";
         $sql .= " AND (a.cat_id = ac.cat_id OR a.art_time_publish > 0)";
-        if (is_array($category) && count($category) > 0) {
+        if ($category && is_array($category)) {
             $category = array_map("intval", $category);
             $sql .= " AND ac.cat_id IN (" . implode(",", $category) . ")";
         } else {
@@ -598,7 +600,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
         if (empty($orderSet)) $sql .= " ORDER BY ac.ac_publish DESC";
         $result = $this->db->query($sql, (int)($limit), (int)($start));
         $ret = array();
-        $articleHandler = xoops_getModuleHandler("article", $GLOBALS["artdirname"]);
+        $articleHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Article", $GLOBALS["artdirname"]);
           while (false !== ($myrow = $this->db->fetchArray($result))) {
             $article = $articleHandler->create(false);
             $article->assignVars($myrow);
@@ -689,7 +691,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
     function getArticleCount(&$cat_id, $criteria = null)
     {
         $sql = "SELECT COUNT(*) as count FROM " . art_DB_prefix("artcat") . " AS ac";
-        if (is_array($cat_id) && count($cat_id) > 0) {
+        if ($cat_id && is_array($cat_id)) {
             $sql .= " WHERE ac.cat_id IN (" . implode(",", $cat_id) . ")";
         } elseif (is_object($cat_id)) {
             $sql .= " WHERE ac.cat_id = " . $cat_id->getVar("cat_id");
@@ -736,7 +738,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
     function &getArticleCounts($cat_id = null, $criteria = null)
     {
         $sql = "SELECT ac.cat_id, COUNT(*) as count FROM " . art_DB_prefix("artcat") . " AS ac";
-        if (is_array($cat_id) && count($cat_id) > 0) {
+        if ($cat_id && is_array($cat_id)) {
             $sql .= " WHERE ac.cat_id IN (" . implode(",", $cat_id) . ")";
         } elseif ((int)($cat_id)) {
             $sql .= " WHERE ac.cat_id = " . (int)($cat_id);
@@ -766,7 +768,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
     function &getCategoryCounts($cat_pid=0, $permission = "access")
     {
         $sql = "SELECT cat_pid, COUNT(*) as count FROM " . $this->table;
-        if (is_array($cat_pid) && count($cat_pid) > 0) {
+        if ($cat_pid && is_array($cat_pid)) {
             $sql .= " WHERE cat_pid IN (" . implode(",", $cat_pid) . ")";
         } elseif ((int)($cat_pid)) {
             $sql .= " WHERE cat_pid = " . (int)($cat_pid);
@@ -775,7 +777,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
         }
         mod_loadFunctions("user", $GLOBALS["artdirname"]);
         if (!art_isAdministrator()) {
-            $permissionHandler =  xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+            $permissionHandler =  \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
             $allowed_cats =& $permissionHandler->getCategories($permission);
             if (count($allowed_cats) == 0) {
                 $ret = array();
@@ -819,7 +821,7 @@ class [CLASS_PREFIX]CategoryHandler extends \XoopsPersistableObjectHandler
             $permission = art_isModerator($category);
         } else {
             if (!isset($_cachedPerms[$type][$cat_id])) {
-                $getpermission =&  xoops_getModuleHandler("permission", $GLOBALS["artdirname"]);
+                $getpermission =&  \XoopsModules\Article\Helper::getInstance()->getHandler("Permission", $GLOBALS["artdirname"]);
                 $_cachedPerms[$type][$cat_id] = $getpermission->getPermission($type, $cat_id);
             }
             $permission = (!empty($_cachedPerms[$type][$cat_id])) ? 1 : 0;

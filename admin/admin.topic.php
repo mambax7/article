@@ -15,18 +15,19 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/admin_header.php';
 
 xoops_cp_header();
-require XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 //loadModuleAdminMenu(2);
+$adminObject->displayNavigation(basename(__FILE__));
 
 echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . art_constant('AM_TOPICS') . '</legend>';
 echo "<div style='padding: 8px;'>";
 
-$topicHandler = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
-$topic_counts =& $topicHandler->getCountsByCategory();
+$helper       = \XoopsModules\Article\Helper::getInstance();
+$topicHandler = $helper->getHandler('Topic', $GLOBALS['artdirname']);
+$topic_counts = &$topicHandler->getCountsByCategory();
 $counts       = [];
 foreach ($topic_counts as $id => $count) {
     if ($count > 0) {
@@ -36,7 +37,7 @@ foreach ($topic_counts as $id => $count) {
 $ids = array_keys($counts);
 if (count($ids) > 0) {
     echo '<br><span style="border: 1px solid #5E5D63; padding: 4px 8px;">' . art_constant('AM_CPTOPIC') . '</span>';
-    $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+    $categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
     $criteria        = new \Criteria('cat_id', '(' . implode(',', $ids) . ')', 'IN');
     $cat_titles      = $categoryHandler->getList($criteria);
     echo '<ul>';

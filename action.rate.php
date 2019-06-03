@@ -15,20 +15,19 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 $rate        = (int)(@$_POST['rate']);
 $article_id  = (int)(@$_POST['article']);
 $category_id = (int)(@$_POST['category']);
 $page        = (int)(@$_POST['page']);
-
+$helper      = \XoopsModules\Article\Helper::getInstance();
 if (empty($article_id)) {
     redirect_header('javascript:history.go(-1);', 1, art_constant('MD_INVALID'));
 }
 
-$articleHandler  = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$articleHandler  = $helper->getHandler('Article', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $article_obj     = $articleHandler->get($article_id);
 if (!$categoryHandler->getPermission($category_id, 'rate')) {
     $message = art_constant('MD_NOACCESS');
@@ -42,7 +41,7 @@ if (!$categoryHandler->getPermission($category_id, 'rate')) {
         $criteria->add(new \Criteria('rate_ip', $ip));
         $criteria->add(new \Criteria('rate_time', time() - 24 * 3600, '>'));
     }
-    $rateHandler = xoops_getModuleHandler('rate', $GLOBALS['artdirname']);
+    $rateHandler = $helper->getHandler('Rate', $GLOBALS['artdirname']);
     if ($count = $rateHandler->getCount($criteria)) {
         $message = art_constant('MD_ALREADYRATED');
     } else {
@@ -64,4 +63,4 @@ if (!$categoryHandler->getPermission($category_id, 'rate')) {
 }
 redirect_header(XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.article.php' . URL_DELIMITER . $article_id . '/p' . $page . '/c' . $category_id, 2, $message);
 
-include __DIR__ . '/footer.php';
+require_once __DIR__ . '/footer.php';

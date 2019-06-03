@@ -18,10 +18,10 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 
 /** @var Article\Helper $helper */
-$helper = Article\Helper::getInstance();
+$helper  = Article\Helper::getInstance();
 $isadmin = art_isAdministrator();
 if (!$isadmin) {
     redirect_header('index.php', 2, art_constant('MD_NOACCESS'));
@@ -41,9 +41,9 @@ if (empty($cat_id) && empty($category_id)) {
 $xoops_pagetitle                = $xoopsModule->getVar('name') . ' - ' . art_constant('MD_CPCATEGORY');
 $xoopsOption['xoops_pagetitle'] = $xoops_pagetitle;
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 $message         = art_constant('MD_ACTIONDONE');
 
 switch ($op) {

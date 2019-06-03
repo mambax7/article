@@ -18,7 +18,7 @@
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include __DIR__ . '/vars.php';
+require_once __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_TIME_LOADED', true);
 
 if (!defined('ART_FUNCTIONS_TIME')):
@@ -35,16 +35,16 @@ if (!defined('ART_FUNCTIONS_TIME')):
     {
         $artConfig = art_load_config();
 
-        if ('reg' === strtolower($format) || '' == strtolower($format)) {
+        if ('reg' === mb_strtolower($format) || '' == mb_strtolower($format)) {
             $format = 'c';
         }
-        if (('custom' === strtolower($format) || 'c' === strtolower($format))
+        if (('custom' === mb_strtolower($format) || 'c' === mb_strtolower($format))
             && !empty($artConfig['formatTimestamp_custom'])) {
             $format = $artConfig['formatTimestamp_custom'];
         }
 
         xoops_load('xoopslocal');
 
-        return XoopsLocal::formatTimestamp($time, $format, $timeoffset);
+        return \XoopsLocal::formatTimestamp($time, $format, $timeoffset);
     }
 endif;

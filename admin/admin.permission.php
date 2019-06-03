@@ -15,15 +15,16 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/admin_header.php';
 require_once XOOPS_ROOT_PATH . '/class/xoopsform/grouppermform.php';
-require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/permission.php';
+//require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/permission.php';
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/xoopsformloader.php';
 
 xoops_cp_header();
-require XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $xoopsModule->getVar('dirname') . '/include/vars.php';
 //loadModuleAdminMenu(4);
+
+$helper = \XoopsModules\Article\Helper::getInstance();
 
 function display_action_form($action = '')
 {
@@ -31,7 +32,7 @@ function display_action_form($action = '')
         'no'       => _SELECT,
         'template' => art_constant('AM_PERMISSION_TEMPLATE'),
         'apply'    => art_constant('AM_PERMISSION_TEMPLATE_APPLY'),
-        'default'  => art_constant('AM_PERMISSION_SETBYGROUP')
+        'default'  => art_constant('AM_PERMISSION_SETBYGROUP'),
     ];
     $actionform     = new \XoopsSimpleForm(art_constant('AM_PERMISSION_ACTION'), 'actionform', 'admin.permission.php', 'GET');
     $action_select  = new \XoopsFormSelect('', 'action', $action);
@@ -41,7 +42,7 @@ function display_action_form($action = '')
     $actionform->display();
 }
 
-$action = isset($_REQUEST['action']) ? strtolower($_REQUEST['action']) : '';
+$action = isset($_REQUEST['action']) ? mb_strtolower($_REQUEST['action']) : '';
 switch ($action) {
     case 'template':
         display_action_form($action);
@@ -49,7 +50,7 @@ switch ($action) {
         $memberHandler = xoops_getHandler('member');
         $glist         = $memberHandler->getGroupList();
         $elements      = [];
-        $permHandler   = xoops_getModuleHandler('permission', $GLOBALS['artdirname']);
+        $permHandler   = $helper->getHandler('Permission', $GLOBALS['artdirname']);
         $perm_template = $permHandler->getTemplate($groupid = 0);
         foreach (array_keys($glist) as $i) {
             $selected   = !empty($perm_template[$i]) ? array_keys($perm_template[$i]) : [];
@@ -87,9 +88,8 @@ switch ($action) {
         $ret .= '</table></form>';
         echo $ret;
         break;
-
     case 'template_save':
-        $permHandler = xoops_getModuleHandler('permission', $GLOBALS['artdirname']);
+        $permHandler = $helper->getHandler('Permission', $GLOBALS['artdirname']);
         $res         = $permHandler->setTemplate($_POST['perms'], $groupid = 0);
         if ($res) {
             redirect_header('admin.permission.php?action=template', 2, art_constant('AM_PERMISSION_TEMPLATE_CREATED'));
@@ -97,9 +97,8 @@ switch ($action) {
             redirect_header('admin.permission.php?action=template', 2, art_constant('AM_PERMISSION_TEMPLATE_ERROR'));
         }
         break;
-
     case 'apply':
-        $permHandler   = xoops_getModuleHandler('permission', $GLOBALS['artdirname']);
+        $permHandler   = $helper->getHandler('Permission', $GLOBALS['artdirname']);
         $perm_template = $permHandler->getTemplate();
         if (null === $perm_template) {
             redirect_header('admin.permission.php?action=template', 2, art_constant('AM_PERMISSION_TEMPLATE_EMPTY'));
@@ -107,8 +106,8 @@ switch ($action) {
 
         display_action_form($action);
 
-        $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-        $categories      =& $categoryHandler->getTree(0, 'submit', '--');
+        $categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+        $categories      = &$categoryHandler->getTree(0, 'submit', '--');
         $cat_options     = [];
         foreach ($categories as $id => $cat) {
             $cat_options[$id] = $cat['prefix'] . $cat['cat_title'];
@@ -125,12 +124,11 @@ switch ($action) {
         $fmform->addElement($tray);
         $fmform->display();
         break;
-
     case 'apply_save':
         if (empty($_POST['categories'])) {
             break;
         }
-        $permHandler = xoops_getModuleHandler('permission', $GLOBALS['artdirname']);
+        $permHandler = $helper->getHandler('Permission', $GLOBALS['artdirname']);
         foreach ($_POST['categories'] as $category) {
             if ($category < 1) {
                 continue;
@@ -138,11 +136,10 @@ switch ($action) {
             $permHandler->applyTemplate($category, $xoopsModule->getVar('mid'));
         }
         // Since we can not control the permission update, a trick is used here
-        $permissionHandler = xoops_getModuleHandler('permission', $GLOBALS['artdirname']);
+        $permissionHandler = $helper->getHandler('Permission', $GLOBALS['artdirname']);
         $permissionHandler->createPermData();
         redirect_header('admin.permission.php', 2, art_constant('AM_PERMISSION_TEMPLATE_APPLIED'));
         break;
-
     default:
         echo "<fieldset><legend style='font-weight: bold; color: #900;'>" . art_constant('AM_PERMISSION') . '</legend>';
         echo "<div style='padding: 8px;'>";
@@ -158,8 +155,8 @@ switch ($action) {
                 'title'     => art_constant('AM_PERMISSION_GLOBAL'),
                 'item'      => 'global',
                 'desc'      => '',
-                'anonymous' => true
-            ]
+                'anonymous' => true,
+            ],
         ];
         foreach ($GLOBALS['perms_category'] as $perm => $perm_info) {
             $op_options[$perm] = $perm_info['title'];
@@ -167,7 +164,7 @@ switch ($action) {
                 'title'     => $perm_info['title'],
                 'item'      => $perm,
                 'desc'      => $perm_info['desc'],
-                'anonymous' => true
+                'anonymous' => true,
             ];
             if ('moderate' === $perm) {
                 $fm_options[$perm]['anonymous'] = false;
@@ -175,11 +172,11 @@ switch ($action) {
         }
 
         $op_keys = array_keys($op_options);
-        $op      = isset($_GET['op']) ? strtolower($_GET['op']) : (isset($_COOKIE[$GLOBALS['artdirname'] . '_perm_op']) ? strtolower($_COOKIE[$GLOBALS['artdirname'] . '_perm_op']) : '');
+        $op      = isset($_GET['op']) ? mb_strtolower($_GET['op']) : (isset($_COOKIE[$GLOBALS['artdirname'] . '_perm_op']) ? mb_strtolower($_COOKIE[$GLOBALS['artdirname'] . '_perm_op']) : '');
         if (empty($op)) {
             $op = $op_keys[0];
             setcookie($GLOBALS['artdirname'] . '_perm_op', isset($op_keys[1]) ? $op_keys[1] : '');
-        } elseif (false !== ($key = array_search($op, $op_keys))) {
+        } elseif (false !== ($key = array_search($op, $op_keys, true))) {
             setcookie($GLOBALS['artdirname'] . '_perm_op', isset($op_keys[$key + 1]) ? $op_keys[$key + 1] : '');
         }
 
@@ -197,8 +194,8 @@ switch ($action) {
                 $form_perm->addItem($perm_info['id'], $perm_info['title']);
             }
         } else {
-            $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
-            $categories      =& $categoryHandler->getSubCategories();
+            $categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
+            $categories      = &$categoryHandler->getSubCategories();
             $form_perm       = new \XoopsGroupPermForm($GLOBALS['perms_category'][$op]['title'], $xoopsModule->getVar('mid'), $op, $GLOBALS['perms_category'][$op]['desc'], 'admin/admin.permission.php', $fm_options[$op]['anonymous']);
             foreach ($categories as $cat_id => $cat) {
                 $form_perm->addItem($cat_id, $cat->getVar('cat_title'), $cat->getVar('cat_pid'));
@@ -207,7 +204,7 @@ switch ($action) {
         $form_perm->display();
 
         // Since we can not control the permission update, a trick is used here
-        $permissionHandler = xoops_getModuleHandler('permission', $GLOBALS['artdirname']);
+        $permissionHandler = $helper->getHandler('Permission', $GLOBALS['artdirname']);
         $permissionHandler->createPermData();
 
         break;
@@ -256,7 +253,7 @@ switch ($action) {
  $form_perm->addItem($perm_info["id"], $perm_info["title"]);
  }
  } else {
- $categoryHandler = xoops_getModuleHandler('category', $GLOBALS["artdirname"]);
+ $categoryHandler = $helper->getHandler('category', $GLOBALS["artdirname"]);
  $categories =& $categoryHandler->getSubCategories();
  $form_perm = new \XoopsGroupPermForm($GLOBALS["perms_category"][$op]['title'], $mid, $op, $GLOBALS["perms_category"][$op]['desc'], 'admin/admin.permission.php', $fm_options[$op]["anonymous"]);
  foreach ($categories as $cat_id => $cat) {

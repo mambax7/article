@@ -16,9 +16,11 @@
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
 
+use XoopsModules\Article;
+
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
 
-include __DIR__ . '/vars.php';
+require_once __DIR__ . '/vars.php';
 define($GLOBALS['artdirname'] . '_FUNCTIONS_LOADED', true);
 
 if (!defined('ART_FUNCTIONS')):
@@ -36,8 +38,7 @@ if (!defined('ART_FUNCTIONS')):
 
     /**
      * Function to display messages
-     *
-     * @var mixed $messages
+     * @param mixed $message
      * @return bool
      */
     function art_message($message)
@@ -85,8 +86,8 @@ if (!defined('ART_FUNCTIONS')):
             $_value = $value ? explode(',', $value) : [];
             $value  = [];
             foreach ($_value as $string) {
-                $key         = substr($string, 0, strpos($string, '|'));
-                $val         = substr($string, strpos($string, '|') + 1);
+                $key         = mb_substr($string, 0, mb_strpos($string, '|'));
+                $val         = mb_substr($string, mb_strpos($string, '|') + 1);
                 $value[$key] = $val;
             }
             unset($_value);
@@ -112,20 +113,21 @@ if (!defined('ART_FUNCTIONS')):
         }
         if (0 == $pid) {
             return $list;
-        } else {
-            return @$list[$pid];
         }
+
+        return @$list[$pid];
     }
 
     function art_createSubCategoryList()
     {
-        $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+        $helper          = \XoopsModules\Article\Helper::getInstance();
+        $categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
         $criteria        = new \CriteriaCompo('1', 1);
         $criteria->setSort('cat_pid ASC, cat_order');
         $criteria->setOrder('ASC');
         $categories_obj = $categoryHandler->getObjects($criteria);
-        require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/tree.php';
-        $tree           = new artTree($categories_obj, 'cat_id', 'cat_pid');
+
+        $tree           = new Article\Tree($categories_obj, 'cat_id', 'cat_pid');
         $category_array = [];
         foreach (array_keys($categories_obj) as $key) {
             if (!$child = array_keys($tree->getAllChild($categories_obj[$key]->getVar('cat_id')))) {

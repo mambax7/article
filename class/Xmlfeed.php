@@ -1,4 +1,7 @@
 <?php
+
+namespace XoopsModules\Article;
+
 /**
  * Article module for XOOPS
  *
@@ -17,12 +20,12 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-include  dirname(__DIR__) . '/include/vars.php';
-include  dirname(__DIR__) . '/include/functions.parse.php';
+require_once dirname(__DIR__) . '/include/vars.php';
+require_once dirname(__DIR__) . '/include/functions.parse.php';
 xoops_load('xoopslocal');
 
 /*** GENERAL USAGE *********************************************************
- * $xmlHandler = xoops_getModuleHandler("xml", $xoopsModule->getVar("dirname"));
+ * $xmlHandler = \XoopsModules\Article\Helper::getInstance()->getHandler("Xml", $xoopsModule->getVar("dirname"));
  * $xml = $xmlHandler->create("RSS0.91");
  * $xml->setVar("title", $title);
  * $xml->setVar("description", $description);
@@ -70,12 +73,12 @@ require_once __DIR__ . '/feedcreator.class.php';
 /**
  * Description
  *
- * @param  type $var description
+ * @param type $var description
  * @return type description
  * @link
  */
 if (!class_exists('Xmlfeed')) {
-    class Xmlfeed extends UniversalFeedCreator
+    class Xmlfeed extends \UniversalFeedCreator
     {
         public $version;
         public $filename = '';
@@ -101,7 +104,7 @@ if (!class_exists('Xmlfeed')) {
                     $val[$key] = $this->convert_encoding($val[$key]);
                 }
             } else {
-                $val = XoopsLocal::convert_encoding($val, $this->encoding, _CHARSET);
+                $val = \XoopsLocal::convert_encoding($val, $this->encoding, _CHARSET);
             }
 
             return $val;
@@ -114,7 +117,7 @@ if (!class_exists('Xmlfeed')) {
 
         public function setImage(&$img)
         {
-            $image = new FeedImage();
+            $image = new \FeedImage();
             foreach ($img as $key => $val) {
                 $image->$key = $this->convert_encoding($val);
             }
@@ -123,7 +126,7 @@ if (!class_exists('Xmlfeed')) {
 
         public function _addItem(&$itm)
         {
-            $item = new FeedItem();
+            $item = new \FeedItem();
             foreach ($itm as $key => $val) {
                 $item->$key = $this->convert_encoding($val);
             }
@@ -142,49 +145,3 @@ if (!class_exists('Xmlfeed')) {
     }
 }
 
-art_parse_class('
-class [CLASS_PREFIX]XmlHandler
-{
-    function &create($format = "RSS0.91")
-    {
-        $xmlfeed = new Xmlfeed($format);
-
-        return $xmlfeed;
-    }
-
-    function display(&$feed, $filename = "", $display = false)
-    {
-        if (!is_object($feed)) return null;
-        if ($display) {
-            $filename = empty($filename) ? $feed->filename : $filename;
-            $feed->saveFeed($feed->version, $filename);
-        } elseif (empty($filename)) {
-            $content = $feed->createFeed($feed->version);
-
-            return $content;
-        }
-    }
-
-    function insert($feed)
-    {
-        $xml_data = array();
-        $xml_data["version"] = $feed->version;
-        $xml_data["encoding"] = $feed->encoding;
-        $xml_data["image"] = $feed->image;
-        $xml_data["items"] = $feed->items;
-
-        return $xml_data;
-    }
-
-    function &get(&$feed)
-    {
-        $xml_data = array();
-        $xml_data["version"] = $feed->version;
-        $xml_data["encoding"] = $feed->encoding;
-        $xml_data["image"] = $feed->image;
-        $xml_data["items"] = $feed->items;
-
-        return $xml_data;
-    }
-}
-');

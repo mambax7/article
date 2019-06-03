@@ -15,8 +15,7 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/admin_header.php';
 /*
  * The feature is to be reactivated after article 1.0 release
  *

@@ -18,10 +18,9 @@
 
 use XoopsModules\Article;
 
-include __DIR__ . '/header.php';
+require_once __DIR__ . '/header.php';
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
-
 
 // Valid types of articles for regular applications, except author view
 $valid_types = [
@@ -35,38 +34,38 @@ $valid_types = [
 $valid_sorts = [
     'id'           => [
         'key'   => 'art_id',
-        'title' => art_constant('MD_DEFAULT')
+        'title' => art_constant('MD_DEFAULT'),
     ],
     'time_publish' => [
         'key'   => 'art_time_publish',
-        'title' => art_constant('MD_TIME')
+        'title' => art_constant('MD_TIME'),
     ],
     'title'        => [
         'key'   => 'art_title',
-        'title' => art_constant('MD_TITLE')
+        'title' => art_constant('MD_TITLE'),
     ],
     'rating'       => [
         'key'   => 'art_rating/art_rates',
         'tag'   => 'art_rating, art_rates',
-        'title' => art_constant('MD_RATE')
+        'title' => art_constant('MD_RATE'),
     ],
     'counter'      => [
         'key'   => 'art_counter',
-        'title' => art_constant('MD_VIEWS')
+        'title' => art_constant('MD_VIEWS'),
     ],
     'comments'     => [
         'key'   => 'art_comments',
-        'title' => art_constant('MD_COMMENTS')
+        'title' => art_constant('MD_COMMENTS'),
     ],
     'trackbacks'   => [
         'key'   => 'art_trackbacks',
-        'title' => art_constant('MD_TRACKBACKS')
+        'title' => art_constant('MD_TRACKBACKS'),
     ],
 ];
 // Sort order
 $valid_orders = [
     'DESC' => art_constant('MD_DESC'),
-    'ASC'  => art_constant('MD_ASC')
+    'ASC'  => art_constant('MD_ASC'),
 ];
 
 /*
@@ -85,20 +84,21 @@ $uid         = \Xmf\Request::getInt('uid', @$args['uid'], 'GET');
 $start       = \Xmf\Request::getInt('start', @$args['start'], 'GET');
 $type        = \Xmf\Request::getString('type', @$args['type'], 'GET');
 $sort        = \Xmf\Request::getString('sort', @$args['sort'], 'GET');
-$order       = array_key_exists($order = strtoupper(\Xmf\Request::getString('order', @$args['order'], 'GET')), $valid_orders) ? $order : 'DESC';
+$order       = array_key_exists($order = mb_strtoupper(\Xmf\Request::getString('order', @$args['order'], 'GET')), $valid_orders) ? $order : 'DESC';
 
 /*
  * Instantiate category object and check access permissions
  */
 $tracks_extra    = [];
-$categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+$category_obj    = null;
+$categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
 if (!empty($topic_id)) {
-    $topicHandler   = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+    $topicHandler   = $helper->getHandler('Topic', $GLOBALS['artdirname']);
     $topic_obj      = $topicHandler->get($topic_id);
     $category_id    = $topic_obj->getVar('cat_id');
     $tracks_extra[] = [
         'title' => $topic_obj->getVar('top_title'),
-        'link'  => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.topic.php' . URL_DELIMITER . $topic_id
+        'link'  => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.topic.php' . URL_DELIMITER . $topic_id,
     ];
 }
 if (!empty($category_id)) {
@@ -140,7 +140,7 @@ if (!empty($uid)) {
     }
     $tracks_extra[] = [
         'title' => $author_obj->getVar('uname'),
-        'link'  => XOOPS_URL . "/userinfo.php?uid={$uid}"
+        'link'  => XOOPS_URL . "/userinfo.php?uid={$uid}",
     ];
 
     unset($valid_types['s']);
@@ -162,15 +162,13 @@ if (!empty($uid)) {
 
 $type       = array_key_exists($type, $valid_types) ? $type : 'a';
 $byCategory = true;
-switch (strtolower($type)) {
-
+switch (mb_strtolower($type)) {
     case 'created':
     case 'c':
         $art_criteria = new \CriteriaCompo(new \Criteria('art_time_submit', 0));
         $art_criteria->add(new \Criteria('cat_id', 0), 'OR');
         $byCategory = false;
         break;
-
     case 'submitted':
     case 'm':
         $art_criteria = new \CriteriaCompo(new \Criteria('art_time_publish', 0));
@@ -178,23 +176,19 @@ switch (strtolower($type)) {
         $art_criteria->add(new \Criteria('cat_id', 0, '>'));
         $byCategory = false;
         break;
-
     case 'registered':
     case 'r':
         $art_criteria = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0));
         break;
-
     case 'published':
     case 'p':
         $art_criteria = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
         $art_criteria->add(new \Criteria('ac.ac_feature', 0));
         break;
-
     case 'featured':
     case 'f':
         $art_criteria = new \CriteriaCompo(new \Criteria('ac.ac_feature', 0, '>'));
         break;
-
     case 'spotlight':
     case 's':
         $art_criteria = new \CriteriaCompo(new \Criteria('art_id', 0, '>'));
@@ -204,7 +198,6 @@ switch (strtolower($type)) {
         $valid_sorts = ['id' => $_sort];
         $byCategory  = false;
         break;
-
     default:
         $art_criteria = new \CriteriaCompo(new \Criteria('ac.ac_publish', 0, '>'));
         $type         = 'a';
@@ -221,9 +214,9 @@ $xoopsOption['xoops_pagetitle'] = $xoopsModule->getVar('name') . (null === $cate
 $xoopsOption['template_main']       = art_getTemplate('list', $helper->getConfig('template'));
 $xoopsOption['xoops_module_header'] = art_getModuleHeader($helper->getConfig('template'));
 require_once XOOPS_ROOT_PATH . '/header.php';
-include XOOPS_ROOT_PATH . '/modules/' . $helper->getDirname() . '/include/vars.php';
+require_once XOOPS_ROOT_PATH . '/modules/' . $helper->getDirname() . '/include/vars.php';
 
-$articleHandler = xoops_getModuleHandler('article', $GLOBALS['artdirname']);
+$articleHandler = $helper->getHandler('Article', $GLOBALS['artdirname']);
 
 if (!empty($uid)) {
     $art_criteria->add(new \Criteria(($byCategory ? 'a.' : '') . 'uid', $uid));
@@ -233,7 +226,7 @@ $sort = array_key_exists($sort, $valid_sorts) ? $sort : 'id';
 $sp_data     = [];
 $articles_id = [];
 if ('s' === $type) {
-    $spotlightHandler = xoops_getModuleHandler('spotlight', $GLOBALS['artdirname']);
+    $spotlightHandler = $helper->getHandler('Spotlight', $GLOBALS['artdirname']);
     $articles_count   = $spotlightHandler->getCount($art_criteria);
     $art_criteria->setSort($valid_sorts[$sort]['key']);
     $art_criteria->setOrder($order);
@@ -246,7 +239,7 @@ if ('s' === $type) {
             'id'      => $spotlights_obj[$sid]->getVar('art_id'),
             //"image"        => $spotlights_obj[$sid]->getImage(),
             'time'    => $spotlights_obj[$sid]->getTime($helper->getConfig('timeformat')),
-            'sp_note' => $spotlights_obj[$sid]->getVar('sp_note')
+            'sp_note' => $spotlights_obj[$sid]->getVar('sp_note'),
         ];
     }
     $articles_id = array_keys($articles_id);
@@ -276,7 +269,7 @@ if (count($articles_id) > 0) {
         'art_pages',
         'art_categories',
         'art_time_publish',
-        'art_counter'
+        'art_counter',
     ];
     if (!empty($helper->getConfig('display_summary'))) {
         $tags[] = 'art_summary';
@@ -312,7 +305,7 @@ if (!empty($writer_array)) {
 
 $articles = [];
 foreach ($articles_id as $id) {
-    $article  =& $articles_obj[$id];
+    $article  = &$articles_obj[$id];
     $_article = [
         'id'      => $id,
         'title'   => $articles_obj[$id]->getVar('art_title'),
@@ -321,7 +314,7 @@ foreach ($articles_id as $id) {
         'time'    => $articles_obj[$id]->getTime($helper->getConfig('timeformat')),
         'counter' => $articles_obj[$id]->getVar('art_counter'),
         'image'   => $articles_obj[$id]->getVar('art_image') ? 1 : 0,
-        'summary' => $article->getSummary(!empty($helper->getConfig('display_summary')))
+        'summary' => $article->getSummary(!empty($helper->getConfig('display_summary'))),
     ];
     if (in_array($sort, ['comments', 'trackbacks'])) {
         $_article[$sort] = $articles_obj[$id]->getVar($valid_sorts[$sort]['key']);
@@ -338,7 +331,7 @@ foreach ($articles_id as $id) {
                 }
                 $_article['categories'][$catid] = [
                     'id'    => $catid,
-                    'title' => $categories_obj[$catid]->getVar('cat_title')
+                    'title' => $categories_obj[$catid]->getVar('cat_title'),
                 ];
             }
         }
@@ -366,32 +359,32 @@ if (!empty($author_obj)):
     $author = [
         'uid'    => $uid,
         'avatar' => $avatar,
-        'uname'  => $author_obj->getVar('uname')
+        'uname'  => $author_obj->getVar('uname'),
     ];
 
     xoops_loadLanguage('user');
     if ($author_obj->getVar('name')) {
         $author['profiles'][] = [
             'title'   => _US_REALNAME,
-            'content' => $author_obj->getVar('name')
+            'content' => $author_obj->getVar('name'),
         ];
     }
     if ($author_obj->getVar('url')) {
         $author['profiles'][] = [
             'title'   => _US_WEBSITE,
-            'content' => $author_obj->getVar('url')
+            'content' => $author_obj->getVar('url'),
         ];
     }
     if ($author_obj->getVar('user_viewemail') || (!empty($xoopsUser) && $xoopsUser->isAdmin())) {
         $author['profiles'][] = [
             'title'   => _US_EMAIL,
-            'content' => checkEmail($author_obj->getVar('email'), true)
+            'content' => checkEmail($author_obj->getVar('email'), true),
         ];
     }
     if ($author_obj->getVar('bio')) {
         $author['profiles'][] = [
             'title'   => _US_EXTRAINFO,
-            'content' => $author_obj->getVar('bio')
+            'content' => $author_obj->getVar('bio'),
         ];
     }
 
@@ -414,7 +407,7 @@ if (!empty($author_obj)):
         if ($xoopsuser_is_admin) {
             $mods[] = [
                 'url'   => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/',
-                'title' => $xoopsModule->getVar('name')
+                'title' => $xoopsModule->getVar('name'),
             ];
         }
         foreach ($categories_obj as $id => $cat_obj) {
@@ -423,14 +416,14 @@ if (!empty($author_obj)):
             }
             $mods[] = [
                 'url'   => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.category.php' . URL_DELIMITER . $id,
-                'title' => $cat_obj->getVar('cat_title')
+                'title' => $cat_obj->getVar('cat_title'),
             ];
         }
         $author['mods']  = $mods;
         $author['stats'] = [
             'articles' => $count_articles,
             'featured' => $count_featured,
-            'topics'   => $count_topic
+            'topics'   => $count_topic,
         ];
     }
 endif;
@@ -439,7 +432,7 @@ endif;
 $pagequery = (!empty($topic_id) ? "t{$topic_id}/" : (!empty($category_id) ? "c{$category_id}/" : '')) . (empty($uid) ? '' : "u{$uid}/");
 
 if ($articles_count > $helper->getConfig('articles_perpage')) {
-    include XOOPS_ROOT_PATH . '/class/pagenav.php';
+    require_once XOOPS_ROOT_PATH . '/class/pagenav.php';
     $_query = $pagequery . (empty($uid) ? '' : "u{$uid}/") . (empty($type) ? 'a/' : "{$type}/") . (empty($sort) ? 'id' : "{$sort}/") . (empty($order) ? '' : "{$order}/");
 
     $nav     = new \XoopsPageNav($articles_count, $helper->getConfig('articles_perpage'), $start, 'start', $pagequery);
@@ -482,24 +475,24 @@ if (!empty($author_obj)):
     ++$i;
     $page_meta[$i] = [
         'title' => $author_obj->getVar('uname'),
-        'link'  => XOOPS_URL . "/userinfo.php?uid={$uid}"
+        'link'  => XOOPS_URL . "/userinfo.php?uid={$uid}",
     ];
 endif;
 ++$i;
 $page_meta[$i] = [
     'title' => art_constant('MD_LIST'),
-    'link'  => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.list.php' . URL_DELIMITER . $pagequery
+    'link'  => XOOPS_URL . '/modules/' . $GLOBALS['artdirname'] . '/view.list.php' . URL_DELIMITER . $pagequery,
 ];
 ++$i;
 $page_meta[$i] = [
     'title' => $type_title,
-    'link'  => $page_meta[$i - 1]['link'] . (empty($type) ? 'a/' : "{$type}/")
+    'link'  => $page_meta[$i - 1]['link'] . (empty($type) ? 'a/' : "{$type}/"),
 ];
 if ('id' !== $sort):
     ++$i;
     $page_meta[$i] = [
         'title' => sprintf(art_constant('MD_SORTORDER'), $valid_sorts[$sort]['title'], $valid_orders[$order]),
-        'link'  => $page_meta[$i - 1]['link'] . "{$sort}/{$order}/"
+        'link'  => $page_meta[$i - 1]['link'] . "{$sort}/{$order}/",
     ];
 endif;
 

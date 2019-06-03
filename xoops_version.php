@@ -17,15 +17,15 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-include __DIR__ . '/preloads/autoloader.php';
+require_once __DIR__ . '/preloads/autoloader.php';
 
-include __DIR__ . '/include/vars.php';
+require_once __DIR__ . '/include/vars.php';
 
 $modversion = [
+    'version'       => 2.20,
+    'module_status' => 'Beta 1',
+    'release_date'  => '2019/05/30',
     'name'          => art_constant('MI_NAME'),
-    'version'       => 2.10,
-    'module_status' => 'Beta 2',
-    'release_date'  => '2017/01/04',
     'description'   => art_constant('MI_DESC'),
     'credits'       => 'XOOPS Project, The WF-projects, The Xoops China Community',
     'image'         => 'assets/images/logoModule.png',
@@ -37,22 +37,19 @@ $modversion = [
 $modversion['help']        = 'page=help';
 $modversion['license']     = 'GNU GPL 2.0 or later';
 $modversion['license_url'] = 'www.gnu.org/licenses/gpl-2.0.html';
-//$modversion['dirmoduleadmin'] = '/Frameworks/moduleclasses/moduleadmin';
-//$modversion['icons16']        = '../../Frameworks/moduleclasses/icons/16';
-//$modversion['icons32']        = '../../Frameworks/moduleclasses/icons/32';
-$modversion['modicons16'] = 'assets/images/icons/16';
-$modversion['modicons32'] = 'assets/images/icons/32';
+$modversion['modicons16']  = 'assets/images/icons/16';
+$modversion['modicons32']  = 'assets/images/icons/32';
 //about
 $modversion['module_website_url']  = 'www.xoops.org';
 $modversion['module_website_name'] = 'XOOPS';
 $modversion['min_php']             = '5.5';
-$modversion['min_xoops']           = '2.5.9';
+$modversion['min_xoops']           = '2.5.10';
 $modversion['min_admin']           = '1.2';
 $modversion['min_db']              = ['mysql' => '5.5'];
 
 // Is performing module install/update?
 $isModuleAction = (!empty($_POST['fct']) && 'modulesadmin' === $_POST['fct']) ? true : false;
-$isModuleAction = (!empty($_POST['module'])) ? true : $isModuleAction;
+$isModuleAction = !empty($_POST['module']) ? true : $isModuleAction;
 
 // database tables
 $modversion['sqlfile']['mysql'] = 'sql/mysql.sql';
@@ -69,7 +66,7 @@ $modversion['tables']           = [
     $GLOBALS['ART_DB_PREFIX'] . '_spotlight',
     $GLOBALS['ART_DB_PREFIX'] . '_rate',
     $GLOBALS['ART_DB_PREFIX'] . '_text',
-    $GLOBALS['ART_DB_PREFIX'] . '_writer'
+    $GLOBALS['ART_DB_PREFIX'] . '_writer',
 ];
 
 // Admin things
@@ -133,7 +130,7 @@ $modversion['blocks'][1] = [
     'show_func'   => $GLOBALS['ART_VAR_PREFIX'] . '_spotlight_show',
     'options'     => '0|0',
     'edit_func'   => $GLOBALS['ART_VAR_PREFIX'] . '_spotlight_edit',
-    'template'    => $GLOBALS['artdirname'] . '_block_spotlight.tpl'
+    'template'    => $GLOBALS['artdirname'] . '_block_spotlight.tpl',
 ];
 
 /*
@@ -152,7 +149,7 @@ $modversion['blocks'][] = [
     'show_func'   => $GLOBALS['ART_VAR_PREFIX'] . '_article_show',
     'options'     => 'time|10|2|0|c|0',
     'edit_func'   => $GLOBALS['ART_VAR_PREFIX'] . '_article_edit',
-    'template'    => $GLOBALS['artdirname'] . '_block_article.tpl'
+    'template'    => $GLOBALS['artdirname'] . '_block_article.tpl',
 ];
 
 $modversion['blocks'][] = [
@@ -160,7 +157,7 @@ $modversion['blocks'][] = [
     'name'        => art_constant('MI_CATEGORY'),
     'description' => art_constant('MI_CATEGORY_DESC'),
     'show_func'   => $GLOBALS['ART_VAR_PREFIX'] . '_category_show',
-    'template'    => $GLOBALS['artdirname'] . '_block_category.tpl'
+    'template'    => $GLOBALS['artdirname'] . '_block_category.tpl',
 ];
 
 $modversion['blocks'][] = [
@@ -170,7 +167,7 @@ $modversion['blocks'][] = [
     'show_func'   => $GLOBALS['ART_VAR_PREFIX'] . '_topic_show',
     'options'     => '10|0', // MaxItems|CategoryIds
     'edit_func'   => $GLOBALS['ART_VAR_PREFIX'] . '_topic_edit',
-    'template'    => $GLOBALS['artdirname'] . '_block_topic.tpl'
+    'template'    => $GLOBALS['artdirname'] . '_block_topic.tpl',
 ];
 
 $modversion['blocks'][] = [
@@ -180,7 +177,7 @@ $modversion['blocks'][] = [
     'show_func'   => $GLOBALS['ART_VAR_PREFIX'] . '_author_show',
     'options'     => '10', // MaxItems
     'edit_func'   => $GLOBALS['ART_VAR_PREFIX'] . '_author_edit',
-    'template'    => $GLOBALS['artdirname'] . '_block_author.tpl'
+    'template'    => $GLOBALS['artdirname'] . '_block_author.tpl',
 ];
 
 /*
@@ -271,7 +268,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $do_urw = true;
@@ -285,7 +282,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => $do_urw,
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $theme_set = [_NONE => '0'];
@@ -302,7 +299,7 @@ $modversion['config'][] = [
     'valuetype'   => 'text',
     'options'     => $theme_set,
     'default'     => '',
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $templates = ['default'];
@@ -318,7 +315,7 @@ $modversion['config'][] = [
     'valuetype'   => 'text',
     'options'     => $templates,
     'default'     => 'default',
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -335,7 +332,7 @@ $modversion['config'][] = [
      $GLOBALS["ART_VAR_PREFIXU"] . "_MI_TIMEFORMAT_CUSTOM" => "c"),
      */
     'default'     => 'c',
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -345,7 +342,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -355,7 +352,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -365,7 +362,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -375,7 +372,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 10,
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -385,7 +382,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 4,
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -395,7 +392,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 5,
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -405,7 +402,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 5,
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -415,7 +412,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 5,
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -425,7 +422,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 10,
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -435,7 +432,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 0,
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 // For artcile uploaded files: image, attachment, html ...
@@ -446,7 +443,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'text',
     'default'     => 'uploads/' . $GLOBALS['artdirname'] . '/file',
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 // For utility images: category
@@ -457,7 +454,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'text',
     'default'     => 'uploads/' . $GLOBALS['artdirname'] . '/image',
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -467,7 +464,7 @@ $modversion['config'][] = [
     'formtype'    => 'textarea',
     'valuetype'   => 'text',
     'default'     => sprintf('%s :: %s - %s', $xoopsConfig['sitename'], art_constant('MI_NAME'), art_constant('MI_DESC')),
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 $modversion['config'][] = [
@@ -477,7 +474,7 @@ $modversion['config'][] = [
     'formtype'    => 'textarea',
     'valuetype'   => 'text',
     'default'     => 'https://xoops.org XOOPS Projects',
-    'category'    => 'module'
+    'category'    => 'module',
 ];
 
 // Article
@@ -495,26 +492,26 @@ $modversion['config'][] = [
 
 $forum_options = [_NONE => 0];
 if ($isModuleAction) {
-    /** @var XoopsModuleHandler $moduleHandler */
+    /** @var \XoopsModuleHandler $moduleHandler */
     $moduleHandler = xoops_getHandler('module');
     $newbb         = $moduleHandler->getByDirname('newbb');
     if (is_object($newbb) && $newbb->getVar('isactive')) {
-        $forumHandler = xoops_getModuleHandler('forum', 'newbb', true);
+        $forumHandler = \XoopsModules\Newbb\Helper::getInstance()->getHandler('Forum');
         /* the acient NewBB module is not supported */
         if (is_object($forumHandler) && method_exists($forumHandler, 'getForumsByCategory')):
             $forums = $forumHandler->getForumsByCategory(0, '', false);
-        foreach (array_keys($forums) as $c) {
-            foreach (array_keys($forums[$c]) as $f) {
-                $forum_options[$forums[$c][$f]['title']] = $f;
-                if (!isset($forums[$c][$f]['sub'])) {
-                    continue;
-                }
-                foreach (array_keys($forums[$c][$f]['sub']) as $s) {
-                    $forum_options['-- ' . $forums[$c][$f]['sub'][$s]['title']] = $s;
+            foreach (array_keys($forums) as $c) {
+                foreach (array_keys($forums[$c]) as $f) {
+                    $forum_options[$forums[$c][$f]['title']] = $f;
+                    if (!isset($forums[$c][$f]['sub'])) {
+                        continue;
+                    }
+                    foreach (array_keys($forums[$c][$f]['sub']) as $s) {
+                        $forum_options['-- ' . $forums[$c][$f]['sub'][$s]['title']] = $s;
+                    }
                 }
             }
-        }
-        unset($forums);
+            unset($forums);
         endif;
         unset($newbb);
     }
@@ -527,7 +524,7 @@ $modversion['config'][] = [
     'valuetype'   => 'int',
     'options'     => $forum_options,
     'default'     => 0,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -537,7 +534,7 @@ $modversion['config'][] = [
     'formtype'    => 'textarea',
     'valuetype'   => 'text',
     'default'     => art_constant('MI_DISCLAIMER_TEXT'),
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 // For sending out
@@ -548,7 +545,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -558,7 +555,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 // For receiving
@@ -570,7 +567,7 @@ $modversion['config'][] = [
     'valuetype'   => 'int',
     'default'     => 0,
     'options'     => [art_constant('MI_MODERATION') => 0, _ALL => 1, _NONE => 2],
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -580,7 +577,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 0,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 // For draft
@@ -591,7 +588,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 14,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -601,7 +598,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -611,7 +608,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -621,7 +618,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -631,7 +628,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 0,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -641,7 +638,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -651,7 +648,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -661,7 +658,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -671,7 +668,7 @@ $modversion['config'][] = [
     'formtype'    => 'yesno',
     'valuetype'   => 'int',
     'default'     => 1,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -681,7 +678,7 @@ $modversion['config'][] = [
     'formtype'    => 'textarea',
     'valuetype'   => 'text',
     'default'     => "https://xoops.org XOOPS Official\nhttps://xoops.org xoops\nhttps://xoops.org.cn XOOPS CHINA\nhttps://xoops.org CMS\nhttp://www.php.net php\nhttp://mysql.com MySQL",
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -691,7 +688,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'int',
     'default'     => 255,
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -701,7 +698,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'text',
     'default'     => 'newbb/viewtopic.php?topic_id=%d&amp;forum=%d',
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -711,7 +708,7 @@ $modversion['config'][] = [
     'formtype'    => 'textarea',
     'valuetype'   => 'text',
     'default'     => '',
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 $modversion['config'][] = [
@@ -721,7 +718,7 @@ $modversion['config'][] = [
     'formtype'    => 'textbox',
     'valuetype'   => 'text',
     'default'     => 'Copyright&copy; %s & ' . $xoopsConfig['sitename'],
-    'category'    => 'article'
+    'category'    => 'article',
 ];
 
 // Notification

@@ -1,4 +1,7 @@
 <?php
+
+namespace XoopsModules\Article;
+
 /**
  * Article module for XOOPS
  *
@@ -31,41 +34,57 @@
  */
 
 // defined('XOOPS_ROOT_PATH') || die('Restricted access');
-require_once  dirname(__DIR__) . '/include/vars.php';
+require_once dirname(__DIR__) . '/include/vars.php';
 mod_loadFunctions('parse', $GLOBALS['artdirname']);
 
-art_parse_class('
-class [CLASS_PREFIX]KeywordsHandler /*extends \XoopsObjectHandler*/
+//art_parse_class('
+class KeywordsHandler extends \XoopsPersistableObjectHandler
 {
-    var $keywords;
-    var $skip_tags = array("A", "IMG", "PRE", "QUOTE", "CODE",
-                            "H1", "H2", "H3", "H4", "H5", "H6"
-                            );    //add here more, if you want to filter them
+    public $keywords;
+    public $skip_tags = [
+        'A',
+        'IMG',
+        'PRE',
+        'QUOTE',
+        'CODE',
+        'H1',
+        'H2',
+        'H3',
+        'H4',
+        'H5',
+        'H6',
+    ];    //add here more, if you want to filter them
 
-    function init()
+
+    public function init()
     {
         $this->getKeywords();
-        if (count($this->keywords) == 0) return false;
-        else return true;
+        if (0 == count($this->keywords)) {
+            return false;
+        }
+
+        return true;
     }
 
-    function getKeywords()
+    public function getKeywords()
     {
         global $xoopsModuleConfig;
-        static $keywords = array();
-        if (count($keywords) > 0) return $keywords;
-        $_keywords = art_parseLinks($xoopsModuleConfig["keywords"]);
+        static $keywords = [];
+        if (count($keywords) > 0) {
+            return $keywords;
+        }
+        $_keywords = art_parseLinks($xoopsModuleConfig['keywords']);
 
         foreach ($_keywords as $_keyword) {
-            $this->keywords[strtolower($_keyword["title"])] = $_keyword["url"];
+            $this->keywords[mb_strtolower($_keyword['title'])] = $_keyword['url'];
         }
     }
 
-    function highlighter($matches)
+    public function highlighter($matches)
     {
-        if (!in_array(strtoupper($matches[2]), $this->skip_tags)) {
-            $replace = "<a href=\"" . $this->keywords[strtolower($matches[3])] . "\">" . $matches[3] . "</a>";
-            $proceed =  preg_replace("#\b(" . $matches[3] . ")\b#si", $replace, $matches[0]);
+        if (!in_array(mb_strtoupper($matches[2]), $this->skip_tags)) {
+            $replace = '<a href="' . $this->keywords[mb_strtolower($matches[3])] . '">' . $matches[3] . '</a>';
+            $proceed = preg_replace("#\b(" . $matches[3] . ")\b#si", $replace, $matches[0]);
         } else {
             $proceed = $matches[0];
         }
@@ -73,13 +92,13 @@ class [CLASS_PREFIX]KeywordsHandler /*extends \XoopsObjectHandler*/
         return stripslashes($proceed);
     }
 
-    function &process(&$text)
+    public function &process(&$text)
     {
         foreach ($this->keywords as $keyword => $rep) {
-            $text = preg_replace_callback("#(<([A-Za-z]+)[^>]*[\>]*)*\s(" . $keyword . ")\s(.*?)(<\/\\2>)*#si", array(&$this, "highlighter"), $text);
+            $text = preg_replace_callback("#(<([A-Za-z]+)[^>]*[\>]*)*\s(" . $keyword . ")\s(.*?)(<\/\\2>)*#si", [&$this, 'highlighter'], $text);
         }
 
         return $text;
     }
 }
-');
+//');

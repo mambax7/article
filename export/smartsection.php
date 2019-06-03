@@ -10,7 +10,6 @@
  * @since       1.00
  * @package     module::article
  */
-
 $sql = '   INSERT INTO '
        . $GLOBALS['xoopsDB']->prefix('smartsection_categories')
        . '       (categoryid,    name,           parentid,   description)'

@@ -15,5 +15,4 @@
  * @since           1.0
  * @author          Taiwen Jiang <phppp@users.sourceforge.net>
  */
-
 require_once XOOPS_ROOT_PATH . '/footer.php';

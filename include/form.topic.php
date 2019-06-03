@@ -23,7 +23,7 @@ use XoopsModules\Article;
 /** @var Article\Helper $helper */
 $helper = Article\Helper::getInstance();
 
-//require_once(XOOPS_ROOT_PATH . "/class/xoopstree.php");
+//require(XOOPS_ROOT_PATH . "/class/xoopstree.php");
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/xoopsformloader.php';
 
 // Form
@@ -38,11 +38,10 @@ $form_art->addElement(new \XoopsFormTextArea(art_constant('MD_DESCRIPTION'), 'to
 
 // Parent category
 if (art_isAdministrator()) {
-    require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/tree.php';
-    $categoryHandler = xoops_getModuleHandler('category', $GLOBALS['artdirname']);
+    $categoryHandler = $helper->getHandler('Category', $GLOBALS['artdirname']);
     $tags            = ['cat_id', 'cat_pid', 'cat_title', 'cat_order'];
     $categories      = $categoryHandler->getAllByPermission('moderate', $tags);
-    $mytree          = new artTree($categories, 'cat_id');
+    $mytree          = new Article\Tree($categories, 'cat_id');
     $box             = $mytree->makeSelBox('cat_id', '--', $topic_obj->getVar('cat_id'));
     $form_art->addElement(new \XoopsFormLabel(art_constant('MD_CATEGORY'), $box));
 } else {
@@ -73,8 +72,8 @@ $form_art->addElement(new \XoopsFormTextArea(art_constant('MD_SPONSOR'), 'top_sp
 $form_art->addElement(new \XoopsFormHidden('top_id', $topic_obj->getVar('top_id')));
 $form_art->addElement(new \XoopsFormHidden('from', $from));
 
-$button_tray = new \XoopsFormElementTray('', '');
-$button_tray->addElement(new \XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
+$buttonTray = new \XoopsFormElementTray('', '');
+$buttonTray->addElement(new \XoopsFormButton('', 'submit', _SUBMIT, 'submit'));
 $cancel_button = new \XoopsFormButton('', 'cancel', _CANCEL, 'button');
 if (!empty($from)) {
     $extra = 'admin/admin.topic.php';
@@ -84,7 +83,7 @@ if (!empty($from)) {
     $extra = 'view.topic.php?topic=' . $topic_obj->getVar('cat_id');
 }
 $cancel_button->setExtra("onclick='window.document.location=\"" . $extra . "\"'");
-$button_tray->addElement($cancel_button);
-$form_art->addElement($button_tray);
+$buttonTray->addElement($cancel_button);
+$form_art->addElement($buttonTray);
 
 $form_art->display();

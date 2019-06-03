@@ -1,4 +1,7 @@
 <?php
+
+namespace XoopsModules\Article;
+
 /**
  * Article module for XOOPS
  *
@@ -30,7 +33,7 @@
  * @author        D.J.(phppp)
  * @copyright     copyright (c) 2000-2005 XOOPS.org
  */
-class XoopsFormSelectWriter extends \XoopsFormElementTray
+class FormSelectWriter extends \XoopsFormElementTray
 {
     /**
      * Constructor
@@ -42,6 +45,7 @@ class XoopsFormSelectWriter extends \XoopsFormElementTray
     public function __construct($caption, $name, $value = [])
     {
         parent::__construct($caption, ' | ', $name);
+        $helper = \XoopsModules\Article\Helper::getInstance();
 
         $select_form = new \XoopsFormSelect('', $name, $value, $size = 1, $multiple = false);
         if (!empty($value)) {
@@ -51,7 +55,7 @@ class XoopsFormSelectWriter extends \XoopsFormElementTray
             $criteria = new \CriteriaCompo(new \Criteria('writer_id', '(' . implode(', ', $value) . ')', 'IN'));
             $criteria->setSort('writer_name');
             $criteria->setOrder('ASC');
-            $writerHandler = xoops_getModuleHandler('writer', $GLOBALS['artdirname']);
+            $writerHandler = $helper->getHandler('Writer', $GLOBALS['artdirname']);
             $select_form->addOptionArray($writerHandler->getList($criteria));
         }
 

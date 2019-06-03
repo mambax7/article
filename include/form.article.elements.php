@@ -81,10 +81,10 @@ if (!empty($editor)) {
 } else {
     $editor = art_getcookie('editor');
     if (empty($editor) && is_object($xoopsUser)) {
-        $editor = @ $xoopsUser->getVar('editor'); // Need set through user profile
+        $editor = @$xoopsUser->getVar('editor'); // Need set through user profile
     }
     if (empty($editor)) {
-        $editor = @ $helper->getConfig('editor_default');
+        $editor = @$helper->getConfig('editor_default');
     }
 }
 $form_element['active']['editor']   = new \XoopsFormSelectEditor($form_art, 'editor', $editor, $nohtml, @$helper->getConfig('editor_allowed'));
@@ -198,7 +198,7 @@ $form_element['active']['page'] = new \XoopsFormLabel(art_constant('MD_EDITPAGE'
 
 // The author info
 require_once XOOPS_ROOT_PATH . '/modules/' . $GLOBALS['artdirname'] . '/class/formselectwriter.php';
-$form_element['active']['writer_id']   = new \XoopsFormSelectWriter(art_constant('MD_AUTHOR'), 'writer_id', $writer_id);
+$form_element['active']['writer_id']   = new Article\FormSelectWriter(art_constant('MD_AUTHOR'), 'writer_id', $writer_id);
 $form_element['inactive']['writer_id'] = new \XoopsFormHidden('writer_id', $writer_id);
 
 // Source
@@ -207,8 +207,9 @@ $form_element['inactive']['art_source'] = new \XoopsFormHidden('art_source', $ar
 
 // Keywords/Tags
 $form_element['inactive']['art_keywords'] = new \XoopsFormHidden('art_keywords', $art_keywords);
-if (@require_once XOOPS_ROOT_PATH . '/modules/tag/include/formtag.php') {
-    $form_element['active']['art_keywords'] = new TagFormTag('art_keywords', 60, 255, $art_keywords);
+//if (@require_once XOOPS_ROOT_PATH . '/modules/tag/include/formtag.php') {
+if (class_exists('TagFormTag')) {
+    $form_element['active']['art_keywords'] = new \XoopsModules\Tag\FormTag('art_keywords', 60, 255, $art_keywords);
 } else {
     $form_element['active']['art_keywords'] = $form_element['inactive']['art_keywords'];
 }
@@ -237,16 +238,7 @@ if (@require_once XOOPS_ROOT_PATH . '/modules/tag/include/formtag.php') {
 
 // Spot Image
 $image_tray    = new \XoopsFormElementTray(art_constant('MD_IMAGE_ARTICLE'), '<br>');
-$image_current = empty($art_image['file']) ? _NONE : _DELETE
-                                                     . '<input type="checkbox" name="image_del" value="'
-                                                     . $art_image['file']
-                                                     . '"><div style="padding: 8px;"><img src="'
-                                                     . XOOPS_URL
-                                                     . '/'
-                                                     . $helper->getConfig('path_image')
-                                                     . '/'
-                                                     . $art_image['file']
-                                                     . '" name="img" id="img" alt=""></div>';
+$image_current = empty($art_image['file']) ? _NONE : _DELETE . '<input type="checkbox" name="image_del" value="' . $art_image['file'] . '"><div style="padding: 8px;"><img src="' . XOOPS_URL . '/' . $helper->getConfig('path_image') . '/' . $art_image['file'] . '" name="img" id="img" alt=""></div>';
 $image_tray->addElement(new \XoopsFormLabel(art_constant('MD_IMAGE_CURRENT'), $image_current));
 $image_tray->addElement(new \XoopsFormText(art_constant('MD_IMAGE_CAPTION'), 'art_image_caption', 50, 255, @$art_image['caption']));
 //$form_element["active"]["art_image_hidden"] = array();
@@ -270,9 +262,9 @@ if ($templates = art_getTemplateList('article')) {
     $template_select->addOptionArray($templates);
     $template_option_tray->addElement($template_select);
     $form_element['active']['art_template'] = $template_option_tray;
-} else {
-    //$form_element["active"]["art_template"] = null;
 }
+//$form_element["active"]["art_template"] = null;
+
 $form_element['inactive']['art_template'] = new \XoopsFormHidden('art_template', $art_template);
 
 // Category
@@ -370,9 +362,9 @@ $form_element['active']['category'][] = new \XoopsFormLabel(art_constant('MD_CAT
 //$form_element["inactive"]["category"] = null;
 
 // Topic
-$permissionHandler = xoops_getModuleHandler('permission', $GLOBALS['artdirname']);
+$permissionHandler = $helper->getHandler('Permission', $GLOBALS['artdirname']);
 $allowed_cats      = $permissionHandler->getCategories('submit');
-$topicHandler      = xoops_getModuleHandler('topic', $GLOBALS['artdirname']);
+$topicHandler      = $helper->getHandler('Topic', $GLOBALS['artdirname']);
 $criteria          = new \CriteriaCompo(new \Criteria('top_expire', time(), '>'));
 $tags              = ['top_title', 'cat_id'];
 $topic_string      = '';
@@ -398,9 +390,9 @@ if ($topics_obj = $topicHandler->getByCategory($allowed_cats, $helper->getConfig
         }
     }
     $form_element['active']['topic'][] = new \XoopsFormLabel(art_constant('MD_TOPIC'), $topic_string);
-} else {
-    //$form_element["active"]["topic"] = null;
 }
+//$form_element["active"]["topic"] = null;
+
 //$form_element["inactive"]["topic"] = null;
 
 // Forum
@@ -433,7 +425,7 @@ if ($article_obj->getVar('art_time_submit') && !$article_obj->getVar('art_time_p
 // Update publish time
 if ($article_obj->getVar('art_time_publish') && $isModerator) {
     $update_time_value = (!empty($_POST['update_time_value'])
-                          && !empty($_POST['update_time'])) ? (int)(strtotime(@$_POST['update_time_value']['date']) + @$_POST['update_time_value']['time']) : $article_obj->getVar('art_time_publish');
+                          && !empty($_POST['update_time'])) ? (strtotime(@$_POST['update_time_value']['date']) + @$_POST['update_time_value']['time']) : $article_obj->getVar('art_time_publish');
     $date_tray         = new \XoopsFormElementTray(art_constant('MD_UPDATE_TIME'));
     $date_tray->addElement(new \XoopsFormDateTime('', 'update_time_value', 15, $update_time_value));
     $select_option = new \XoopsFormCheckBox('', 'update_time', (int)(@$_POST['update_time']));
